@@ -1,2 +1,2 @@
 # s4t-node-cloud-WebInterface
-A web interface for the personal cloud s4t-node-cloud
+The WebInterface created at UniMe for the Iotronic project is based on a framework called CodeIgniter http://www.codeigniter.com/
