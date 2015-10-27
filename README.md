@@ -46,4 +46,5 @@ Pay attention to the fact that in the bottom part of the footer you are forced t
 In the "s4t-iotronic-webinterface" repo you have these files: 
 * ```appplication/views/yun.php```
 * ```application/controllers/Yun.php```
+
 which have to be put in the correct folders in order to correctly display the WebPage on this URL: ```http://<SERVER_IP>/<DOMAIN_NAME>/index.php/Yun```
