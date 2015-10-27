@@ -34,7 +34,10 @@ wget https://raw.githubusercontent.com/philsturgeon/codeigniter-curl/master/libr
 ```
 As front-end framework we used the previously mentioned Foundation which has to be downloaded into ```assets``` folder as follows:
 ```
-cd assets/ && mkdir -p bower_components/foundation && cd bower_components/foundation && wget http://foundation.zurb.com/cdn/releases/foundation-5.5.3.zip && unzip foundation-5.5.3.zip
+cd assets/ && mkdir -p bower_components/foundation && cd bower_components/foundation
+```
+```
+wget http://foundation.zurb.com/cdn/releases/foundation-5.5.3.zip && unzip foundation-5.5.3.zip
 ```
 # Header and Footer
 If Foundation was chosen few precautions have to be taken into consideration. Create a folder which will contain both header(s) and footer(s) launching ```mkdir application/views/templates``` and then create ```header.php``` and ```footer.php``` where you can put logo(s), import Javascripts, import Stylesheets and so on.
