@@ -6,7 +6,7 @@ class Yun extends CI_Controller {
 	public function index()
 	{
 		$this -> load -> library('curl');
-		$result = $this -> curl -> simple_get('http://212.189.207.205:8888/list');
+		$result = $this -> curl -> simple_get('http://<SERVER_IP>:<PORT>/list');
 
 		$data['result'] = $result;
 		$data['page_title'] = 'UniME';
@@ -24,7 +24,7 @@ class Yun extends CI_Controller {
 		$pin = $this -> input -> get('pin');
 		$val = $this -> input -> get('val');
 
-		$result = $this -> curl -> simple_get('http://212.189.207.205:8888/command/?board='.$board_id.'&command='.$command.'&pin='.$pin.'&val='.$val);
+		$result = $this -> curl -> simple_get('http://<SERVER_IP>:<PORT>/command/?board='.$board_id.'&command='.$command.'&pin='.$pin.'&val='.$val);
 
 		echo $result;
 	}
@@ -35,7 +35,7 @@ class Yun extends CI_Controller {
 		$board_id = $this -> input -> get('board');
 		$command = $this -> input -> get('command');
 
-		$result = $this -> curl -> simple_get('http://212.189.207.205:8888/command/?board='.$board_id.'&command=ssh&op='.$command);
+		$result = $this -> curl -> simple_get('http://<SERVER_IP>:<PORT>/command/?board='.$board_id.'&command=ssh&op='.$command);
 
 		echo $result;
 }
@@ -59,7 +59,7 @@ class Yun extends CI_Controller {
 		$test3 = str_replace('+', '%2B', $test2);
 		$plugin_code = str_replace('"', '%22', $test3);
 
-		$result = $this -> curl -> simple_get('http://212.189.207.205:8888/command/?command=createplugin&pluginname='.$plugin_name.'&plugincategory=elaborate&pluginjsonschema='.$plugin_json.'&plugincode='.$plugin_code);
+		$result = $this -> curl -> simple_get('http://<SERVER_IP>:<PORT>/command/?command=createplugin&pluginname='.$plugin_name.'&plugincategory=elaborate&pluginjsonschema='.$plugin_json.'&plugincode='.$plugin_code);
 		echo $result;
 	}
 
@@ -69,7 +69,7 @@ class Yun extends CI_Controller {
 		$plugin_name = $this -> input -> get('plugin_name');
 		$board_id = $this -> input -> get('board');
 
-		$result = $this -> curl -> simple_get('http://212.189.207.205:8888/command/?command=injectplugin&board='.$board_id.'&pluginname='.$plugin_name);
+		$result = $this -> curl -> simple_get('http://<SERVER_IP>:<PORT>/command/?command=injectplugin&board='.$board_id.'&pluginname='.$plugin_name);
 		echo $result;
 	}
 
@@ -85,7 +85,7 @@ class Yun extends CI_Controller {
                 $test3 = str_replace('+', '%2B', $test2);
                 $plugin_json = str_replace('"', '%22', $test3);
 
-		$result = $this -> curl -> simple_get('http://212.189.207.205:8888/command/?command=plugin&pluginname='.$plugin_name.'&pluginjson='.$plugin_json.'&pluginoperation=run&board='.$board_id);
+		$result = $this -> curl -> simple_get('http://<SERVER_IP>:<PORT>/command/?command=plugin&pluginname='.$plugin_name.'&pluginjson='.$plugin_json.'&pluginoperation=run&board='.$board_id);
 		echo $result;
 	}
 
@@ -95,7 +95,7 @@ class Yun extends CI_Controller {
 		$plugin_name = $this -> input -> get('plugin_name');
 		$board_id = $this -> input -> get('board');
 
-		$result = $this -> curl -> simple_get('http://212.189.207.205:8888/command/?command=plugin&pluginname='.$plugin_name.'&pluginoperation=kill&board='.$board_id);
+		$result = $this -> curl -> simple_get('http://<SERVER_IP>:<PORT>/command/?command=plugin&pluginname='.$plugin_name.'&pluginoperation=kill&board='.$board_id);
 		echo $result;
 
 	}
