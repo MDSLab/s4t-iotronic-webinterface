@@ -39,6 +39,10 @@ cd assets/ && mkdir -p bower_components/foundation && cd bower_components/founda
 # Header and Footer
 If Foundation was chosen few precautions have to be taken into consideration. Create a folder which will contain both header(s) and footer(s) launching ```mkdir application/views/templates``` and then create ```header.php``` and ```footer.php``` where you can put logo(s), import Javascripts, import Stylesheets and so on.
 
-Pay attention to the fact that in the bottom part of the footer you are forced to put ```<script>  $(document).foundation();  </script>``` before ```<script src="<?= $this -> config -> site_url() ?>assets/bower_components/foundation/js/foundation/foundation.js"></script>``` in order to have modals (see Foundation online documentation) working on your WebSite.
+Pay attention to the fact that in the bottom part of the footer you are forced to put 
+```<script>  $(document).foundation();  </script>```
+before 
+```<script src="<?= $this -> config -> site_url() ?>assets/bower_components/foundation/js/foundation/foundation.js"></script>``` 
+in order to have modals (see Foundation online documentation) working on your WebSite.
 
 #Testing
