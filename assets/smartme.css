@@ -1,0 +1,6 @@
+#header, #footer {
+	background-color: #ccffcc; 
+	/*border-style: solid; */
+	/*border-color: #ff0000 #0000ff;*/
+	border-color: transparent transparent;
+}
