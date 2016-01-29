@@ -24,7 +24,7 @@ changing the ```short_open_tag=Off → short_open_tag=On```
 Download the CodeIgniter-3.0.2 from https://github.com/bcit-ci/CodeIgniter/archive/3.0.2.zip into the ```/var/www/html``` folder on the server and unzip it. Rename the folder to one of your choice (e.g.: s4t-dev in our case) and make some changes in the ```application/config/config.php``` configuration file.
 ```
 $config['index_page'] = 'index.php'; → $config['index_page'] = '';
-$config['encryption_key'] = ''; → $config['encryption_key'] = 'your_encryption_key';
+$config['encryption_key'] = ''; → $config['encryption_key'] = 'your_encryption_key';  (if needed)
 ```
 
 # CodeIgniter extra packages
@@ -32,6 +32,8 @@ After having changed some global and common configuration parameters it is possi
 ```
 wget https://raw.githubusercontent.com/philsturgeon/codeigniter-curl/master/libraries/Curl.php
 ```
+and put it into the libraries folder (if not already present).
+
 As front-end framework we used the previously mentioned Foundation which has to be downloaded into ```assets``` folder as follows:
 ```
 cd assets/ && mkdir -p bower_components/foundation && cd bower_components/foundation
@@ -44,8 +46,8 @@ Pay attention to the fact that in the bottom part of the footer you are forced t
 
 # Last steps before browsing the interface
 In the "s4t-iotronic-webinterface" repo you have these files: 
-* ```appplication/views/yun.php```
-* ```application/controllers/Yun.php```
+* ```appplication/views/last.php```
+* ```application/controllers/Last.php```
 * ```assets/smartme.css``` (any css you can use to customize the layout)
 
-which have to be put in the correct folders in order to correctly display the WebPage on this URL: ```http://<SERVER_IP>/<DOMAIN_NAME>/index.php/Yun```
+which have to be put in the correct folders in order to correctly display the WebPage on this URL: ```http://<SERVER_IP>/<DOMAIN_NAME>/Last```
