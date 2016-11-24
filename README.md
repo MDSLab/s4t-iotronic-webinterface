@@ -55,4 +55,4 @@ In the "s4t-iotronic-webinterface" repo you have these files:
 * ```application/controllers/Last.php```
 * ```assets/smartme.css``` (any css you can use to customize the layout)
 
-which have to be put in the correct folders in order to correctly display the WebPage on this URL: ```http://<SERVER_IP>/<DOMAIN_NAME>/Last```
+which have to be put in the correct folders in order to correctly display the WebPage on this URL: ```http://<SERVER_IP>/<FOLDER_NAME>/Last```
