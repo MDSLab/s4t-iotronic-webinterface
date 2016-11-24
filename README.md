@@ -9,7 +9,7 @@ The WebInterface created at UniMe for the Iotronic project is based on a framewo
   * php5
 * A CodeIgniter library 
   * Curl.php
-* A responsive front-end framework (foundation-5.5.3). 
+* A responsive front-end framework (foundation-5.5.3 --> http://foundation.zurb.com/downloads/foundation-5.5.3.zip). 
 
 
 # Server preliminary configuration
