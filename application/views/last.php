@@ -3,89 +3,40 @@
 
 <!-- GLOBAL VARIABLES -->
 <? $selectbox_size = 6; ?>
+<? $ckan_selectbox_size = 12; ?>
 
-<!-- YUNLIST -->
-<!--
-<? $yunlist = json_decode($result, true); ?>
-<? 
-	$yunlist_all = array();
-	$yunlist_c = array(); 
-	$yunlist_d = array();
-?>
-<? if (sizeof($yunlist["list"]) > 0): ?>
-	<? foreach ($yunlist["list"] as $board): ?>
-		<? if ($board["status"] == "C"): ?>
-			<? array_push($yunlist_c, $board["board_code"]) ?>
-		<? elseif ($board["status"] == "D"): ?>
-			<? array_push($yunlist_d, $board["board_code"]) ?>
-		<? endif ?>
-	<? array_push($yunlist_all, $board["board_code"]) ?>
-	<? endforeach ?>
-<? endif ?>
--->
+<!-- <?= print_r($post_results) ?> -->
 
-
-
-<!-- NETLIST -->
-<!--
-<? $netlist = json_decode($networks_list, true); ?>
-<? $active_nets = array(); ?>
-
-<? if (sizeof($netlist["result"]) > 0): ?>
-	<? foreach ($netlist["result"] as $net): ?>
-		<? array_push($active_nets, $net["uuid"]); ?>
-	<? endforeach ?>
-<? endif ?>
--->
-<!-- <?= print_r($netlist) ?> -->
-<!-- <?= print_r($active_nets) ?> -->
-
+<!-- LOADING GIF -->
+<div id="loading_bar"></div>
 
 <table style="width:99%; margin: 0 auto">
 	<td valign="top">
-		<!-- <div style="width:200px;overflow: auto;"> -->
 		<div style="width:320px;overflow: auto;">
 			<center><h2>Boards</h2></center>
 	                <table style="width:100%" border="0" >
                         <tr style="height:50%">
                                 <td>
-                                        <center><h3>Connected</h3></center>
-					<!-- <select id="yunlist_c" size="<?=$selectbox_size?>" style="width:170px; height:100px" data-yunlist-selected="yunlist_c" data-reveal-id="modal-plugins_sensors-lists"></select> -->
-					<select id="yunlist_c" size="<?=$selectbox_size?>" style="width:290px; height:100px" data-yunlist-selected="yunlist_c" data-reveal-id="modal-plugins_sensors-lists"></select>
-<!--
-                                        <? if (sizeof($yunlist_c) > 0): ?>
-						<select id="yunlist_c" size="<?=$selectbox_size?>" style="width:170px; height:100px" data-yunlist-selected="yunlist_c" data-reveal-id="modal-plugins_sensors-lists">
-                                                        <? foreach ($yunlist_c as $board): ?>
-                                                                <option value="<?=$board ?>"> <?=$board?> </option>
-                                                        <? endforeach ?>
-                                                </select>
-                                        <? else: ?>
-                                                NO boards connected
-                                        <? endif ?>
--->
+					<center><div id="count-connected"></center>
+					<select id="yunlist_c" size="<?=$selectbox_size?>" style="width:290px; height:200px" data-yunlist-selected="yunlist_c" data-reveal-id="modal-plugins_sensors-lists"></select>
                                 </td>
                         </tr>
                         <tr style="height:50%">
                                 <td>
-                                        <center><h3>Disconnected</h3></center>
-					<!-- <select id="yunlist_d" size="<?=$selectbox_size?>" style="width:170px; height:100px" data-yunlist-selected="yunlist_d" data-reveal-id="modal-plugins_sensors-lists"></select> -->
-					<select id="yunlist_d" size="<?=$selectbox_size?>" style="width:290px; height:100px" data-yunlist-selected="yunlist_d" data-reveal-id="modal-plugins_sensors-lists"></select>
-<!--
-                                        <? if (sizeof($yunlist_d) > 0): ?>
-                                                <select id="yunlist_d" size="<?=$selectbox_size?>" style="width:170px; height:100px" data-yunlist-selected="yunlist_d" data-reveal-id="modal-plugins_sensors-lists">
-                                                        <? foreach ($yunlist_d as $board): ?>
-                                                                <option value="<?=$board ?>"> <?=$board?> </option>
-                                                        <? endforeach ?>
-                                                </select>
-                                        <? else : ?>
-                                                NO boards disconnected
-                                        <? endif ?>
--->
+					<center><div id="count-disconnected"></center>
+					<select id="yunlist_d" size="<?=$selectbox_size?>" style="width:290px; height:200px" data-yunlist-selected="yunlist_d" data-reveal-id="modal-plugins_sensors-lists"></select>
                                 </td>
                         </tr>
-			<tr><td><center><button class="button tiny radius" data-reveal-id="modal-register-new-board" onclick="generate_uuid(); sensor_list(); refresh_lists();">Register Board</button></center></td></tr>
-			<tr><td><center><button class="button tiny radius" data-reveal-id="modal-update-board" onclick="update_boards('update_yunlist'); refresh_lists();">Update Board</button></center></td></tr>
-			<tr><td><center><button class="button tiny radius" data-reveal-id="modal-unregister-board" onclick="update_boards('unregister_boardlist'); refresh_lists();">Unregister Board</button></center></td></tr>
+			<tr>
+				<td>
+					<center>
+						<button class="button tiny radius" data-reveal-id="modal-register-new-board" onclick="$('#board-registration-output').empty(); generate_uuid(); sensor_list(); refresh_lists();">Register</button>
+						<button class="button tiny radius" data-reveal-id="modal-update-board" onclick="$('#board-update-output').empty(); update_boards('update_yunlist'); refresh_lists();">Update</button>
+						<button class="button tiny radius" data-reveal-id="modal-unregister-board" onclick="$('#board-unregistration-output').empty(); update_boards('unregister_boardlist'); refresh_lists();">Unregister</button>
+					</center>
+				</td>
+			</tr>
+
         	        </table>
 		</div>
 	</td>
@@ -93,71 +44,52 @@
         	<table border="0" style="width:100%" >
                         <tr style="height:20%">
                                 <center><h2>Commands</h2></center>
-                                <td>
+				<td style='text-align: center'>
                                         <center><h3>Board Management</h3></center>
-					<button class="button tiny radius" data-reveal-id="modal-led-management" onclick="update_boards('led_yunlist', 'C'); refresh_lists();">LED</button>
-					<button class="button tiny radius" data-reveal-id="modal-ssh-management" onclick="update_boards('ssh_yunlist', 'C'); refresh_lists();">SSH</button>
-					<button class="button tiny radius" data-reveal-id="modal-ckan" onclick="update_boards('ckan-yunlist'); refresh_lists();">CKAN</button>
+					<button class="button tiny radius" data-reveal-id="modal-led-management" onclick="$('#led-output').empty(); update_boards('led_yunlist', 'C'); refresh_lists();">LED</button>
+					<button class="button tiny radius" data-reveal-id="modal-ssh-management" onclick="$('#ssh-output').empty(); update_boards('ssh_yunlist', 'C'); refresh_lists();">SSH</button>
                                 </td>
                         </tr>
 			<tr style="height:20%">
-				<td>
+				<td style='text-align: center'>
 					<center><h3>Driver Management</h3></center>
-					<button class="button tiny radius" data-reveal-id="modal-create-driver" onclick="refresh_lists();">Create</button>
-					<button class="button tiny radius" data-reveal-id="modal-inject-driver" onclick="update_boards('call_yunlist', 'C'); refresh_lists();">Inject TBD</button>
-					<button class="button tiny radius" data-reveal-id="modal-mount-umount-driver" onclick="/*update_boards('mount_umount_yunlist', 'C'); refresh_lists();*/">Mount/Unmount</button>
+					<button class="button tiny radius" data-reveal-id="modal-create-driver" onclick="$('#create-driver-output').empty(); refresh_lists();">Create</button>
+					<button class="button tiny radius" data-reveal-id="modal-destroy-driver" onclick="$('#destroy-driver-output').empty(); refresh_cloud_drivers('destroy_driverlist'); refresh_lists();">Remove from Cloud</button>
+					<button class="button tiny radius" data-reveal-id="modal-inject-driver" onclick="$('#inject-driver-output').empty(); refresh_cloud_drivers('inject_driverlist'); update_boards('inject_driver_yunlist', 'C'); refresh_lists();">Inject</button>
+					<button class="button tiny radius" data-reveal-id="modal-mount-driver" onclick="$('#mount-driver-output').empty(); update_boards('mount_yunlist', 'C'); $('#mount_div_remote').hide(); refresh_lists();">Mount</button>
+					<button class="button tiny radius" data-reveal-id="modal-unmount-driver" onclick="$('#unmount-driver-output').empty(); update_boards('unmount_yunlist', 'C'); refresh_lists();">Unmount</button>
+					<button class="button tiny radius" data-reveal-id="modal-write-driver" onclick="$('#write-driver-output').empty(); update_boards('write_driver_yunlist', 'C'); refresh_lists();">Write</button>
+					<button class="button tiny radius" data-reveal-id="modal-read-driver" onclick="$('#read-driver-output').empty(); update_boards('read_driver_yunlist', 'C'); refresh_lists();">Read</button>
+					<button class="button tiny radius" data-reveal-id="modal-remove-driver" onclick="$('#remove-driver-output').empty(); update_boards('remove_driver_yunlist', 'C'); refresh_lists();">Remove from Board</button>
 				</td>
 			</tr>
                         <tr style="height:20%">
-                                <td>
+				<td style='text-align: center'>
                                         <center><h3>Plugin Management</h3></center>
-                                        <button class="button tiny radius" data-reveal-id="modal-create-plugin" onclick="refresh_lists();">Create</button>
-					<button class="button tiny radius" data-reveal-id="modal-destroy-plugin" onclick="refresh_cloud_plugins('destroy_pluginlist'); refresh_lists();">Cloud Remove</button>
-                                        <button class="button tiny radius" data-reveal-id="modal-inject-plugin" onclick="refresh_cloud_plugins('inject_pluginlist'); update_boards('inject_yunlist', 'C'); refresh_lists();">Inject</button>
-					<button class="button tiny radius" data-reveal-id="modal-startstop-plugin" onclick="update_boards('startstop_yunlist', 'C'); refresh_lists();">Start/Stop</button>
-                                        <button class="button tiny radius" data-reveal-id="modal-call-plugin" onclick="update_boards('call_yunlist', 'C'); refresh_lists();">Call</button>
-					<button class="button tiny radius" data-reveal-id="modal-remove-plugin" onclick="update_boards('remove_plugin_yunlist', 'C'); refresh_lists();">Board Remove</button>
+                                        <button class="button tiny radius" data-reveal-id="modal-create-plugin" onclick="$('#create-plugin-output').empty(); refresh_lists();">Create</button>
+					<button class="button tiny radius" data-reveal-id="modal-destroy-plugin" onclick="$('#destroy-plugin-output').empty(); refresh_cloud_plugins('destroy_pluginlist'); refresh_lists();">Remove from Cloud</button>
+                                        <button class="button tiny radius" data-reveal-id="modal-inject-plugin" onclick="$('#inject-plugin-output').empty(); refresh_cloud_plugins('inject_pluginlist'); update_boards('inject_yunlist', 'C'); refresh_lists();">Inject</button>
+					<button class="button tiny radius" data-reveal-id="modal-startstop-plugin" onclick="$('#startstop-plugin-output').empty(); refresh_cloud_plugins('startstop_pluginlist'); update_boards('startstop_yunlist', 'C'); refresh_lists();">Start/Stop</button>
+                                        <button class="button tiny radius" data-reveal-id="modal-call-plugin" onclick="$('#call-plugin-output').empty(); refresh_cloud_plugins('call_pluginlist'); update_boards('call_yunlist', 'C'); refresh_lists();">Call</button>
+					<button class="button tiny radius" data-reveal-id="modal-remove-plugin" onclick="$('#remove-plugin-output').empty(); update_boards('remove_plugin_yunlist', 'C'); refresh_lists();">Remove from Board</button>
                                 </td>
                         </tr>
                         <tr style="height:20%">
-                                <td>
+				<td style='text-align: center'>
                                         <center><h3>Network Management</h3></center>
 					<button class="button tiny radius" data-reveal-id="modal-show-networks" onclick="refresh_lists();">Show Networks</button>
-                                        <button class="button tiny radius" data-reveal-id="modal-create-net" onclick="refresh_lists();">Create Network</button>
-                                        <button class="button tiny radius" data-reveal-id="modal-destroy-net" onclick="update_nets('destroy_network_uuid'); refresh_lists();">Destroy Network</button>
-                                        <button class="button tiny radius" data-reveal-id="modal-add-board-net" onclick="update_nets('addboard_network_uuid'); update_boards('addboard_yunlist', 'C'); refresh_lists();">Add Board</button>
-                                        <button class="button tiny radius" data-reveal-id="modal-remove-board-net" onclick="update_nets('removeboard_network_uuid'); update_boards('removeboard_yunlist', 'C'); refresh_lists();">Remove Board</button>
-                                        <button class="button tiny radius" data-reveal-id="modal-show-boards-net" onclick="update_nets('show_boards_uuid'); refresh_lists();">Show Boards</button>
-					<button class="button tiny radius" data-reveal-id="modal-activate-boards-net" onclick="update_boards('activate_boardnet_yunlist', 'C'); refresh_lists();">Start Network on Board</button>
+                                        <button class="button tiny radius" data-reveal-id="modal-create-net" onclick="$('#create-net-output').empty(); refresh_lists();">Create Network</button>
+                                        <button class="button tiny radius" data-reveal-id="modal-destroy-net" onclick="$('#destroy-net-output').empty(); update_nets('destroy_network_uuid'); refresh_lists();">Destroy Network</button>
+                                        <button class="button tiny radius" data-reveal-id="modal-add-board-net" onclick="$('#add-board-net-output').empty(); update_nets('addboard_network_uuid'); update_boards('addboard_yunlist', 'C'); refresh_lists();">Add Board</button>
+                                        <button class="button tiny radius" data-reveal-id="modal-remove-board-net" onclick="$('#remove-board-net-output').empty(); update_nets('removeboard_network_uuid'); update_boards('removeboard_yunlist', 'C'); refresh_lists();">Remove Board</button>
+                                        <button class="button tiny radius" data-reveal-id="modal-show-boards-net" onclick="$('#show_boards-output').empty(); update_nets('show_boards_uuid'); refresh_lists();">Show Boards</button>
+					<button class="button tiny radius" data-reveal-id="modal-activate-boards-net" onclick="$('#activate-board-net-output').empty(); update_boards('activate_boardnet_yunlist', 'C'); refresh_lists();">Start Network on Board</button>
                                 </td>
                         </tr>
                 </table>
         </td>
-        <td valign="top">
-                <div id="mapdiv" style="height: 650px; width: 550px; float:right;" ></div>
-        </td>
 </table>
 
-
-
-
-
-
-
-
-
-<!-- SSH SECTION: TBD -->
-<!--
-<table style="width:99%; margin: 0 auto">
-<td style="width:50%"></td>
-<td style="width:50%">
-	<div>
-		<object type="text/html" data="https://212.189.207.205:3000" width="100%" height="200px" style=" /*overflow:auto;border:5px ridge blue*/"></object>
-	</div>
-</td>
-</table>
-
--->
 <!-- STOP web page layout -->
 
 
@@ -170,11 +102,31 @@
                 <a class="close-reveal-modal" aria-label="Close">&#215;</a>
                 <fieldset>
                         <div class="row">
-                                <label>Plugins</label>
+				<div id="info-label"></div>
+				<div id="info-uuid"></div>
+
+				<table style="width: 100%">
+				<tr>
+					<td style="width: 50%">
+		                                <fieldset>
+        		                                <legend>Coordinates</legend>
+                		                                <div id="info-lat"></div>
+                        		                        <div id="info-lon"></div>
+                                		                <div id="info-alt"></div>
+		                                </fieldset>
+					</td>
+					<td>
+		                                <label><b>Sensors</b></label>
+                		                        <select id="sensors_on_board" multiple="multiple" size="<?=$selectbox_size?>"></select>
+					</td>
+				</tr>
+				</table>
+
+                                <label><b>Plugins</b></label>
                                         <select id="plugins_on_board" multiple="multiple" size="<?=$selectbox_size?>"></select>
 
-                                <label>Sensors</label>
-                                        <select id="sensors_on_board" multiple="multiple" size="<?=$selectbox_size?>"></select>
+                                <label><b>Drivers</b></label>
+                                        <select id="drivers_on_board" multiple="multiple" size="<?=$selectbox_size?>"></select>
                         </div>
                 </fieldset>
         </section>
@@ -191,25 +143,15 @@
                         <legend>LEDs</legend>
                         <div class="row">
                                 <label>Board List</label>
-					<select id="led_yunlist" multiple="multiple" size="<?=$selectbox_size?>">
-					</select>
-<!--
-					<? if (sizeof($yunlist_c) > 0): ?>
-                                                <select id="led_yunlist" multiple="multiple" size="<?=$selectbox_size?>">
-                                                        <? foreach ($yunlist_c as $board): ?>
-                                                                <option value="<?=$board ?>"> <?=$board?> </option>
-                                                        <? endforeach ?>
+					<select id="led_yunlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
 
-                                                </select>
-                                        <? else: ?>
-                                                NO boards connected
-                                        <? endif ?>
--->
 				<label>Select PIN (example: YUN led on pin 13)</label>
                                 <select id="pin">
+					<!--
                                         <option value="0">0</option>
                                         <option value="1">1</option>
 					<option value="...">...</option>
+					-->
 					<option value="13">13</option>
                                 </select>
 				<label>LED Status</label>
@@ -221,8 +163,7 @@
                    </fieldset>
                    <div class="row">
                     <div class="large-12 columns">
-                        <!-- <button id="led-management" class="close-reveal-modal tiny radius" style="font-size:1.0rem; color:#fff" > -->
-			<button id="led-management" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
+			<button id="led-management" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
                             Send
                         </button>
                     </div>
@@ -255,8 +196,7 @@
                    </fieldset>
                    <div class="row">
                     <div class="large-12 columns">
-                        <!-- <button id="ssh-management" class="close-reveal-modal tiny radius" style="font-size:1.0rem; color:#fff" > -->
-                        <button id="ssh-management" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
+                        <button id="ssh-management" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
                             Send
                         </button>
                     </div>
@@ -268,22 +208,6 @@
         </fieldset>
 </div>
 
-
-<div id="modal-ckan" class="reveal-modal small" data-reveal>
-        <section>
-               <h3>CKAN Redirect</h3>
-               <a class="close-reveal-modal" aria-label="Close">&#215;</a>
-			<select id="ckan-yunlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
-
-                   <div class="row">
-                    <div class="large-12 columns">
-                        <button id="ckan_button" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
-                            Open New Tab
-                        </button>
-                    </div>
-                   </div>
-        </section>
-</div>
 <!-- ####################################################################################################################################################### -->
 
 
@@ -328,7 +252,7 @@
                    </fieldset>
                    <div class="row">
                     <div class="large-12 columns">
-                        <button id="register-board" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
+                        <button id="register-board" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
                             Register
                         </button>
                     </div>
@@ -380,7 +304,7 @@
                    </fieldset>
                    <div class="row">
                     <div class="large-12 columns">
-                        <button id="update-board" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
+                        <button id="update-board" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
                             Update
                         </button>
                     </div>
@@ -401,17 +325,7 @@
                         <legend>Unregistration</legend>
                         <div class="row">
                                 <label>Board Code</label>
-<!--
-                        <? if (sizeof($yunlist_all) > 0): ?>
-                                <select id="unregistration_yunlist" multiple="multiple" size="<?=$selectbox_size?>">
-                                        <? foreach ($yunlist_all as $board): ?>
-                                                <option value="<?=$board ?>"> <?=$board?> </option>
-                                        <? endforeach ?>
-                                </select>
-                        <? else: ?>
-                                NO boards connected
-                        <? endif ?>
--->
+
 				<select id="unregister_boardlist">
                                 	<option value="--">--</option>
                                 </select>
@@ -419,7 +333,7 @@
                    </fieldset>
                    <div class="row">
                     <div class="large-12 columns">
-                        <button id="unregister-board" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
+                        <button id="unregister-board" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
                             Unregister
                         </button>
                     </div>
@@ -456,8 +370,8 @@
                    </fieldset>
                    <div class="row">
                     <div class="large-12 columns">
-                        <button id="create_driver" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
-                            Send
+                        <button id="create_driver" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+                            Create
                         </button>
                     </div>
                    </div>
@@ -469,46 +383,130 @@
 </div>
 
 
-
-
-
-
-
-
-<div id="modal-mount-umount-driver" class="reveal-modal small" data-reveal>
+<div id="modal-destroy-driver" class="reveal-modal small" data-reveal>
         <section>
-                <h3>Mount / Unmount Driver</h3>
+                <h3>Destroy Driver</h3>
                 <a class="close-reveal-modal" aria-label="Close">&#215;</a>
                    <fieldset>
                         <legend>Driver Management</legend>
                         <div class="row">
-				<label>Board List</legend>
-<!--
-					<select id="mount_umount_yunlist"></select>
--->
-					<select id="mount_umount_yunlist">
-                                                <option value="yun1">yun1</option>
-                                                <option value="yun2">yun2</option>
-                                                <option value="yun3">yun3</option>
-                                        </select>
-                                <label>Driver Name</legend>
-<!--
-                                        <select id="mount_umount_driverlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
--->
-					<!-- GESTIRE L'UPDATE !!!!! -->
-					<select id="mount_umount_driverlist" multiple="multiple" size="<?=$selectbox_size?>">
-						<option value="prova1">prova1</option>
-						<option value="prova2">prova2</option>
-						<option value="prova3">prova3</option>
-					</select>
+                                <label>Driver Name</label>
+                                        <select id="destroy_driverlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
                         </div>
                    </fieldset>
                    <div class="row">
                     <div class="large-12 columns">
-                        <button id="mount" class="button tiny radius mount_umount_driver" style="font-size:1.0rem; color:#fff; float:right;">
+                        <button id="destroy_driver" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+                            Remove
+                        </button>
+                    </div>
+                   </div>
+        </section>
+        <fieldset>
+                <legend>Output</legend>
+                <p id="destroy-driver-output" />
+        </fieldset>
+</div>
+
+
+<div id="modal-inject-driver" class="reveal-modal small" data-reveal>
+        <section>
+                <h3>Inject Driver</h3>
+                <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+                   <fieldset>
+                        <legend>Driver Management</legend>
+                        <div class="row">
+                                <label>Driver Name</label>
+                                        <select id="inject_driverlist"></select>
+
+                                <label>Board List</label>
+                                        <select id="inject_driver_yunlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+
+                                <label>Autostart</label>
+                                        <select id="inject_driver_autostart">
+                                                <option value="false">False</option>
+                                                <option value="true">True</option>
+                                        </select>
+
+                        </div>
+                   </fieldset>
+                   <div class="row">
+                    <div class="large-12 columns">
+                        <button id="inject_driver" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+                            Inject
+                        </button>
+                    </div>
+                   </div>
+        </section>
+        <fieldset>
+                <legend>Output</legend>
+                <p id="inject-driver-output" />
+        </fieldset>
+</div>
+
+
+<div id="modal-mount-driver" class="reveal-modal small" data-reveal>
+        <section>
+                <h3>Mount Driver</h3>
+                <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+                   <fieldset>
+                        <legend>Driver Management</legend>
+                        <div class="row">
+				<fieldset>
+					<legend>Resource</legend>
+						<div style="position: relative; width: 50%; overflow: auto; margin: auto; ">
+							<input type="radio" id="mount_radio_local" checked onclick="toggle_radio_mount(this);"/>Local
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" id="mount_radio_remote" onclick="toggle_radio_mount(this);"/>Remote
+						</div>
+				</fieldset>
+
+				<label>Board List (LOCAL)</label>
+					<select id="mount_yunlist"></select>
+
+				<div id="mount_div_remote">
+					<label>Board List (REMOTE)</label>
+						<select id="mount_remote_yunlist"></select>
+				</div>
+
+                                <label>Driver Name</label>
+					<select id="mount_driverlist"></select>
+
+                        </div>
+                   </fieldset>
+                   <div class="row">
+                    <div class="large-12 columns">
+                        <button id="mount_driver" class="button tiny radius mount_umount_driver" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
                             Mount
                         </button>
-                        <button id="umount" class="button tiny radius mount_umount_driver" style="font-size:1.0rem; color:#fff; float:right;">
+                    </div>
+                   </div>
+        </section>
+        <fieldset>
+                <legend>Output</legend>
+                <p id="mount-driver-output" />
+        </fieldset>
+</div>
+
+
+<div id="modal-unmount-driver" class="reveal-modal small" data-reveal>
+        <section>
+                <h3>Unmount Driver</h3>
+                <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+                   <fieldset>
+                        <legend>Driver Management</legend>
+                        <div class="row">
+                                <label>Board List</label>
+                                        <select id="unmount_yunlist"></select>
+
+                                <label>Driver Name</label>
+                                        <select id="unmount_driverlist"></select>
+
+                        </div>
+                   </fieldset>
+                   <div class="row">
+                    <div class="large-12 columns">
+                        <button id="unmount_driver" class="button tiny radius mount_umount_driver" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
                             Unmount
                         </button>
                     </div>
@@ -516,11 +514,111 @@
         </section>
         <fieldset>
                 <legend>Output</legend>
-                <p id="mount-umount-output" />
+                <p id="unmount-driver-output" />
         </fieldset>
 </div>
 
 
+<div id="modal-write-driver" class="reveal-modal small" data-reveal>
+        <section>
+                <h3>Write Driver</h3>
+                <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+                   <fieldset>
+                        <legend>Driver Management</legend>
+                        <div class="row">
+                                <label>Board List</label>
+                                        <select id="write_driver_yunlist"></select>
+
+                                <label>Driver Name</label>
+					<select id="write_driverlist"></select>
+
+                                <label>File Name</label>
+					<input id="write_filename" type="text" placeholder="File Name" name="name" value="">
+
+                                <label>File Content</label>
+                                        <textarea id="write_file_content" placeholder="Insert here the text" name="text" rows="5"></textarea>
+                        </div>
+                   </fieldset>
+                   <div class="row">
+                    <div class="large-12 columns">
+                        <button id="write_driver" class="button tiny radius mount_umount_driver" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+                            Write
+                        </button>
+                    </div>
+                   </div>
+        </section>
+        <fieldset>
+                <legend>Output</legend>
+                <p id="write-driver-output" />
+        </fieldset>
+</div>
+
+
+<div id="modal-read-driver" class="reveal-modal small" data-reveal>
+        <section>
+                <h3>Read Driver</h3>
+                <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+                   <fieldset>
+                        <legend>Driver Management</legend>
+                        <div class="row">
+                                <label>Board List</label>
+                                        <select id="read_driver_yunlist"></select>
+
+                                <label>Driver Name</label>
+                                        <select id="read_driverlist"></select>
+
+                                <label>File Name</label>
+                                        <input id="read_filename" type="text" placeholder="File Name" name="name" value="">
+
+                                <label>File Content</label>
+                                        <textarea id="read_file_content" name="text" rows="5" readonly></textarea>
+                        </div>
+                   </fieldset>
+                   <div class="row">
+                    <div class="large-12 columns">
+                        <button id="read_driver" class="button tiny radius mount_umount_driver" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+                            Read
+                        </button>
+                    </div>
+                   </div>
+        </section>
+        <fieldset>
+                <legend>Output</legend>
+                <p id="read-driver-output" />
+        </fieldset>
+</div>
+
+
+<div id="modal-remove-driver" class="reveal-modal small" data-reveal>
+        <section>
+                <h3>Remove Driver</h3>
+                <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+                <fieldset>
+                        <legend>Driver Management</legend>
+                        <div class="row">
+                                <label>Board List</label>
+                                        <select id="remove_driver_yunlist">
+                                                <option value="--">--</option>
+                                        </select>
+
+                                <label>Driver Name</label>
+                                        <select id="remove_driverlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+
+                        </div>
+                </fieldset>
+                <div class="row">
+                        <div class="large-12 columns">
+                                <button id="remove_driver" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+                                        Remove
+                                </button>
+                        </div>
+                </div>
+        </section>
+        <fieldset>
+                <legend>Output</legend>
+                <p id="remove-driver-output" />
+        </fieldset>
+</div>
 
 <!-- ####################################################################################################################################################### -->
 
@@ -552,9 +650,8 @@
                    </fieldset>
                    <div class="row">
                     <div class="large-12 columns">
-                        <!-- <button id="create_plugin" class="close-reveal-modal tiny radius" style="font-size:1.0rem; color:#fff" > -->
-			<button id="create_plugin" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
-                            Send
+			<button id="create_plugin" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+                            Create
                         </button>
                     </div>
                    </div>
@@ -579,8 +676,8 @@
                    </fieldset>
                    <div class="row">
                     <div class="large-12 columns">
-                        <button id="destroy_plugin" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
-                            Send
+                        <button id="destroy_plugin" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+                            Remove
                         </button>
                     </div>
                    </div>
@@ -599,25 +696,13 @@
                    <fieldset>
                         <legend>Plugin Management</legend>
                         <div class="row">
-                                <label>Plugin Name</legend>
-                                        <!-- <input id="inject_plugin_name" type="text" placeholder="Plugin Name" name="name" value="" /> -->
+                                <label>Plugin Name</label>
 					<select id="inject_pluginlist"></select>
                                 
-                                <label>Board List</legend>
+                                <label>Board List</label>
 					<select id="inject_yunlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
-<!--
-                                        <? if (sizeof($yunlist_c) > 0): ?>
-                                                <select id="inject_yunlist" multiple="multiple" size="<?=$selectbox_size?>">
-                                                        <? foreach ($yunlist_c as $board): ?>
-                                                                <option value="<?=$board ?>"> <?=$board?> </option>
-                                                        <? endforeach ?>
-                                                </select>
-                                        <? else: ?>
-                                                NO boards connected
-                                        <? endif ?>
--->
                                 
-				<label>Autostart</legend>
+				<label>Autostart</label>
 					<select id="inject_autostart">
 						<option value="false">False</option>
 						<option value="true">True</option>
@@ -627,9 +712,8 @@
                    </fieldset>
                    <div class="row">
                     <div class="large-12 columns">
-                        <!-- <button id="inject_plugin" class="close-reveal-modal tiny radius" style="font-size:1.0rem; color:#fff" > -->
-			<button id="inject_plugin" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
-                            Send
+			<button id="inject_plugin" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+                            Inject
                         </button>
                     </div>
                    </div>
@@ -648,34 +732,24 @@
                    <fieldset>
                         <legend>Plugin Management</legend>
                         <div class="row">
-                                <label>Plugin Name</legend>
-                                        <input id="startstop_plugin_name" type="text" placeholder="Plugin Name" name="name" value="" />
+                                <label>Plugin Name</label>
+                                        <!-- <input id="startstop_plugin_name" type="text" placeholder="Plugin Name" name="name" value="" /> -->
+                                        <select id="startstop_pluginlist"></select>
 
-                                <label>Board List</legend>
+                                <label>Board List</label>
 					<select id="startstop_yunlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
-<!--
-                                        <? if (sizeof($yunlist_c) > 0): ?>
-                                                <select id="startstop_yunlist" multiple="multiple" size="<?=$selectbox_size?>">
-                                                        <? foreach ($yunlist_c as $board): ?>
-                                                                <option value="<?=$board ?>"> <?=$board?> </option>
-                                                        <? endforeach ?>
-                                                </select>
-                                        <? else: ?>
-                                                NO boards connected
-                                        <? endif ?>
--->
-                                <label>Plugin Json [OPTIONAL if stopping]</legend>
+
+                                <label>Plugin Json [OPTIONAL if stopping]</label>
                                         <textarea id="startstop_plugin_json" placeholder="Insert here the json" name="text" rows="10"></textarea>
 
                         </div>
                    </fieldset>
                    <div class="row">
                     <div class="large-12 columns">
-                        <!-- <button id="start_plugin" class="close-reveal-modal tiny radius" style="font-size:1.0rem; color:#fff" > -->
-			<button id="start" class="button tiny radius startstop_plugin" style="font-size:1.0rem; color:#fff; float:right;">
+			<button id="start" class="button tiny radius startstop_plugin" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
                             Start
                         </button>
-			<button id="stop" class="button tiny radius startstop_plugin" style="font-size:1.0rem; color:#fff; float:right;">
+			<button id="stop" class="button tiny radius startstop_plugin" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
                             Stop
                         </button>
                     </div>
@@ -697,21 +771,12 @@
 			<legend>Plugin Management</legend>
 			<div class="row">
 				<label>Plugin Name</label>
-					<input id="call_plugin_name" type="text" placeholder="Plugin Name" name="name" value="" />
+					<!-- <input id="call_pluginlist" type="text" placeholder="Plugin Name" name="name" value="" /> -->
+					<select id="call_pluginlist"></select>
 
 				<label>Board List</label>
 					<select id="call_yunlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
-<!--
-                                        <? if (sizeof($yunlist_c) > 0): ?>
-                                                <select id="call_yunlist" multiple="multiple" size="<?=$selectbox_size?>">
-                                                        <? foreach ($yunlist_c as $board): ?>
-                                                                <option value="<?=$board ?>"> <?=$board?> </option>
-                                                        <? endforeach ?>
-                                                </select>
-                                        <? else: ?>
-                                                NO boards connected
-                                        <? endif ?>
--->
+
 				<label>Plugin Json</label>
 					<textarea id="call_plugin_json" placeholder="Insert here the json" name="text" rows="10"></textarea>
 
@@ -719,9 +784,8 @@
 		</fieldset>
 		<div class="row">
 			<div class="large-12 columns">
-				<!-- <button id="call_plugin" class="close-reveal-modal tiny radius" style="font-size:1.0rem; color:#fff" > -->
-				<button id="call_plugin" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
-					Send
+				<button id="call_plugin" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+					Exec
 				</button>
 			</div>
 		</div>
@@ -752,8 +816,8 @@
                 </fieldset>
                 <div class="row">
                         <div class="large-12 columns">
-                                <button id="remove_plugin" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
-                                        Send
+                                <button id="remove_plugin" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+                                        Remove
                                 </button>
                         </div>
                 </div>
@@ -797,9 +861,8 @@
                 </fieldset>
                 <div class="row">
                         <div class="large-12 columns">
-                                <!-- <button id="create_network" class="close-reveal-modal tiny radius" style="font-size:1.0rem; color:#fff" > -->
-				<button id="create_network" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
-                                        Send
+				<button id="create_network" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+                                        Create
                                 </button>
                         </div>
                 </div>
@@ -821,22 +884,13 @@
                         <legend>Network</legend>
                         <div class="row">
                                 <label>Network UUID</label>
-                                <!--<select id="destroy_network_uuid" multiple="multiple" size="<?=$selectbox_size?>"> -->
-				<select id="destroy_network_uuid" >
-<!--
-                                        <? foreach ($active_nets as $net): ?>
-                                        	<option value="<?=$net?>"> <?=$net?> </option>
-                                        <? endforeach ?>
--->
-                                </select>
-                                <!-- <input id="destroy_network_uuid" type="text" placeholder="Network UUID" name="name" value="" /> -->
+				<select id="destroy_network_uuid" ></select>
                         </div>
                 </fieldset>
                 <div class="row">
                         <div class="large-12 columns">
-                                <!-- <button id="destroy_network" class="close-reveal-modal tiny radius" style="font-size:1.0rem; color:#fff" > -->
-				<button id="destroy_network" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
-                                        Send
+				<button id="destroy_network" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+                                        Remove
                                 </button>
                         </div>
                 </div>
@@ -857,26 +911,10 @@
                         <legend>Add board</legend>
                         <div class="row">
                                 <label>Network UUID</label>
-	                                <!-- <select id="addboard_network_uuid" size="<?=$selectbox_size?>"> -->
-					<select id="addboard_network_uuid">
-<!--
-        	                                <? foreach ($active_nets as $net): ?>
-                	                                <option value="<?=$net?>"> <?=$net?> </option>
-                        	                <? endforeach ?>
--->
-	                                </select>
-        	                        <!-- <input id="addboard_network_uuid" type="text" placeholder="Network UUID" name="name" value="" /> -->
+					<select id="addboard_network_uuid"></select>
 
                                 <label>Board</label>
-                                        <? if (sizeof($yunlist_c) > 0): ?>
-                                                <select id="addboard_yunlist">
-                                                        <? foreach ($yunlist_c as $board): ?>
-                                                                <option value="<?=$board ?>"> <?=$board?> </option>
-                                                        <? endforeach ?>
-                                                </select>
-                                        <? else: ?>
-                                                NO boards connected
-                                        <? endif ?>
+					<select id="addboard_yunlist"></select>
 
                                 <label>IP Address [OPTIONAL]</label>
                                         <input id="addboard_network_ip" type="text" placeholder="IP Address (Example: 192.168.10.10)" name="ip" value="" />
@@ -884,9 +922,8 @@
                 </fieldset>
                 <div class="row">
                         <div class="large-12 columns">
-                                <!-- <button id="addboard_network" class="close-reveal-modal tiny radius" style="font-size:1.0rem; color:#fff" > -->
-				<button id="addboard_network" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
-                                        Send
+				<button id="addboard_network" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+                                        Add
                                 </button>
                         </div>
                 </div>
@@ -906,36 +943,16 @@
                         <legend>Remove board</legend>
                         <div class="row">
                                 <label>Network UUID</label>
-                                <!-- <select id="removeboard_network_uuid" size="<?=$selectbox_size?>"> -->
-				<select id="removeboard_network_uuid">
-<!--
-                                        <? foreach ($active_nets as $net): ?>
-                                                <option value="<?=$net?>"> <?=$net?> </option>
-                                        <? endforeach ?>
--->
-                                </select>
-                                <!-- <input id="removeboard_network_uuid" type="text" placeholder="Network UUID" name="name" value="" /> -->
+				<select id="removeboard_network_uuid"></select>
 
                                 <label>Board</label>
 					<select id="removeboard_yunlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
-<!--
-                                        <? if (sizeof($yunlist_c) > 0): ?>
-						<select id="removeboard_yunlist" multiple="multiple" size="<?=$selectbox_size?>">
-                                                        <? foreach ($yunlist_c as $board): ?>
-                                                                <option value="<?=$board ?>"> <?=$board?> </option>
-                                                        <? endforeach ?>
-                                                </select>
-                                        <? else: ?>
-                                                NO boards connected
-                                        <? endif ?>
--->
                         </div>
                 </fieldset>
                 <div class="row">
                         <div class="large-12 columns">
-                                <!-- <button id="removeboard_network" class="close-reveal-modal tiny radius" style="font-size:1.0rem; color:#fff" > -->
-				<button id="removeboard_network" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
-                                        Send
+				<button id="removeboard_network" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+                                        Remove
                                 </button>
                         </div>
                 </div>
@@ -954,24 +971,15 @@
                 <fieldset>
                         <legend>Network</legend>
                         <div class="row">
-                                <label>Network UUID</legend>
-                                <!-- <select id="show_boards_uuid" size="<?=$selectbox_size?>"> -->
-				<select id="show_boards_uuid">
-<!--
-                                        <? foreach ($active_nets as $net): ?>
-                                                <option value="<?=$net?>"> <?=$net?> </option>
-                                        <? endforeach ?>
--->
-                                </select>
+                                <label>Network UUID</label>
+				<select id="show_boards_uuid"></select>
 
-                                <!-- <input id="show_boards_uuid" type="text" placeholder="Network UUID" name="name" value="" /> -->
                         </div>
                 </fieldset>
                 <div class="row">
                         <div class="large-12 columns">
-                                <!-- <button id="show_boards" class="close-reveal-modal tiny radius" style="font-size:1.0rem; color:#fff" > -->
-				<button id="show_boards" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
-                                        Send
+				<button id="show_boards" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+                                        Show
                                 </button>
                         </div>
                 </div>
@@ -997,8 +1005,8 @@
                 </fieldset>
                 <div class="row">
                         <div class="large-12 columns">
-                                <button id="activate_boardnet_network" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;">
-                                        Send
+                                <button id="activate_boardnet_network" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+                                        Activate
                                 </button>
                         </div>
                 </div>
@@ -1016,6 +1024,8 @@
 <!-- START script section -->
 <script>
 	var delay = 2000;
+	//var ckan_organization = "SmartMe";
+	var ckan_organization = "MDSLAB";
 
 	function uuid(){
 		return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
@@ -1025,6 +1035,70 @@
 		var id = (uuid() + uuid() + "-" + uuid() + "-" + uuid() + "-" + uuid() + "-" + uuid() + uuid() + uuid());//.toUpperCase();
 		$('#registration_name').val(id);
 	}
+
+	function SortByLabel(x,y) {
+		return ((x.label == y.label) ? 0 : ((x.label > y.label) ? 1 : -1 ));
+	}
+
+        function SortByName(x,y) {
+                return ((x.name == y.name) ? 0 : ((x.name > y.name) ? 1 : -1 ));
+        }
+
+        function SortByType(x,y) {
+                return ((x.type == y.type) ? 0 : ((x.type > y.type) ? 1 : -1 ));
+        }
+
+	function SortByVlanName(x,y) {
+		return ((x.vlan_name == y.vlan_name) ? 0 : ((x.vlan_name > y.vlan_name) ? 1 : -1 ));
+	}
+
+        function toggle_radio_mount(val){
+                if ( val && (val.id == 'mount_radio_remote') ){
+                        $('#mount_radio_local').removeAttr('checked');
+                        $('#mount_div_remote').show();
+
+			update_remote_yunlist('mount_yunlist', 'mount_remote_yunlist');
+		}
+                
+                else {
+                        $('#mount_radio_remote').removeAttr('checked');
+                        $('#mount_div_remote').hide();
+
+			if(!val)
+				$('#mount_radio_local').prop('checked', true);
+                }
+        }
+
+
+	//Copy all options from a select to another except the one selected!
+	function update_remote_yunlist(from, to){
+
+		$("#"+to).html( $("#"+from).html() );
+
+		var board_value = $( "#"+from+" option:selected" ).val();
+
+		var remote_yunlist = document.getElementById(to);
+		for (var i=0; i<remote_yunlist.length; i++){
+			if (remote_yunlist.options[i].value == board_value ){
+				remote_yunlist.remove(i);
+			}
+		}
+	}
+
+
+	function loading(){
+		var loader_pathfile = '<?php echo $this -> config -> site_url(); ?>uploads/ajax-loader.gif';
+		//document.getElementById('loading_bar').style.visibility='visible';
+		document.getElementById('loading_bar').style.width='100%';
+		document.getElementById('loading_bar').style.height='100%';
+		document.getElementById('loading_bar').style.position='fixed';//'absolute';//'fixed';
+		document.getElementById('loading_bar').style.top='0';
+		document.getElementById('loading_bar').style.left='0';
+		document.getElementById('loading_bar').style.zIndex='9999';
+		document.getElementById('loading_bar').style.background="url('"+loader_pathfile+"') no-repeat center center rgba(0,0,0,0.25)";
+		//setTimeout(function(){document.getElementById('loading_bar').style.visibility='hidden';},3000);
+	}
+
 
 	function sensor_list(){
 		$('#registration_sensor_list').empty();
@@ -1049,9 +1123,10 @@
 	}
 
 
-        function populate_plugins_and_sensors(data){
+        function populate_plugins_sensors_and_drivers(data){
                 $('#plugins_on_board').empty();
                 $('#sensors_on_board').empty();
+		$('#drivers_on_board').empty();
 
                 var select = document.getElementById(data);
                 if(data == "yunlist_c")
@@ -1061,7 +1136,69 @@
                 //alert(select.options[select.selectedIndex].value);
 
                 if (select.selectedIndex != null){
-			
+			$.ajax({
+				url: '<?= $this -> config -> site_url()?>Last/board_info',
+				type: 'GET',
+				dataType: 'json',
+				data: {board: select.options[select.selectedIndex].value},
+				contentType: 'application/json',
+				success: function(response){
+					$('#info-label').html('<center><b>Label: </b>'+response.message.info[0].label+'</center>');
+					$('#info-uuid').html('<center><b>UUID: </b>'+response.message.info[0].board_code+'</center>');
+					$('#info-lat').text('Latitude: '+response.message.info[0].latitude);
+					$('#info-lon').text('Longitude: '+response.message.info[0].longitude);
+					$('#info-alt').text('Altitude: '+response.message.info[0].altitude);
+
+
+					$.ajax({
+						url: '<?= $this -> config -> site_url()?>Last/board_layout',
+						type: 'GET',
+						dataType: 'json',
+						data: {board: select.options[select.selectedIndex].value},
+						contentType: 'application/json',
+						success: function(response){
+
+							//Sensors
+							if(response.message.sensors.length == 0)
+								$('#sensors_on_board').append('<option>NO sensors installed</option>');
+							else{
+								response.message.sensors = response.message.sensors.sort(SortByType);
+								for(i=0; i<response.message.sensors.length; i++)
+									$('#sensors_on_board').append('<option>'+response.message.sensors[i].type+'</option>');
+							}
+
+							//Plugins               
+							if(response.message.plugins.length == 0)
+								$('#plugins_on_board').append('<option>NO plugin injected or running</option>');
+							else{
+								response.message.plugins = response.message.plugins.sort(SortByName);
+								for(i=0; i<response.message.plugins.length; i++)
+									$('#plugins_on_board').append('<option>'+response.message.plugins[i].name+' [STATUS: '+response.message.plugins[i].state+'; CAT: '+response.message.plugins[i].category+']</option>');
+							}
+
+							//Drivers
+							if(response.message.drivers.length == 0)
+								$('#drivers_on_board').append('<option>NO drivers mounted</option>');
+							else{
+								response.message.drivers = response.message.drivers.sort(SortByName);
+								for(i=0; i<response.message.drivers.length; i++)
+									$('#drivers_on_board').append('<option>'+response.message.drivers[i].name+' [STATUS: '+response.message.drivers[i].state+']</option>');
+							}
+
+						},
+						error: function(response){
+							//alert('ERROR: '+JSON.stringify(response));
+						}
+					});
+
+
+				},
+				error: function(response){
+					//alert('ERROR: '+JSON.stringify(response));
+				}
+			});
+
+			/*
 			$.ajax({
 				url: '<?= $this -> config -> site_url()?>Last/board_layout',
 				type: 'GET',
@@ -1071,20 +1208,31 @@
 				success: function(response){
 
 
+                                        //Sensors
+                                        if(response.message.sensors.length == 0)
+                                                $('#sensors_on_board').append('<option>NO sensors installed</option>');
+                                        else{
+						response.message.sensors = response.message.sensors.sort(SortByType);
+                                                for(i=0; i<response.message.sensors.length; i++)
+                                                        $('#sensors_on_board').append('<option>'+response.message.sensors[i].type+'</option>');
+                                        }
+
 					//Plugins		
 					if(response.message.plugins.length == 0)
 						$('#plugins_on_board').append('<option>NO plugin injected or running</option>');
 					else{
+						response.message.plugins = response.message.plugins.sort(SortByName);
 						for(i=0; i<response.message.plugins.length; i++)
-							$('#plugins_on_board').append('<option>'+response.message.plugins[i].name+' [STATUS: '+response.message.plugins[i].state+']</option>');
+							$('#plugins_on_board').append('<option>'+response.message.plugins[i].name+' [STATUS: '+response.message.plugins[i].state+'; CAT: '+response.message.plugins[i].category+']</option>');
 					}
 
-					//Sensors
-                                        if(response.message.sensors.length == 0)
-                                                $('#sensors_on_board').append('<option>NO sensors installed</option>');
+					//Drivers
+                                        if(response.message.drivers.length == 0)
+                                                $('#drivers_on_board').append('<option>NO drivers mounted</option>');
                                         else{
-                                                for(i=0; i<response.message.sensors.length; i++)
-                                                        $('#sensors_on_board').append('<option>'+response.message.sensors[i].type+'</option>');
+						response.message.drivers = response.message.drivers.sort(SortByName);
+                                                for(i=0; i<response.message.drivers.length; i++)
+                                                        $('#drivers_on_board').append('<option>'+response.message.drivers[i].name+' [STATUS: '+response.message.drivers[i].state+']</option>');
                                         }
 
 				},
@@ -1092,6 +1240,7 @@
 					//alert('ERROR: '+JSON.stringify(response));
 				}
 			});
+			*/
                 }
         }
 
@@ -1116,28 +1265,52 @@
                 	                $('#update_sensor_list').empty();
                         	        document.getElementById("board-update-output").innerHTML ='';
 				}
-				if(select_id == 'remove_plugin_yunlist')
+				else if(select_id == 'remove_plugin_yunlist')
 					$('#'+select_id).append('<option title="--" value="--" data-unit="">--</option>');
+
+				response.list = response.list.sort(SortByLabel);
 
 				for(var i=0; i<response.list.length; i++){
 					if(status == "C"){
 						if(response.list[i].status == "C")
-							$('#'+select_id).append('<option title="'+response.list[i].board_code+'" value="'+response.list[i].board_code+'" data-unit="">'+response.list[i].board_code+'</option>');
+							$('#'+select_id).append('<option title="'+response.list[i].board_code+'" value="'+response.list[i].board_code+'" data-unit="">'+response.list[i].label+'</option>');
 					}
 					else if(status == "D"){
 						if(response.list[i].status == "D")
-							$('#'+select_id).append('<option title="'+response.list[i].board_code+'" value="'+response.list[i].board_code+'" data-unit="">'+response.list[i].board_code+'</option>');
+							$('#'+select_id).append('<option title="'+response.list[i].board_code+'" value="'+response.list[i].board_code+'" data-unit="">'+response.list[i].label+'</option>');
 					}
 					else
-						$('#'+select_id).append('<option title="'+response.list[i].board_code+'" value="'+response.list[i].board_code+'" data-unit="">'+response.list[i].board_code+'</option>');
+						$('#'+select_id).append('<option title="'+response.list[i].board_code+'" value="'+response.list[i].board_code+'" data-unit="">'+response.list[i].label +' ( '+response.list[i].board_code+' )</option>');
 				}
+
+
+				if(select_id == 'mount_yunlist'){
+					var board_id = $( "#mount_yunlist option:selected" ).val();
+		                        refresh_localboard_drivers(board_id, "mount");
+				}
+                                else if(select_id == 'unmount_yunlist'){
+                                        var board_id = $( "#unmount_yunlist option:selected" ).val();
+                                        refresh_localboard_drivers(board_id, "unmount");
+                                }
+                                else if(select_id == 'write_driver_yunlist'){
+                                        var board_id = $( "#write_driver_yunlist option:selected" ).val();
+                                        refresh_localboard_drivers(board_id, "write");
+                                }
+                                else if(select_id == 'read_driver_yunlist'){
+                                        var board_id = $( "#read_driver_yunlist option:selected" ).val();
+                                        refresh_localboard_drivers(board_id, "read");
+                                }
+                                else if(select_id == 'remove_driver_yunlist'){
+                                        var board_id = $( "#remove_driver_yunlist option:selected" ).val();
+                                        refresh_localboard_drivers(board_id, "remove");
+                                }
+
 			},
 			error: function(response){
 				//alert('ERROR: '+JSON.stringify(response));
 			}
 		}); 
 	}
-
 
         $('[id="update_yunlist"]').on('change',
                 function() {
@@ -1220,12 +1393,24 @@
 				$('#yunlist_c').empty();
 				$('#yunlist_d').empty();
 				//alert(response.list);
+
+				var connected_count = 0;
+				var disconnected_count = 0;
+
+				response.list = response.list.sort(SortByLabel);
+
 				for(var i=0; i<response.list.length; i++){
-					if(response.list[i].status == "C")
-						$('#yunlist_c').append('<option title="'+response.list[i].board_code+'" value="'+response.list[i].board_code+'" data-unit="">'+response.list[i].board_code+'</option>');
-					else if(response.list[i].status == "D")
-						$('#yunlist_d').append('<option title="'+response.list[i].board_code+'" value="'+response.list[i].board_code+'" data-unit="">'+response.list[i].board_code+'</option>');
+					if(response.list[i].status == "C"){
+                                                $('#yunlist_c').append('<option title="'+response.list[i].board_code+'" value="'+response.list[i].board_code+'" data-unit="">'+response.list[i].label+'</option>');
+						connected_count += 1;
+					}
+                                        else if(response.list[i].status == "D"){
+                                                $('#yunlist_d').append('<option title="'+response.list[i].board_code+'" value="'+response.list[i].board_code+'" data-unit="">'+response.list[i].label+'</option>');
+						disconnected_count += 1;
+					}
 				}
+				document.getElementById("count-connected").innerHTML ='<h3>Connected ( '+connected_count+' )</h3>';
+				document.getElementById("count-disconnected").innerHTML ='<h3>Disconnected ( '+disconnected_count+' )</h3>';
 			},
 			error: function(response){
 				//alert('ERROR: '+JSON.stringify(response));
@@ -1244,6 +1429,7 @@
 			contentType: 'application/json',
 			success: function(response){
 				$('#'+select_id).empty();
+				response.result = response.result.sort(SortByVlanName);
 				for(var i=0; i<response.result.length; i++)
 					$('#'+select_id).append('<option title="'+response.result[i].uuid+'" value="'+response.result[i].uuid+'" data-unit="">'+response.result[i].vlan_name+':'+response.result[i].uuid+'</option>');
 			},
@@ -1258,9 +1444,61 @@
 
 	$('[data-reveal-id="modal-plugins_sensors-lists"]').on('click',
 	        function() {
-	                populate_plugins_and_sensors($(this).data('yunlistSelected'));
+	                populate_plugins_sensors_and_drivers($(this).data('yunlistSelected'));
 	        }
 	);
+
+
+        $('[data-reveal-id="modal-mount-driver"]').on('click',
+                function() {
+			toggle_radio_mount();
+                }
+        );
+
+	$('[id="mount_yunlist"]').on('change',
+		function() {
+			var radio = document.getElementById('mount_radio_remote');
+			if(radio.checked) update_remote_yunlist('mount_yunlist', 'mount_remote_yunlist');
+
+			var board_id = $( "#mount_yunlist option:selected" ).val();
+			refresh_localboard_drivers(board_id, "mount");
+
+		}
+	);
+
+        $('[id="unmount_yunlist"]').on('change',
+                function() {
+                        var board_id = $( "#unmount_yunlist option:selected" ).val();
+                        refresh_localboard_drivers(board_id, "unmount");
+
+                }
+        );
+
+
+        $('[id="write_driver_yunlist"]').on('change',
+                function() {
+                        var board_id = $( "#write_driver_yunlist option:selected" ).val();
+                        refresh_localboard_drivers(board_id, "write");
+
+                }
+        );
+
+        $('[id="read_driver_yunlist"]').on('change',
+                function() {
+                        var board_id = $( "#read_driver_yunlist option:selected" ).val();
+                        refresh_localboard_drivers(board_id, "read");
+
+                }
+        );
+
+        $('[id="remove_driver_yunlist"]').on('change',
+                function() {
+                        var board_id = $( "#remove_driver_yunlist option:selected" ).val();
+                        refresh_localboard_drivers(board_id, "remove");
+
+                }
+        );
+
 
 
 	$('[id="remove_plugin_yunlist"]').on('change',	
@@ -1284,8 +1522,10 @@
                                         	if(response.message.plugins.length == 0)
                                                 	$('#remove_pluginlist').append('<option>NO plugin injected or running</option>');
 	                                        else{
-        	                                        for(i=0; i<response.message.plugins.length; i++)
+        	                                        for(i=0; i<response.message.plugins.length; i++){
+								response.message.plugins = response.message.plugins.sort(SortByName);
                 	                                        $('#remove_pluginlist').append('<option value="'+response.message.plugins[i].name+'">'+response.message.plugins[i].name+' [STATUS: '+response.message.plugins[i].state+']</option>');
+							}
                         	                }
 
 	                                },
@@ -1297,6 +1537,79 @@
 			}
 		}
 	);
+
+
+        function refresh_cloud_drivers(select_id){
+                $('#'+select_id).empty();
+                $.ajax({
+                        url: '<?= $this -> config -> site_url()?>Last/cloud_driver_list',
+                        type: 'GET',
+                        dataType: 'json',
+                        data: {},
+                        contentType: 'application/json',
+                        success: function(response){
+
+                                if(response.message.length == 0)
+                                        $('#'+select_id).append('<option>NO driver injected or running</option>');
+                                else{
+                                        for(i=0; i<response.message.length; i++){
+						response.message = response.message.sort(SortByName);
+                                                $('#'+select_id).append('<option value="'+response.message[i].name+'">'+response.message[i].name+'</option>');
+					}
+                                }
+
+                        },
+                        error: function(response){
+                                //alert('ERROR: '+JSON.stringify(response));
+                        }
+                        
+                });
+        }
+
+
+	//function refresh_localboard_drivers(board_id, mount_unmount){
+	function refresh_localboard_drivers(board_id, select){
+                $.ajax({
+                        url: '<?= $this -> config -> site_url()?>Last/board_driverlist',
+                        type: 'GET',
+                        dataType: 'json',
+                        data: {board: board_id},
+                        contentType: 'application/json',
+                        success: function(response){
+
+                                $('#'+select+'_driverlist').empty();
+                                if(response.message.length == 0)
+                                        $('#'+select+'_driverlist').append('<option value="nodriver">NO driver</option>');
+                                else{
+					response.message = response.message.sort(SortByName);
+                                        for(i=0; i<response.message.length; i++){
+						//Write driver
+						if(select == "write" || select == "read") {
+							if(response.message[i].state == "mounted")
+		                                                $('#'+select+'_driverlist').append('<option value="'+response.message[i].name+'">'+response.message[i].name+'</option>');
+						}
+						//Others...
+						else
+							$('#'+select+'_driverlist').append('<option value="'+response.message[i].name+'">'+response.message[i].name+'</option>');
+					}
+                                }
+
+				/*
+                                $('#'+mount_unmount+'_driverlist').empty();
+                                if(response.message.length == 0)
+                                        $('#'+mount_unmount+'_driverlist').append('<option value="nodriver">NO driver</option>');
+                                else{
+                                        for(i=0; i<response.message.length; i++)
+                                                $('#'+mount_unmount+'_driverlist').append('<option value="'+response.message[i].name+'">'+response.message[i].name+'</option>');
+                                }
+				*/
+                        },
+                        error: function(response){
+                                //alert('ERROR: '+JSON.stringify(response));
+                        }
+                        
+                });
+	}
 
 
 	function refresh_cloud_plugins(select_id){
@@ -1312,8 +1625,19 @@
                                 if(response.message.length == 0)
                                         $('#'+select_id).append('<option>NO plugin injected or running</option>');
                                 else{
-                                        for(i=0; i<response.message.length; i++)
-                                                $('#'+select_id).append('<option value="'+response.message[i].name+'">'+response.message[i].name+'</option>');
+					var type = select_id.split("_");
+					response.message = response.message.sort(SortByName);
+                                        for(i=0; i<response.message.length; i++){
+						if(type[0] == "startstop" || type[0] == "call"){
+							if(type[0] == "startstop" && response.message[i].category =="async")
+		                                                $('#'+select_id).append('<option value="'+response.message[i].name+'">'+response.message[i].name+' [CAT: '+response.message[i].category+']</option>');
+						
+							else if(type[0] == "call" && response.message[i].category =="sync")
+								$('#'+select_id).append('<option value="'+response.message[i].name+'">'+response.message[i].name+' [CAT: '+response.message[i].category+']</option>');
+						}
+						else
+							$('#'+select_id).append('<option value="'+response.message[i].name+'">'+response.message[i].name+' [CAT: '+response.message[i].category+']</option>');
+					}
                                 }
 
                         },
@@ -1349,13 +1673,15 @@
 									//BOARD MANAGEMENT
 	// #############################################################################################################################################
         $('#led-management').click(function(){
+
                 if ($('#led_yunlist option:selected').length == 0) { alert('Select a Board'); }
                 else {
+			//document.getElementById('loading_bar').style.visibility='visible';
                         var list = document.getElementById("led_yunlist");
 			var led_action = $( "#led-action option:selected" ).val();
 			var pin = $( "#pin option:selected" ).val(); //ON YUN IS '13'
                         document.getElementById("led-output").innerHTML ='';
-
+//board_id = 14144545;
 			var selected_list = [];
                         for(var i=0; i< list.length; i++){
                                 if (list.options[i].selected)
@@ -1367,6 +1693,7 @@
                                 (function(i){
                                         setTimeout(function(){
                                 //---------------------------------------------------------------------------------
+
                                                 var board_id = selected_list[i];
                                                 $.ajax({
                                                         url: '<?= $this -> config -> site_url()?>Last/led_management',
@@ -1376,10 +1703,12 @@
                                                         contentType: 'application/json',
                                                         success: function(response){
                                                                 //alert(JSON.stringify(response));
-                                                                document.getElementById("led-output").innerHTML += board_id +': '+JSON.stringify(response.result) +'<br />'; 
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+                                                                document.getElementById("led-output").innerHTML += board_id +': '+JSON.stringify(response.result) +'<br />';
                                                         },
                                                         error: function(response){
                                                                 //alert(JSON.stringify(response));
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
                                                                 document.getElementById("led-output").innerHTML += board_id +': '+JSON.stringify(response.result) +'<br />';
                                                         }
                                                 });
@@ -1388,7 +1717,6 @@
                                 })(i);
                                 //---------------------------------------------------------------------------------
                         }
-
                 } //end else
         });
 
@@ -1396,6 +1724,7 @@
         $('#ssh-management').click(function(){
                 if ($('#ssh_yunlist option:selected').length == 0) { alert('Select a Board'); }
                 else {
+			//document.getElementById('loading_bar').style.visibility='visible';
                         var list = document.getElementById("ssh_yunlist");
                         var ssh_action = $( "#ssh-action option:selected" ).val();
                         document.getElementById("ssh-output").innerHTML ='';
@@ -1420,11 +1749,13 @@
                                                         contentType: 'application/json',
                                                         success: function(response){
                                                                 //alert(JSON.stringify(response));
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
 								document.getElementById("ssh-output").innerHTML += board_id +': <pre>'+JSON.stringify(response,null,"\t")+'</pre>'; 
                                                         },
                                                         error: function(response){
                                                                 //alert(JSON.stringify(response));
                                                                 //document.getElementById("ssh-output").innerHTML += board_id +': '+JSON.stringify(response) +'<br />';
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
 								document.getElementById("ssh-output").innerHTML += board_id +': <pre>'+JSON.stringify(response,null,"\t")+'</pre>';
                                                         }
                                                 });
@@ -1437,33 +1768,6 @@
                 } //end else
         });
 
-
-        $('#ckan_button').click(function(){
-                if ($('#ckan-yunlist option:selected').length == 0) { alert('Select at least a Board'); }
-                else {
-                        var list = document.getElementById("ckan-yunlist");
-
-                        var selected_list = [];
-                        for(var i=0; i< list.length; i++){
-                                if (list.options[i].selected)
-                                        selected_list.push(list[i].value);
-                        }
-
-                        for(var i=0; i< selected_list.length; i++){
-                                //---------------------------------------------------------------------------------
-                                (function(i){
-                                        setTimeout(function(){
-                                //---------------------------------------------------------------------------------
-                                                var board_id = selected_list[i];
-                                                window.open('http://smartme-data.unime.it/dataset/'+board_id);
-                                //---------------------------------------------------------------------------------
-                                        },100*i);
-                                })(i);
-                                //---------------------------------------------------------------------------------
-                        }
-
-                } //end else
-        });
 	// #############################################################################################################################################
 
 
@@ -1471,6 +1775,7 @@
 	// #############################################################################################################################################
 	$('#register-board').click(function(){
 
+		//document.getElementById('loading_bar').style.visibility='visible';
 		var list = document.getElementsByClassName("register_sensor_list");
 		var sensors ="";
 		var count = 0;
@@ -1495,6 +1800,7 @@
 		var altitude = document.getElementById("registration_altitude").value;
 
 		var net_enabled = document.getElementById("registration_net_enabled").value;
+		//var ckan_enabled = document.getElementById("registration_ckan_enabled").value;
 
 
 		document.getElementById("board-registration-output").innerHTML ='';
@@ -1503,15 +1809,17 @@
                         url: '<?= $this -> config -> site_url()?>Last/register_board',
                         type: 'GET',
                         dataType: 'json',
-                        //data: {board_id: board_id, latitude: latitude, longitude: longitude, altitude: altitude},
+			//data: {board_id: board_id, label: label, latitude: latitude, longitude: longitude, altitude: altitude, net_enabled: net_enabled, ckan_enabled: ckan_enabled, sensors_list: sensors},
 			data: {board_id: board_id, label: label, latitude: latitude, longitude: longitude, altitude: altitude, net_enabled: net_enabled, sensors_list: sensors},
                         contentType: 'application/json',
                         success: function(response){
+				document.getElementById('loading_bar').style.visibility='hidden';
                                 document.getElementById("board-registration-output").innerHTML = '<pre>'+board_id+': '+JSON.stringify(response.result) +'</pre>';
 				refresh_lists();
                         },
                         error: function(response){
                                 //alert(JSON.stringify(response));
+				document.getElementById('loading_bar').style.visibility='hidden';
                                 document.getElementById("board-registration-output").innerHTML = '<pre>'+board_id+': '+JSON.stringify(response.result) +'</pre>';
                         }
                 });
@@ -1547,7 +1855,7 @@
 			alert('Select a Board');
 		}
 		else{
-
+			//document.getElementById('loading_bar').style.visibility='visible';
 			var label = document.getElementById("update_label").value;
 	                var latitude = document.getElementById("update_latitude").value;
         	        var longitude = document.getElementById("update_longitude").value;
@@ -1564,11 +1872,13 @@
                         	data: {board_id: board_id, label: label, latitude: latitude, longitude: longitude, altitude: altitude, net_enabled: net_enabled, sensors_list: sensors},
 	                        contentType: 'application/json',
         	                success: function(response){
+					document.getElementById('loading_bar').style.visibility='hidden';
                 	                document.getElementById("board-update-output").innerHTML = '<pre>'+board_id+': '+JSON.stringify(response.result) +'</pre>';
 					refresh_lists();
 	                        },
         	                error: function(response){
                 	                //alert(JSON.stringify(response));
+					document.getElementById('loading_bar').style.visibility='hidden';
 	                                document.getElementById("board-update-output").innerHTML = '<pre>'+board_id+': '+JSON.stringify(response.result) +'</pre>';
         	                }
 	                });
@@ -1579,6 +1889,7 @@
         $('#unregister-board').click(function(){
 		if ($('#unregister_boardlist option:selected').length == 0) { alert('Select at least a Board'); }
 		else{
+			//document.getElementById('loading_bar').style.visibility='visible';
 	                var list = document.getElementById("unregister_boardlist");
         	        document.getElementById("board-unregistration-output").innerHTML ='';
 
@@ -1601,10 +1912,15 @@
 				                        data: {board_id: board_id},
 				                        contentType: 'application/json',
 				                        success: function(response){
+								if(i==selected_list.length-1) {
+									document.getElementById('loading_bar').style.visibility='hidden';
+									refresh_lists();
+								}
                                 				document.getElementById("board-unregistration-output").innerHTML += '<pre>'+board_id+': '+JSON.stringify(response.result) +'</pre>';
 				                        },
 				                        error: function(response){
                                 				//alert(JSON.stringify(response));
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
 				                                document.getElementById("board-unregistration-output").innerHTML += '<pre>'+board_id+': '+JSON.stringify(response.result) +'</pre>';
 				                        }
 				                });
@@ -1622,7 +1938,7 @@
 									// DRIVER MANAGEMENT
 	// #############################################################################################################################################
         $('#create_driver').click(function(){
-
+		//document.getElementById('loading_bar').style.visibility='visible';
                 var driver_name = document.getElementById("create_driver_name").value;
                 var driver_json = document.getElementById("create_driver_json").value;
                 var driver_code = document.getElementById("create_driver_code").value;
@@ -1635,81 +1951,51 @@
                         data: {driver_name : driver_name, driver_json: driver_json, driver_code: driver_code},
                         contentType: 'application/json',
                         success: function(response){
-                                //alert(JSON.stringify(response));
-                                //document.getElementById("output").innerHTML = JSON.stringify(response);
-                                document.getElementById("create-driver-output").innerHTML = '<pre>'+plugin_name+': <br />'+JSON.stringify(response) +'</pre>';
+				document.getElementById('loading_bar').style.visibility='hidden';
+                                document.getElementById("create-driver-output").innerHTML = '<pre>'+driver_name+': <br />'+JSON.stringify(response) +'</pre>';
                         },
                         error: function(response){
-                                //alert(JSON.stringify(response));
-                                //document.getElementById("output").innerHTML = response.responseText;
-                                document.getElementById("create-driver-output").innerHTML = '<pre>'+plugin_name+': <br />'+JSON.stringify(response) +'</pre>';
+				document.getElementById('loading_bar').style.visibility='hidden';
+                                document.getElementById("create-driver-output").innerHTML = '<pre>'+driver_name+': <br />'+JSON.stringify(response) +'</pre>';
                         }
                 });
         });
 
-/*
-        function readDriverFile(evt) {
-                //Retrieve the first (and only!) File from the FileList object
-                var f = evt.target.files[0]; 
 
-                if (f) {
-                        var r = new FileReader();
-                        r.onload = function(e) { 
-                                var contents = e.target.result;
-                                //alert('contents: '+contents);
-                                //document.getElementById("create_driver_code").innerHTML = contents;
-				document.getElementById(evt.target.element_id).innerHTML = contents;
-                        }
-                        r.readAsText(f);
-                }
-                else { alert("Failed to load file"); }
-        }
-*/
-        document.getElementById('driver_userfile').addEventListener('change', readFile, false);
-	document.getElementById('driver_userfile').element_id = "create_driver_code";
+        $('#destroy_driver').click(function(){
+                if($('#destroy_driverlist option:selected').length == 0) { alert('Select a Driver'); }
+                else{
+                        //document.getElementById('loading_bar').style.visibility='visible';
+                        var list = document.getElementById("destroy_driverlist");
+                        document.getElementById("destroy-driver-output").innerHTML ='';
 
-
-	/*
-        $('#inject_plugin').click(function(){
-
-                if ($('#inject_yunlist option:selected').length == 0) { alert('Select a Board'); }
-                else {
-                        var list = document.getElementById("inject_yunlist");
                         var selected_list = [];
-                        var output_string = '';
 
-                        document.getElementById("inject-plugin-output").innerHTML ='';
-                        var plugin_name = document.getElementById("inject_plugin_name").value;
-                        var inject_autostart = document.getElementById("inject_autostart").value;
-
-                        //for(var i=0; i<$('#inject_yunlist option:selected').length; i++){
                         for(var i=0; i< list.length; i++){
                                 if (list.options[i].selected)
                                         selected_list.push(list[i].value);
                         }
 
                         for(var i=0; i< selected_list.length; i++){
-                                //---------------------------------------------------------------------------------             
+                                //---------------------------------------------------------------------------------
                                 (function(i){
                                         setTimeout(function(){
                                 //---------------------------------------------------------------------------------
-                                                var board_id = selected_list[i];
+                                                var driver_name = selected_list[i];
+
                                                 $.ajax({
-                                                        url: '<?= $this -> config -> site_url()?>Last/inject_plugin',
+                                                        url: '<?= $this -> config -> site_url()?>Last/destroy_driver',
                                                         type: 'GET',
                                                         dataType: 'json',
-                                                        data: {plugin_name : plugin_name, board: board_id, inject_autostart: inject_autostart},
+                                                        data: {driver_name : driver_name},
                                                         contentType: 'application/json',
                                                         success: function(response){
-                                                                //alert(JSON.stringify(response));
-                                                                //document.getElementById("output").innerHTML += board_id +': '+JSON.stringify(response) +'<br />';
-                                                                document.getElementById("inject-plugin-output").innerHTML += plugin_name+': '+JSON.stringify(response) +'<br />';
+                                                                if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+                                                                document.getElementById("destroy-driver-output").innerHTML += driver_name+': '+JSON.stringify(response.result) +'<br />';
                                                         },
                                                         error: function(response){
-                                                                //alert(JSON.stringify(response));
-                                                                //document.getElementById("output").innerHTML += board_id +': '+response.responseText +'<br />';
-                                                                //document.getElementById("output").innerHTML += '<pre>'+board_id +': <br />'+JSON.stringify(response) +'</pre>';
-                                                                document.getElementById("inject-plugin-output").innerHTML += plugin_name+': '+JSON.stringify(response) +'<br />';
+                                                                if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+                                                                document.getElementById("destroy-driver-output").innerHTML += driver_name+': '+JSON.stringify(response.result) +'<br />';
                                                         }
                                                 });
                                 //---------------------------------------------------------------------------------
@@ -1719,81 +2005,256 @@
                         }
                 }
         });
-	*/
 
 
-        $('.mount_umount_driver').click(function(){
-                if ($('#mount_umount_yunlist option:selected').length == 0) { alert('Select a Board'); }
+        document.getElementById('driver_userfile').addEventListener('change', readFile, false);
+	document.getElementById('driver_userfile').element_id = "create_driver_code";
+
+
+        $('#inject_driver').click(function(){
+
+                if ($('#inject_driver_yunlist option:selected').length == 0) { alert('Select a Board'); }
                 else {
-
-                        var mount_umount_flag = this.id;
-                        var board_id = document.getElementById("mount_umount_yunlist").value;
+                        //document.getElementById('loading_bar').style.visibility='visible';
+                        var list = document.getElementById("inject_driver_yunlist");
                         var selected_list = [];
+                        var output_string = '';
 
-                        var list = document.getElementById("mount_umount_driverlist");
+                        document.getElementById("inject-driver-output").innerHTML ='';
+                        var driver_name = document.getElementById("inject_driverlist").value;
+                        var inject_autostart = document.getElementById("inject_driver_autostart").value;
 
 
                         for(var i=0; i< list.length; i++){
                                 if (list.options[i].selected)
                                         selected_list.push(list[i].value);
                         }
-
-			alert(mount_umount_flag+" "+board_id+" "+selected_list.length);
-/*
                         for(var i=0; i< selected_list.length; i++){
-
                                 //---------------------------------------------------------------------------------             
                                 (function(i){
                                         setTimeout(function(){
                                 //---------------------------------------------------------------------------------
                                                 var board_id = selected_list[i];
-                                                if(mount_umount_flag == "mount"){
-                                                	$.ajax({
-                                                        	url: '<?= $this -> config -> site_url()?>Last/run_plugin',
-	                                                        type: 'GET',
-        	                                                dataType: 'json',
-                	                                        data: {plugin_name: plugin_name, board: board_id, plugin_json: plugin_json},
-                        	                                contentType: 'application/json',
-                                	                        success: function(response){
-                                        	                        //alert(JSON.stringify(response));
-                                                	                //document.getElementById("output").innerHTML = JSON.stringify(response);
-                                                        	        document.getElementById("startstop-plugin-output").innerHTML = board_id +': '+JSON.stringify(response) +'<br />';
-	                                                        },
-        	                                                error: function(response){
-                	                                                //alert(JSON.stringify(response));
-                        	                                        //document.getElementById("output").innerHTML = response.responseText;
-                                	                                document.getElementById("startstop-plugin-output").innerHTML = board_id +': '+JSON.stringify(response) +'<br />';
-                                        	                }
-	                                                });
-                                                }
-                                                else if(mount_umount_flag == "umount"){
-                                                	$.ajax({
-                                                        	url: '<?= $this -> config -> site_url()?>Last/kill_plugin',
-	                                                        type: 'GET',
-        	                                                dataType: 'json',
-                	                                        data: {plugin_name: plugin_name, board: board_id},
-                        	                                contentType: 'application/json',
-                                	                        success: function(response){
-                                        	                        //alert(JSON.stringify(response));
-                                                	                //document.getElementById("output").innerHTML = JSON.stringify(response);
-                                                        	        document.getElementById("startstop-plugin-output").innerHTML = board_id +': '+JSON.stringify(response) +'<br />';
-	                                                        },
-        	                                                error: function(response){
-                	                                                //alert(JSON.stringify(response));
-                        	                                        //document.getElementById("output").innerHTML = response.responseText;
-                                	                                document.getElementById("startstop-plugin-output").innerHTML = board_id +': '+JSON.stringify(response) +'<br />';
-                                        	                }
-	                                                });
-                                                }
+                                                $.ajax({
+                                                        url: '<?= $this -> config -> site_url()?>Last/inject_driver',
+                                                        type: 'GET',
+                                                        dataType: 'json',
+                                                        data: {driver_name : driver_name, board: board_id, inject_autostart: inject_autostart},
+                                                        contentType: 'application/json',
+                                                        success: function(response){
+                                                                if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+                                                                document.getElementById("inject-driver-output").innerHTML += board_id+ ' with '+ driver_name+': '+JSON.stringify(response.result) +'<br />';
+                                                        },
+                                                        error: function(response){
+                                                                if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+                                                                document.getElementById("inject-driver-output").innerHTML += board_id+ ' with '+driver_name+': '+JSON.stringify(response.result) +'<br />';
+                                                        }
+                                                });
                                 //---------------------------------------------------------------------------------
                                         },delay*i);
                                 })(i);
                                 //---------------------------------------------------------------------------------
                         }
-*/
                 }
         });
 
+
+
+        $('#mount_driver').click(function(){
+                if ($('#mount_yunlist option:selected').length == 0) { 
+			alert('Select a Board'); 
+			document.getElementById('loading_bar').style.visibility='hidden';
+		}
+
+		else if( $('#mount_radio_remote').checked && $('#mount_remote_yunlist option:selected').length == 0){
+			alert('Select a remote Board');
+			document.getElementById('loading_bar').style.visibility='hidden';
+		}
+                else {
+			//document.getElementById('loading_bar').style.visibility='visible';
+
+			var type = "";
+			if( $('#mount_radio_local').is(':checked') )		type="local";
+			else if( $('#mount_radio_remote').is(':checked') )	type="remote";
+
+			var local_board = document.getElementById("mount_yunlist").value;
+			var local_boardname = $("#mount_yunlist option:selected").text();
+			var remote_board = "";
+			if(type == "remote"){
+				var remote_board = document.getElementById("mount_remote_yunlist").value;
+				var remote_boardname = $("#mount_remote_yunlist option:selected").text();
+			}
+
+			var driver_name = document.getElementById("mount_driverlist").value;
+
+
+                        $.ajax({
+                                url: '<?= $this -> config -> site_url()?>Last/mount_driver',
+                                type: 'GET',
+                                dataType: 'json',
+                                data: {type: type, local_board: local_board, remote_board: remote_board, driver_name: driver_name},
+                                contentType: 'application/json',
+                                success: function(response){
+                                        document.getElementById('loading_bar').style.visibility='hidden';
+					if(type == "remote")
+	                                        document.getElementById("mount-driver-output").innerHTML = local_boardname +' with remote '+remote_boardname+': '+JSON.stringify(response.message) +'<br />';
+					else
+						document.getElementById("mount-driver-output").innerHTML = local_boardname +': '+JSON.stringify(response.message) +'<br />';
+                                },
+                                error: function(response){
+                                        document.getElementById('loading_bar').style.visibility='hidden';
+					if(type == "remote")
+                                                document.getElementById("mount-driver-output").innerHTML = local_boardname +' with remote '+remote_boardname+': '+JSON.stringify(response.message) +'<br />';
+                                        else
+                                                document.getElementById("mount-driver-output").innerHTML = local_boardname +': '+JSON.stringify(response.message) +'<br />';
+                                }
+                        });
+                }
+        });
+
+
+        $('#unmount_driver').click(function(){
+                if ($('#unmount_yunlist option:selected').length == 0) { 
+                        alert('Select a Board'); 
+                        document.getElementById('loading_bar').style.visibility='hidden';
+                }
+
+                else {
+                        //document.getElementById('loading_bar').style.visibility='visible';
+
+                        var board = document.getElementById("unmount_yunlist").value;
+                        var boardname = $("#unmount_yunlist option:selected").text();
+                        var driver_name = document.getElementById("unmount_driverlist").value;
+
+
+                        $.ajax({
+                                url: '<?= $this -> config -> site_url()?>Last/unmount_driver',
+                                type: 'GET',
+                                dataType: 'json',
+                                data: {board: board, driver_name: driver_name},
+                                contentType: 'application/json',
+                                success: function(response){
+                                        document.getElementById('loading_bar').style.visibility='hidden';
+                                        document.getElementById("unmount-driver-output").innerHTML = boardname +': '+JSON.stringify(response.message) +'<br />';
+                                },
+                                error: function(response){
+                                        document.getElementById('loading_bar').style.visibility='hidden';
+                                        document.getElementById("unmount-driver-output").innerHTML = boardname +': '+JSON.stringify(response.message) +'<br />';
+                                }
+                        });
+                }
+        });
+
+
+
+        $('#write_driver').click(function(){
+
+		var board = document.getElementById("write_driver_yunlist").value;
+		var boardname = $("#write_driver_yunlist option:selected").text();
+		var driver_name = document.getElementById("write_driverlist").value;
+
+                var filename = document.getElementById("write_filename").value;
+                var file_content = document.getElementById("write_file_content").value;
+
+		if(!board) alert('Select a Board');
+                else if(!driver_name) alert('Driver Name missing');
+                else if(!filename) alert('File Name missing');
+                else if(!file_content)  alert('File content missing');
+                else {
+                        $.ajax({
+                                url: '<?= $this -> config -> site_url()?>Last/write_driver',
+                                type: 'GET',
+                                dataType: 'json',
+                                data: {board: board, driver_name: driver_name, filename: filename, file_content: file_content},
+                                contentType: 'application/json',
+                                success: function(response){
+                                        document.getElementById('loading_bar').style.visibility='hidden';
+                                        document.getElementById("write-driver-output").innerHTML = '<pre>'+boardname+': <br />'+JSON.stringify(response.result) +'</pre>';
+                                },
+                                error: function(response){
+                                        document.getElementById('loading_bar').style.visibility='hidden';
+                                        document.getElementById("write-driver-output").innerHTML = '<pre>'+boardname+': <br />'+JSON.stringify(response.result) +'</pre>';
+                                }
+                        });
+		}
+        });
+
+
+
+        $('#read_driver').click(function(){
+
+                var board = document.getElementById("read_driver_yunlist").value;
+                var boardname = $("#read_driver_yunlist option:selected").text();
+                var driver_name = document.getElementById("read_driverlist").value;
+
+                var filename = document.getElementById("read_filename").value;
+
+                if(!board) alert('Select a Board');
+                else if(!driver_name) alert('Driver Name missing');
+                else if(!filename) alert('File Name missing');
+                else {
+                        $.ajax({
+                                url: '<?= $this -> config -> site_url()?>Last/read_driver',
+                                type: 'GET',
+                                dataType: 'json',
+                                data: {board: board, driver_name: driver_name, filename: filename},
+                                contentType: 'application/json',
+                                success: function(response){
+                                        document.getElementById('loading_bar').style.visibility='hidden';
+					document.getElementById("read_file_content").innerHTML = response.result.value;
+                                        document.getElementById("read-driver-output").innerHTML = '<pre>'+boardname+': <br />'+JSON.stringify(response.result) +'</pre>';
+                                },
+                                error: function(response){
+                                        document.getElementById('loading_bar').style.visibility='hidden';
+					document.getElementById("read_file_content").innerHTML = response.result.value;
+                                        document.getElementById("read-driver-output").innerHTML = '<pre>'+boardname+': <br />'+JSON.stringify(response.result) +'</pre>';
+                                }
+                        });
+                }
+        });
+
+
+        $('#remove_driver').click(function(){
+
+                //document.getElementById('loading_bar').style.visibility='visible';
+                var board = document.getElementById("remove_driver_yunlist").value;
+
+                var list = document.getElementById("remove_driverlist");
+                var selected_list = [];
+                for(var i=0; i< list.length; i++){
+                        if (list.options[i].selected)
+                                selected_list.push(list[i].value);
+                }
+
+                document.getElementById("remove-driver-output").innerHTML ='';
+
+                for(var i=0; i< selected_list.length; i++){
+                        //---------------------------------------------------------------------------------
+                        (function(i){
+                                setTimeout(function(){
+                        //---------------------------------------------------------------------------------
+                                        var driver_name = selected_list[i];
+                                        $.ajax({
+                                                url: '<?= $this -> config -> site_url()?>Last/remove_driver',
+                                                type: 'GET',
+                                                dataType: 'json',
+                                                data: {board: board, driver_name : driver_name},
+                                                contentType: 'application/json',
+                                                success: function(response){
+                                                        if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+                                                        document.getElementById("remove-driver-output").innerHTML += '<pre>'+driver_name+': <br />'+JSON.stringify(response.result) +'</pre>';
+                                                },
+                                                error: function(response){
+                                                        if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+                                                        document.getElementById("remove-driver-output").innerHTML += '<pre>'+driver_name+': <br />'+JSON.stringify(response.result) +'</pre>';
+                                                }
+                                        });
+                        //---------------------------------------------------------------------------------
+                                },delay*i);
+                        })(i);
+                        //---------------------------------------------------------------------------------
+                }
+        });
 	// #############################################################################################################################################
 
 
@@ -1802,7 +2263,7 @@
 									// PLUGIN MANAGEMENT
 	// #############################################################################################################################################
 	$('#create_plugin').click(function(){
-
+		//document.getElementById('loading_bar').style.visibility='visible';
 		var plugin_name = document.getElementById("create_plugin_name").value;
 		var plugin_json = document.getElementById("create_plugin_json").value;
 		var plugin_code = document.getElementById("create_plugin_code").value;
@@ -1818,11 +2279,13 @@
 			success: function(response){
 				//alert(JSON.stringify(response));
 				//document.getElementById("output").innerHTML = JSON.stringify(response);
+				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("create-plugin-output").innerHTML = '<pre>'+plugin_name+': <br />'+JSON.stringify(response) +'</pre>';
 			},
 			error: function(response){
 				//alert(JSON.stringify(response));
 				//document.getElementById("output").innerHTML = response.responseText;
+				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("create-plugin-output").innerHTML = '<pre>'+plugin_name+': <br />'+JSON.stringify(response) +'</pre>';
 			}
 		});
@@ -1832,7 +2295,10 @@
 	$('#destroy_plugin').click(function(){
 		if($('#destroy_pluginlist option:selected').length == 0) { alert('Select a Plugin'); }
 		else{
+			//document.getElementById('loading_bar').style.visibility='visible';
 			var list = document.getElementById("destroy_pluginlist");
+			document.getElementById("destroy-plugin-output").innerHTML ='';
+
 			var selected_list = [];
 
 			for(var i=0; i< list.length; i++){
@@ -1856,12 +2322,14 @@
                                                         success: function(response){
                                                                 //alert(JSON.stringify(response));
                                                                 //document.getElementById("output").innerHTML += board_id +': '+JSON.stringify(response) +'<br />';
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
                                                                 document.getElementById("destroy-plugin-output").innerHTML += plugin_name+': '+JSON.stringify(response.result) +'<br />';
                                                         },
                                                         error: function(response){
                                                                 //alert(JSON.stringify(response));
                                                                 //document.getElementById("output").innerHTML += board_id +': '+response.responseText +'<br />';
                                                                 //document.getElementById("output").innerHTML += '<pre>'+board_id +': <br />'+JSON.stringify(response) +'</pre>';
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
                                                                 document.getElementById("destroy-plugin-output").innerHTML += plugin_name+': '+JSON.stringify(response.result) +'<br />';
                                                         }
                                                 });
@@ -1884,6 +2352,7 @@
 
 		if ($('#inject_yunlist option:selected').length == 0) { alert('Select a Board'); }
 		else {
+			//document.getElementById('loading_bar').style.visibility='visible';
 			var list = document.getElementById("inject_yunlist");
 			var selected_list = [];
 			var output_string = '';
@@ -1914,13 +2383,15 @@
 							success: function(response){
 								//alert(JSON.stringify(response));
 								//document.getElementById("output").innerHTML += board_id +': '+JSON.stringify(response) +'<br />';
-								document.getElementById("inject-plugin-output").innerHTML += plugin_name+': '+JSON.stringify(response) +'<br />';
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+								document.getElementById("inject-plugin-output").innerHTML += board_id+ ' with '+ plugin_name+': '+JSON.stringify(response.result) +'<br />';
 							},
 							error: function(response){
 								//alert(JSON.stringify(response));
 								//document.getElementById("output").innerHTML += board_id +': '+response.responseText +'<br />';
 								//document.getElementById("output").innerHTML += '<pre>'+board_id +': <br />'+JSON.stringify(response) +'</pre>';
-								document.getElementById("inject-plugin-output").innerHTML += plugin_name+': '+JSON.stringify(response) +'<br />';
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+								document.getElementById("inject-plugin-output").innerHTML += board_id+ ' with '+plugin_name+': '+JSON.stringify(response.result) +'<br />';
 							}
 						});
 				//---------------------------------------------------------------------------------
@@ -1936,13 +2407,20 @@
 	$('.startstop_plugin').click(function(){
                 if ($('#startstop_yunlist option:selected').length == 0) { alert('Select a Board'); }
                 else {
-
+			//document.getElementById('loading_bar').style.visibility='visible';
 			var start_stop_flag = this.id;
                         var list = document.getElementById("startstop_yunlist");
+
                         var selected_list = [];
 
-                        var plugin_name = document.getElementById("startstop_plugin_name").value;
+                        //var plugin_name = document.getElementById("startstop_plugin_name").value;
+			var plugin_name = document.getElementById("startstop_pluginlist").value;
+
+			startstop_pluginlist
+
 			var plugin_json = document.getElementById("startstop_plugin_json").value;
+
+			document.getElementById("startstop-plugin-output").innerHTML ='';
 
                         for(var i=0; i< list.length; i++){
                                 if (list.options[i].selected)
@@ -1969,12 +2447,14 @@
                                                         success: function(response){
                                                                 //alert(JSON.stringify(response));
                                                                 //document.getElementById("output").innerHTML = JSON.stringify(response);
-                                                                document.getElementById("startstop-plugin-output").innerHTML = board_id +': '+JSON.stringify(response) +'<br />';
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+                                                                document.getElementById("startstop-plugin-output").innerHTML += board_id +': '+JSON.stringify(response) +'<br />';
                                                         },
                                                         error: function(response){
                                                                 //alert(JSON.stringify(response));
                                                                 //document.getElementById("output").innerHTML = response.responseText;
-                                                                document.getElementById("startstop-plugin-output").innerHTML = board_id +': '+JSON.stringify(response) +'<br />';
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+                                                                document.getElementById("startstop-plugin-output").innerHTML += board_id +': '+JSON.stringify(response) +'<br />';
                                                         }
                                                 });
 		                                }
@@ -1990,12 +2470,14 @@
                                                         success: function(response){
                                                                 //alert(JSON.stringify(response));
                                                                 //document.getElementById("output").innerHTML = JSON.stringify(response);
-                                                                document.getElementById("startstop-plugin-output").innerHTML = board_id +': '+JSON.stringify(response) +'<br />';
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+                                                                document.getElementById("startstop-plugin-output").innerHTML += board_id +': '+JSON.stringify(response) +'<br />';
                                                         },
                                                         error: function(response){
                                                                 //alert(JSON.stringify(response));
                                                                 //document.getElementById("output").innerHTML = response.responseText;
-                                                                document.getElementById("startstop-plugin-output").innerHTML = board_id +': '+JSON.stringify(response) +'<br />';
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+                                                                document.getElementById("startstop-plugin-output").innerHTML += board_id +': '+JSON.stringify(response) +'<br />';
                                                         }
                                                 });
                 		                }
@@ -2011,12 +2493,14 @@
         $('#call_plugin').click(function(){
                 if ($('#call_yunlist option:selected').length == 0) { alert('Select a Board'); }
                 else {
-
+			//document.getElementById('loading_bar').style.visibility='visible';
                         var list = document.getElementById("call_yunlist");
                         var selected_list = [];
 
-                        var plugin_name = document.getElementById("call_plugin_name").value;
+                        var plugin_name = document.getElementById("call_pluginlist").value;
                         var plugin_json = document.getElementById("call_plugin_json").value;
+
+			document.getElementById("call-plugin-output").innerHTML = '';
 
                         for(var i=0; i< list.length; i++){
                                 if (list.options[i].selected)
@@ -2039,12 +2523,14 @@
                                                         success: function(response){
                                                                 //alert(JSON.stringify(response));
                                                                 //document.getElementById("output").innerHTML = JSON.stringify(response);
-                                                                document.getElementById("call-plugin-output").innerHTML = board_id +': '+JSON.stringify(response) +'<br />';
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+                                                                document.getElementById("call-plugin-output").innerHTML += board_id +': '+JSON.stringify(response) +'<br />';
                                                         },
                                                         error: function(response){
                                                                 //alert(JSON.stringify(response));
                                                                 //document.getElementById("output").innerHTML = response.responseText;
-                                                                document.getElementById("call-plugin-output").innerHTML = board_id +': '+JSON.stringify(response) +'<br />';
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+                                                                document.getElementById("call-plugin-output").innerHTML += board_id +': '+JSON.stringify(response) +'<br />';
                                                         }
                                                 });
                                 //---------------------------------------------------------------------------------
@@ -2058,6 +2544,7 @@
 
         $('#remove_plugin').click(function(){
 
+		//document.getElementById('loading_bar').style.visibility='visible';
 		var board_id = document.getElementById("remove_plugin_yunlist").value;
 
                 //var plugin_name = document.getElementById("remove_pluginlist").value;
@@ -2085,11 +2572,13 @@
                         			success: function(response){
 			                                //alert(JSON.stringify(response));
                         			        //document.getElementById("output").innerHTML = JSON.stringify(response);
+							if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
 			                                document.getElementById("remove-plugin-output").innerHTML += '<pre>'+plugin_name+': <br />'+JSON.stringify(response.result) +'</pre>';
 			                        },
                         			error: function(response){
 			                                //alert(JSON.stringify(response));
 			                                //document.getElementById("output").innerHTML = response.responseText;
+							if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
 			                                document.getElementById("remove-plugin-output").innerHTML += '<pre>'+plugin_name+': <br />'+JSON.stringify(response.result) +'</pre>';
 			                        }
 			                });
@@ -2123,6 +2612,7 @@
 
 
         $('#create_network').click(function(){
+		//document.getElementById('loading_bar').style.visibility='visible';
                 var create_network_name = document.getElementById("create_network_name").value;
                 var create_network_ip = document.getElementById("create_network_ip").value;
 
@@ -2134,11 +2624,13 @@
                         contentType: 'application/json',
                         success: function(response){
                                 //alert(JSON.stringify(response));
+				document.getElementById('loading_bar').style.visibility='hidden';
                                 document.getElementById("create-net-output").innerHTML = response.result+'<pre>'+JSON.stringify(response.log,null,"\t")+'</pre>';//JSON.stringify(response);
                                 //document.getElementById("output").innerHTML = '<pre>'+response +'<br /></pre>';
                         },
                         error: function(response){
                                 //alert(JSON.stringify(response));
+				document.getElementById('loading_bar').style.visibility='hidden';
                                 document.getElementById("create-net-output").innerHTML = response.result;
                                 //document.getElementById("output").innerHTML = '<pre>'+response+'<br /></pre>';
                         }
@@ -2150,6 +2642,7 @@
         $('#destroy_network').click(function(){
 		if ($('#destroy_network_uuid option:selected').length == 0) { alert('Select a Network'); }
                 else {
+			//document.getElementById('loading_bar').style.visibility='visible';
                         var list = document.getElementById("destroy_network_uuid");
 			document.getElementById("destroy-net-output").innerHTML ='';
 
@@ -2174,11 +2667,13 @@
 				                        contentType: 'application/json',
 				                        success: function(response){
                                 				//alert(JSON.stringify(response));
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
 				                                document.getElementById("destroy-net-output").innerHTML = '<pre>'+JSON.stringify(response.result,null,"\t")+'</pre>';;
 				                                //document.getElementById("output").innerHTML = '<pre>'+response +'<br /></pre>';
 				                        },
 				                        error: function(response){
 				                                //alert(JSON.stringify(response));
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
 				                                document.getElementById("destroy-net-output").innerHTML = JSON.stringify(response);
 				                                //document.getElementById("output").innerHTML = '<pre>'+response+'<br /></pre>';
 				                        }
@@ -2193,6 +2688,7 @@
 
 
         $('#addboard_network').click(function(){
+		//document.getElementById('loading_bar').style.visibility='visible';
                 //var addboard_network_uuid = document.getElementById("addboard_network_uuid").value;
 		var addboard_network_uuid = $("#addboard_network_uuid option:selected").val();
                 var board_id =$('#addboard_yunlist').val();
@@ -2206,11 +2702,13 @@
                         contentType: 'application/json',
                         success: function(response){
                                 //alert(JSON.stringify(response));
+				document.getElementById('loading_bar').style.visibility='hidden';
                                 document.getElementById("add-board-net-output").innerHTML = response.result+ '<br /><br /><pre>'+JSON.stringify(response.log,null,"\t")+'</pre>';
                                 //document.getElementById("output").innerHTML = '<pre>'+response +'<br /></pre>';
                         },
                         error: function(response){
                                 //alert(JSON.stringify(response));
+				document.getElementById('loading_bar').style.visibility='hidden';
                                 document.getElementById("add-board-net-output").innerHTML = response.result;
                                 //document.getElementById("output").innerHTML = '<pre>'+response+'<br /></pre>';
                         }
@@ -2219,6 +2717,7 @@
 
 
         $('#removeboard_network').click(function(){
+		//document.getElementById('loading_bar').style.visibility='visible';
 		var removeboard_network_uuid = $("#removeboard_network_uuid option:selected").val();
 		var list = document.getElementById("removeboard_yunlist");
 		if ($('#removeboard_yunlist option:selected').length == 0) { alert('Select a Board') }
@@ -2256,11 +2755,13 @@
                                                         contentType: 'application/json',
                                                         success: function(response){
                                                                 //alert(JSON.stringify(response));
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
                                                                 document.getElementById("remove-board-net-output").innerHTML += '<pre>'+JSON.stringify(response.result,null,"\t")+'</pre>';
                                                                 //document.getElementById("output").innerHTML = '<pre>'+response +'<br /></pre>';
                                                         },
                                                         error: function(response){
                                                                 //alert(JSON.stringify(response));
+								if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
                                                                 document.getElementById("remove-board-net-output").innerHTML += response.result;
                                                                 //document.getElementById("output").innerHTML = '<pre>'+response+'<br /></pre>';
                                                         }
@@ -2275,6 +2776,7 @@
 
 
         $('#show_boards').click(function(){
+		//document.getElementById('loading_bar').style.visibility='visible';
                 var show_boards_uuid = document.getElementById("show_boards_uuid").value;
                 $.ajax({
                         url: '<?= $this -> config -> site_url()?>Last/show_boards',
@@ -2283,12 +2785,14 @@
                         data: {show_boards_uuid: show_boards_uuid},
                         contentType: 'application/json',
                         success: function(response){
+				document.getElementById('loading_bar').style.visibility='hidden';
                                 document.getElementById("show_boards-output").innerHTML = '<pre>'+JSON.stringify(response.result,null,"\t")+'</pre>';
                                 //alert(response);
                                 //document.getElementById("output").innerHTML = '<pre>'+response+'<br /></pre>';
                         },
                         error: function(response){
                                 //alert(JSON.stringify(response));
+				document.getElementById('loading_bar').style.visibility='hidden';
                                 document.getElementById("show_boards-output").innerHTML = JSON.stringify(response);
                                 //document.getElementById("output").innerHTML = '<pre>'+response+'<br /></pre>';
                         }
@@ -2298,6 +2802,7 @@
 
 
         $('#activate_boardnet_network').click(function(){
+		//document.getElementById('loading_bar').style.visibility='visible';
                 var activate_boardnet_uuid = document.getElementById("activate_boardnet_yunlist").value;
                 $.ajax({
                         url: '<?= $this -> config -> site_url()?>Last/activate_board_net',
@@ -2306,12 +2811,14 @@
                         data: {activate_boardnet_uuid: activate_boardnet_uuid},
                         contentType: 'application/json',
                         success: function(response){
+				document.getElementById('loading_bar').style.visibility='hidden';
                                 document.getElementById("activate-board-net-output").innerHTML = '<pre>'+JSON.stringify(response.result,null,"\t")+'</pre>';
                                 //alert(response);
                                 //document.getElementById("output").innerHTML = '<pre>'+response+'<br /></pre>';
                         },
                         error: function(response){
                                 //alert(JSON.stringify(response));
+				document.getElementById('loading_bar').style.visibility='hidden';
                                 document.getElementById("activate-board-net-output").innerHTML = JSON.stringify(response);
                                 //document.getElementById("output").innerHTML = '<pre>'+response+'<br /></pre>';
                         }
@@ -2321,128 +2828,9 @@
 
 
 
-
-									//OPENSTREETMAP
-	// #############################################################################################################################################
-map = new OpenLayers.Map("mapdiv");
-map.addLayer(new OpenLayers.Layer.OSM());
-epsg4326 =  new OpenLayers.Projection("EPSG:4326"); //WGS 1984 projection
-projectTo = map.getProjectionObject(); //The map projection (Spherical Mercator)
-var lonLat = new OpenLayers.LonLat(15.5858211, 38.2156833).transform(epsg4326, projectTo);
-var zoom=12;
-map.setCenter (lonLat, zoom);
-var vectorLayer = new OpenLayers.Layer.Vector("Overlay");
-
-
-$.ajax({
-  type: 'GET',
-  url: 'http://<SERVER_IP>:<PORT>/map',
-  data: { format: 'json', },
-  success: function(data) { 
-        //alert("SUCCESS: "+ JSON.stringify(data));
-        var description = new Array();
-        var date;
-
-        var board_list = Object.keys( data.boards );
-        for(var i=0; i<board_list.length; i++) {
-                description[i]="";
-                var coordinates = data.boards[board_list[i]].coordinates;
-                var metrics = data.boards[board_list[i]].resources.metrics;
-                for(var j=0; j<metrics.length; j++){
-                        if(metrics[j].Date)
-                                date = europe_date(metrics[j].Date);
-                        if (description[i] ==""){
-                                description[i] = "Board: <b>"+board_list[i]+"</b>";
-                        }
-                        if(metrics[j].Brightness)
-                                description[i] += " <br/> brightness: <b>"+ (Math.round(metrics[j].Brightness * 100)/100).toFixed(2)+ " lux</b> at "+date;
-                        if(metrics[j].Temperature)
-                                description[i] += " <br/>temperature: <b>"+ (Math.round(metrics[j].Temperature * 100)/100).toFixed(2)+ " °C</b> at "+date;
-                        if(metrics[j].Humidity)
-                                description[i] += " <br/>humidity: <b>"+ (Math.round(metrics[j].Humidity * 100)/100).toFixed(2)+ " %</b> at "+date;
-                        if(metrics[j].Noise)
-                                description[i] += " <br/>noise: <b>"+ (Math.round(metrics[j].Noise * 100)/100).toFixed(2)+ " dB</b> at "+date;
-                        if(metrics[j].Gas)
-                                description[i] += " <br/>CO: <b>"+ (Math.round(metrics[j].Gas * 100)/100).toFixed(2)+ " ppm</b> at "+date;
-                        if(metrics[j].Pressure)
-                                description[i] += " <br/>pressure: <b>"+ (Math.round(metrics[j].Pressure * 100)/100).toFixed(2)+ " hPa</b> at "+date;
-                }               
-                vectorLayer.addFeatures(create_marker(coordinates.longitude,coordinates.latitude, description[i]));
-        }
-
-  },
-  error:   function(data) { 
-   //alert("ERROR: "+ JSON.stringify(data));
-  },
-});
-
-map.addLayer(vectorLayer);
-
-//UTILITY FUNCTIONS !!! DO NOT EDIT THEM !!!
-function create_marker(x,y,descript){
-var feature = new OpenLayers.Feature.Vector(
-            new OpenLayers.Geometry.Point(x,y).transform(epsg4326, projectTo),
-            {description:descript} ,
-            {externalGraphic: 'http://smartme.unime.it/wp-content/uploads/2015/11/marker-icon.png', graphicHeight: 25, graphicWidth: 21, graphicXOffset:-12, graphicYOffset:-20  });  
-return feature;
-}
-
-function create_label(desc){
-var div=document.createElement("div");
-div.sclassName = "";
-div.innerHTML = desc;
-return nodeToString(div);
-}
-//Add a selector control to the vectorLayer with popup functions
-var controls = {
-      selector: new OpenLayers.Control.SelectFeature(vectorLayer, { onSelect: createPopup, onUnselect: destroyPopup })
-};
-function destroyPopup(feature) {
-feature.popup.destroy();
-feature.popup = null;
-}
-function nodeToString ( node ) {
-var tmpNode = document.createElement( "div" );
-tmpNode.appendChild( node.cloneNode( true ) );
-var str = tmpNode.innerHTML;
-tmpNode = node = null; // prevent memory leaks in IE
-return str;
-}
-function createPopup(feature) {
-  feature.popup = new OpenLayers.Popup.FramedCloud("pop",
-  feature.geometry.getBounds().getCenterLonLat(),
-  null,
-  create_label(feature.attributes.description),
-  null,
-  true,
-  function() { controls['selector'].unselectAll(); }
-  );
-  //feature.popup.closeOnMove = true;
-  map.addPopup(feature.popup);
-}
-map.addControl(controls['selector']);
-controls['selector'].activate();
-
-function europe_date(date){
-  var temp = date.split("T");
-  var day = temp[0].split("-");
-  var time = temp[1].substring(0,8);
-  var return_date = day[2]+"-"+day[1]+"-"+day[0]+" "+time;
-  return return_date;
-}
-
-function ckan_date(date){
-  var temp = date.split("T");
-  var day = temp[0].split("-");
-  var time = temp[1].substring(0,8);
-  var return_date = day[0]+"-"+day[1]+"-"+day[2]+" "+time;
-  return return_date;
-}
-	// #############################################################################################################################################
-
-window.onload = function() {
-  refresh_lists();
-};
+	window.onload = function() {
+		refresh_lists();
+	};
 </script>
 
 
