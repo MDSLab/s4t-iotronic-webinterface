@@ -50,6 +50,8 @@ If Foundation was chosen few precautions have to be taken into consideration. Cr
 
 Pay attention to the fact that in the bottom part of the footer you are forced to put ```<script>  $(document).foundation();  </script>``` before ```<script src="<?= $this -> config -> site_url() ?>assets/bower_components/foundation/js/foundation/foundation.js"></script>``` in order to have modals (see Foundation online documentation) working on your WebSite.
 
+In case you are using the ones added to this repo simply copy the relative files inside your ```application/views/templates``` folder.
+
 # Last steps before browsing the interface
 1. Copy the ```.htaccess``` file and ```uploads``` inside your folder (e.g.: s4t-dev in our case) which contains the images linked inside the code.
 2. In the "s4t-iotronic-webinterface" repo you also have these files: 
