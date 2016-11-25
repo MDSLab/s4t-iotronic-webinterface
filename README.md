@@ -40,6 +40,7 @@ wget https://raw.githubusercontent.com/philsturgeon/codeigniter-curl/master/libr
 and put it into the libraries folder (if not already present).
 
 As front-end framework we used the previously mentioned Foundation which has to be downloaded into ```assets``` folder as follows:
+if not present create assets folder at the same level of application.
 ```
 cd assets/ && mkdir -p bower_components/foundation && cd bower_components/foundation
 wget http://foundation.zurb.com/cdn/releases/foundation-5.5.3.zip && unzip foundation-5.5.3.zip
