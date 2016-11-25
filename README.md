@@ -26,7 +26,7 @@ vim /etc/php5/apache2/php.ini
 changing the ```short_open_tag=Off → short_open_tag=On```
 
 # CodeIgniter installation and configuration
-Download the CodeIgniter-3.0.2 from https://github.com/bcit-ci/CodeIgniter/archive/3.0.2.zip into the ```/var/www/html``` folder on the server and unzip it. Rename the folder to one of your choice (e.g.: s4t-dev in our case) and make some changes in the ```application/config/config.php``` configuration file.
+Download the CodeIgniter-3.1.2 from https://github.com/bcit-ci/CodeIgniter/archive/3.1.2.zip into the ```/var/www/html``` folder on the server and unzip it. Rename the folder to one of your choice (e.g.: s4t-dev in our case) and make some changes in the ```application/config/config.php``` configuration file.
 ```
 $config['index_page'] = 'index.php'; → $config['index_page'] = '';
 $config['encryption_key'] = ''; → $config['encryption_key'] = 'your_encryption_key';  (if needed)
