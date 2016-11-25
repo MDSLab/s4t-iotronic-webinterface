@@ -1,9 +1,9 @@
 # s4t-node-cloud-WebInterface
-The WebInterface created at UniMe for the Iotronic project is based on a framework called CodeIgniter http://www.codeigniter.com/ whose current version is the 3.0.2.
+The WebInterface created at UniMe for the Iotronic project is based on a framework called CodeIgniter http://www.codeigniter.com/ whose current version is the 3.1.2.
 
 # Requirements
 * Server Web (apache2);
-* CodeIgniter-3.0.2;
+* CodeIgniter-3.1.2;
 * Some Linux libraries
   * curl
   * php5
@@ -13,11 +13,11 @@ The WebInterface created at UniMe for the Iotronic project is based on a framewo
 
 
 # Server preliminary configuration
-If not already installed on the server machine, install the apache2 web service on top of which we are going to put CodeIgniter. First of all be sure of having php5 and php5-curl packages before going on with the following steps, then check the apache2 modules installed by launching the command:
+If not already installed on the server machine, install the apache2 web service on top of which we are going to put CodeIgniter. First of all be sure of having ```php5``` and ```php5-curl``` packages before going on with the following steps, then check the apache2 modules installed by launching the command:
 ```
 apache2ctl -M
 ```
-and verify the presence of the following line: ```php<version>_module (shared)```. If not present install it by ```apt-get install php5 libapache2-mod-php5```
+and verify the presence of the following lines: ```php<version>_module (shared)``` and ```rewrite_module (shared)```. If php module is not present install it by ```apt-get install php5 libapache2-mod-php5``` and if also the other module is not installed simply launch ```a2enmod rewrite``` and restart apache2 service.
 
 After this it is useful to enable the "short tag" flag in:
 ```
