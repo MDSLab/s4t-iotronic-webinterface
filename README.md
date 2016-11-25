@@ -17,7 +17,7 @@ If not already installed on the server machine, install the apache2 web service 
 ```
 apache2ctl -M
 ```
-and verify the presence of the following line: ```php<version>_module (shared)```. If not present install it by ```sudo apt-get install libapache2-mod-php```
+and verify the presence of the following line: ```php<version>_module (shared)```. If not present install it by ```apt-get install php5 libapache2-mod-php5```
 
 After this it is useful to enable the "short tag" flag in:
 ```
