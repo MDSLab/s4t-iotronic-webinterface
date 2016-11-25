@@ -60,3 +60,6 @@ In case you are using the ones added to this repo simply copy the relative files
   * ```assets/smartme.css``` (any css you can use to customize the layout)
 
   which have to be put in the correct folders in order to correctly display the WebPage on this URL: ```http://<SERVER_IP>/<FOLDER_NAME>/Last```
+
+# Extra info
+If you come across forbidden access errors launch ```chmod 755 -R <folder>``` command on templates and uploads folders.
