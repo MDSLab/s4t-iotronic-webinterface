@@ -31,7 +31,7 @@ The last change you need to do on apache2 is to append in ```/etc/apache2/sites-
     AllowOverride All
 </Directory>
 ```
-and the restart apache2.
+and then restart apache2.
 
 # CodeIgniter installation and configuration
 Download the CodeIgniter-3.1.2 from https://github.com/bcit-ci/CodeIgniter/archive/3.1.2.zip into the ```/var/www/html``` folder on the server and unzip it. Rename the folder to one of your choice (e.g.: s4t-dev in our case) and make some changes in the ```application/config/config.php``` configuration file.
