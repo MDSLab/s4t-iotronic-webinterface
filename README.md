@@ -63,9 +63,9 @@ Pay attention to the fact that in the bottom part of the footer you are forced t
 In case you are using the ones added to this repo simply copy the relative files inside your ```application/views/templates``` folder.
 
 # Last steps before browsing the interface
-1. Copy the ```.htaccess``` file and ```uploads``` inside your folder (e.g.: s4t-dev in our case) which contains the images linked inside the code.
+1. Copy the ```.htaccess``` file and ```uploads``` folder content inside your folder (e.g.: s4t-dev in our case) which contain the rewrite rules and the images linked inside the code.
 2. In the "s4t-iotronic-webinterface" repo you also have these files: 
-  * ```appplication/views/last.php```
+  * ```application/views/last.php```
   * ```application/controllers/Last.php```
   * ```assets/smartme.css``` (any css you can use to customize the layout)
 
