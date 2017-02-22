@@ -13,7 +13,7 @@ The WebInterface created at UniMe for the Iotronic project is based on a framewo
 
 
 # Server preliminary configuration
-If not already installed on the server machine, install the apache2 web service on top of which we are going to put CodeIgniter. First of all be sure of having ```php5``` and ```php5-curl``` (or ```php7``` in recent releases) packages before going on with the following steps, then check the apache2 modules installed by launching the command:
+If not already installed on the server machine, install the apache2 web service on top of which we are going to put CodeIgniter. First of all be sure of having ```php5``` and ```php5-curl``` (or ```php7``` and ```php7.0-curl``` in recent releases) packages before going on with the following steps, then check the apache2 modules installed by launching the command:
 ```
 apache2ctl -M
 ```
