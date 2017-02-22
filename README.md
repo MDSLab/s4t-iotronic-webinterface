@@ -17,7 +17,7 @@ If not already installed on the server machine, install the apache2 web service 
 ```
 apache2ctl -M
 ```
-and verify the presence of the following lines: ```php<version>_module (shared)``` and ```rewrite_module (shared)```. If php module is not present install it by ```apt-get install php5 libapache2-mod-php5``` (or ```apt-get install libapache2-mod-php``` in recent releases) and if also the other module is not installed simply launch ```a2enmod rewrite``` and restart apache2 service.
+and verify the presence of the following lines: ```php<version>_module (shared)``` and ```rewrite_module (shared)```. If php module is not present install it by ```apt-get install php5 libapache2-mod-php5 php5-curl``` (or ```apt-get install libapache2-mod-php php7.0-curl``` in recent releases) and if also the other module is not installed simply launch ```a2enmod rewrite``` and restart apache2 service.
 
 After this it is useful to enable the "short tag" flag in:
 ```
