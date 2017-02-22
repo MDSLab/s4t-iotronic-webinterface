@@ -13,16 +13,18 @@ The WebInterface created at UniMe for the Iotronic project is based on a framewo
 
 
 # Server preliminary configuration
-If not already installed on the server machine, install the apache2 web service on top of which we are going to put CodeIgniter. First of all be sure of having ```php5``` and ```php5-curl``` packages before going on with the following steps, then check the apache2 modules installed by launching the command:
+If not already installed on the server machine, install the apache2 web service on top of which we are going to put CodeIgniter. First of all be sure of having ```php5``` and ```php5-curl``` (or ```php7``` in recent releases) packages before going on with the following steps, then check the apache2 modules installed by launching the command:
 ```
 apache2ctl -M
 ```
-and verify the presence of the following lines: ```php<version>_module (shared)``` and ```rewrite_module (shared)```. If php module is not present install it by ```apt-get install php5 libapache2-mod-php5``` and if also the other module is not installed simply launch ```a2enmod rewrite``` and restart apache2 service.
+and verify the presence of the following lines: ```php<version>_module (shared)``` and ```rewrite_module (shared)```. If php module is not present install it by ```apt-get install php5 libapache2-mod-php5``` (or ```apt-get install libapache2-mod-php``` in recent releases) and if also the other module is not installed simply launch ```a2enmod rewrite``` and restart apache2 service.
 
 After this it is useful to enable the "short tag" flag in:
 ```
-vim /etc/php5/apache2/php.ini
+vim /etc/php5/apache2/php.ini 
 ```
+(or ```vim /etc/php/7.0/apache2/php.ini``` in recent releases)
+
 changing the ```short_open_tag=Off → short_open_tag=On```
 
 The last change you need to do on apache2 is to append in ```/etc/apache2/sites-enabled/000-default.conf``` the following lines:
