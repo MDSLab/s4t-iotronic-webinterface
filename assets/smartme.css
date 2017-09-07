@@ -16,7 +16,7 @@
 	z-index: 1;
 }
 
-#blockstyle {
+.blockstyle {
         display: inline-block;
         margin: 10px;
         padding: 10px;    
