@@ -12,7 +12,7 @@
 
         <center>
         <div style="position: relative;min-height: 400px; max-width: 90%;margin: 10px;margin-bottom: 25px;margin-top:70px;border: 3px solid #ADD8E6;border-radius: 10px;padding: 10px;box-shadow: 10px 10px 5px #888888;">
-            <div id="blockstyle">
+            <div class="blockstyle">
                 <center><h2>Boards</h2></center>
                 <div>
                 <div id="count-connected"><h3>Connected ( 0 )</h3></div>
@@ -25,7 +25,7 @@
                 <button class="button tiny radius" data-reveal-id="modal-update-board" onclick="$('#board-update-output').empty(); update_boards('update_yunlist'); refresh_lists(); refresh_map();">Update</button>
                 <button class="button tiny radius" data-reveal-id="modal-unregister-board" onclick="$('#board-unregistration-output').empty(); update_boards('unregister_boardlist'); refresh_lists(); refresh_map();">Unregister</button>
             </div>
-            <div id="blockstyle">
+            <div class="blockstyle">
                 <center>
                     <h2>Commands</h2></center>
                 <h3>Board Management</h3>
