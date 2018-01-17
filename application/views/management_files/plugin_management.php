@@ -47,7 +47,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="create_plugin" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="create_plugin" class="custom_button">
 					Create
 				</button>
 			</div>
@@ -68,7 +68,7 @@ limitations under the License.
 
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="destroy_plugin" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="destroy_plugin" class="custom_button">
 					Remove
 				</button>
 			</div>
@@ -108,7 +108,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="inject_plugin" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="inject_plugin" class="custom_button">
 					Inject
 				</button>
 			</div>
@@ -137,15 +137,25 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="start" class="button tiny radius startstop_plugin" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
-					Start
-				</button>
-				<button id="stop" class="button tiny radius startstop_plugin" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
-					Stop
-				</button>
-				<button id="restart" class="button tiny radius startstop_plugin" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
-					Restart
-				</button>
+				<table class="table_info">
+				<tr>
+					<td style="text-align: center;">
+						<button id="start" class="custom_button startstop_plugin" style="float: none; display: inline-block;">
+							Start
+						</button>
+					</td>
+					<td style="text-align: center;">
+						<button id="stop" class="custom_button startstop_plugin" style="float: none; display: inline-block;">
+							Stop
+						</button>
+					</td>
+					<td style="text-align: center;">
+						<button id="restart" class="custom_button startstop_plugin" style="float: none; display: inline-block;">
+							Restart
+						</button>
+					</td>
+				</tr>
+				</table>
 			</div>
 		</div>
 	</section>
@@ -173,7 +183,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="call_plugin" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="call_plugin" class="custom_button">
 					Exec
 				</button>
 			</div>
@@ -202,7 +212,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="remove_plugin" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="remove_plugin" class="custom_button">
 					Remove
 				</button>
 			</div>

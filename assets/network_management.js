@@ -149,6 +149,7 @@ $('#create_network').click(function(){
 				document.getElementById('loading_bar').style.visibility='hidden';
 				//document.getElementById("network_create-output").innerHTML = '<pre>'+JSON.stringify(response.message,null,"\t")+'</pre>';
 				document.getElementById("network_create-output").innerHTML = JSON.stringify(response.message);
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -191,6 +192,7 @@ $('#destroy_network').click(function(){
 							if(i==variables.length-1) {
 								refresh_tablenetworks("destroy_tablenetworks", "destroy");
 								document.getElementById('loading_bar').style.visibility='hidden';
+								refresh_lists();
 							}
 							document.getElementById("network_destroy-output").innerHTML += JSON.stringify(response.message);
 						},
@@ -233,6 +235,7 @@ $('#addboard_network').click(function(){
 				document.getElementById('loading_bar').style.visibility='hidden';
 				//document.getElementById("network_add-board-output").innerHTML = '<pre>'+JSON.stringify(response.message,null,"\t")+'</pre>';
 				document.getElementById("network_add-board-output").innerHTML = JSON.stringify(response.message);
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -279,8 +282,9 @@ $('#removeboard_network').click(function(){
 								if(i==variables.length-1) {
 									refresh_tablenetworks("remove_tablenetworks", "remove", board_id);
 									document.getElementById('loading_bar').style.visibility='hidden';
+									refresh_lists();
 								}
-								document.getElementById("network_remove-board-output").innerHTML += JSON.stringify(response.message);
+								document.getElementById("network_remove-board-output").innerHTML += JSON.stringify(response.message)+"<br />";
 							},
 							error: function(response){
 								verify_token_expired(response.responseJSON.message, response.responseJSON.result);
@@ -361,7 +365,7 @@ $('[id="networks_boardlist"]').on('change',
 						$("#show_boardnetworks_table").html('<tr><td style="text-align:center">No networks</td></tr>');
 					}
 					else{
-						var fields_to_show = ["board_name", "board_id", "vlan_ip", "socat_ip", "socat_port"];
+						var fields_to_show = ["vlan_name", "ip_vlan", "net_uuid"];
 						parsed_response = parse_json_fields(fields_to_show, response.message, false);
 						create_table_from_json("show_boardnetworks_table", parsed_response, fields_to_show);
 					}
@@ -395,6 +399,7 @@ $('#activate_boardnet_network').click(function(){
 			success: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("network_activate-board-output").innerHTML = JSON.stringify(response.message);
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';

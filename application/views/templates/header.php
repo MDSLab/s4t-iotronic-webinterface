@@ -23,12 +23,14 @@ limitations under the License.
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 		<script src="<?= $this -> config -> site_url() ?>assets/bower_components/foundation/js/vendor/modernizr.js"></script>
 		<!-- Openstreetmap -->
-		<!-- Leaflet -->
-		<link rel="stylesheet" type="text/css" href="<?= $this -> config -> site_url() ?>assets/leaflet.css" />
-		<link rel="stylesheet" type="text/css" href="<?= $this -> config -> site_url() ?>assets/MarkerCluster.Default.css" />
-		<link rel="stylesheet" type="text/css" href="<?= $this -> config -> site_url() ?>assets/MarkerCluster.css" />
-		<script src="<?= $this -> config -> site_url() ?>assets/leaflet.js"></script>
-		<script src="<?= $this -> config -> site_url() ?>assets/ll_MarkerCluster.js"></script>
+		<!-- Leaflet  https://github.com/Leaflet/Leaflet.markercluster#using-the-plugin -->
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.0/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin=""/>
+		<script src="https://unpkg.com/leaflet@1.3.0/dist/leaflet.js" integrity="sha512-C7BBF9irt5R7hqbUm2uxtODlUVs+IsNu2UULGuZN7gM+k/mmeG4xvIEac01BtQa4YIkUpp23zZC4wIwuXaPMQA==" crossorigin=""></script>
+		<link rel="stylesheet" type="text/css" href="https://unpkg.com/leaflet.markercluster@1.2.0/dist/MarkerCluster.Default.css" />
+		<link rel="stylesheet" type="text/css" href="https://unpkg.com/leaflet.markercluster@1.2.0/dist/MarkerCluster.css" />
+		<script src="https://unpkg.com/leaflet.markercluster@1.2.0/dist/leaflet.markercluster.js"></script>
+
+
 		<!-- OpenLayers -->
 		<!--<script src="https://www.openlayers.org/api/OpenLayers.js"></script>-->
 		<script src="https://openlayers.org/api/OpenLayers.js"></script>

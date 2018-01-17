@@ -172,6 +172,7 @@ $('#create-user').click(function(){
 			success: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("user_create-output").innerHTML = JSON.stringify(response.message);
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -220,6 +221,7 @@ $('#update-user').click(function(){
 				document.getElementById("user_update-output").innerHTML = JSON.stringify(response.message);
 				update_users("update_userlist");
 				clean_user_fields("user_update");
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -251,6 +253,7 @@ $("#unregister-user").click(function(){
 				update_users("unregister_userlist");
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("user_delete-output").innerHTML = JSON.stringify(response.message);
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';

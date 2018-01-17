@@ -32,7 +32,7 @@ $('[data-reveal-id="modal-show-vfs"]').on('click',
 	}
 );
 
-$('[data-reveal-id="modal-vfs-mount"]').on('click',
+$('[data-reveal-id="modal-mount-vfs"]').on('click',
 	function() {
 		$('#vfs_mount-output').empty();
 		update_boardsv2('mount_vfs_in_boardlist', 'C');
@@ -196,6 +196,7 @@ $('#mount_vfs').click(function(){
 			success: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("vfs_mount-output").innerHTML = JSON.stringify(response.message);
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -247,6 +248,7 @@ $('#unmount_vfs').click(function(){
 								if(i==variables.length-1) {
 									update_table_unmount(mount_in_board, "unmount_vfs_tabledirs");
 									document.getElementById('loading_bar').style.visibility='hidden';
+									refresh_lists();
 								}
 								document.getElementById("vfs_unmount-output").innerHTML += JSON.stringify(response.message);
 							},
@@ -299,6 +301,7 @@ $('#forcemount_vfs').click(function(){
 			success: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("vfs_forcemount-output").innerHTML = JSON.stringify(response.message);
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';

@@ -36,7 +36,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="create_network" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="create_network" class="custom_button">
 					Create
 				</button>
 			</div>
@@ -60,7 +60,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="destroy_network" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="destroy_network" class="custom_button">
 					Remove
 				</button>
 			</div>
@@ -92,7 +92,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="addboard_network" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="addboard_network" class="custom_button">
 					Add
 				</button>
 			</div>
@@ -123,7 +123,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="removeboard_network" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="removeboard_network" class="custom_button">
 					Remove
 				</button>
 			</div>
@@ -155,7 +155,7 @@ limitations under the License.
 
 
 
-<div id="modal-board-networks" class="reveal-modal" data-reveal>
+<div id="modal-board-networks" class="reveal-modal small" data-reveal>
 	<section>
 		<h3>Show networks on Board</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
@@ -181,7 +181,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="activate_boardnet_network" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="activate_boardnet_network" class="custom_button">
 					Activate
 				</button>
 			</div>

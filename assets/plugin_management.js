@@ -213,6 +213,7 @@ $('#create_plugin').click(function(){
 			success: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("plugin_create-output").innerHTML = JSON.stringify(response.message);
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -255,6 +256,7 @@ $('#destroy_plugin').click(function(){
 							if(i==variables.length-1) {
 								refresh_tableplugins("destroy_tableplugins", "destroy");
 								document.getElementById('loading_bar').style.visibility='hidden';
+								refresh_lists();
 							}
 							document.getElementById("plugin_destroy-output").innerHTML += JSON.stringify(response.message);
 						},
@@ -320,7 +322,10 @@ $('#inject_plugin').click(function(){
 						data: JSON.stringify(data),
 
 						success: function(response){
-							if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+							if(i==selected_list.length-1) {
+								document.getElementById('loading_bar').style.visibility='hidden';
+								refresh_lists();
+							}
 							document.getElementById("plugin_inject-output").innerHTML += board_name+ ' with '+ data.plugin+': '+JSON.stringify(response.message) +'<br />';
 						},
 						error: function(response){
@@ -393,7 +398,10 @@ $('.startstop_plugin').click(function(){
 						data: JSON.stringify(data),
 
 						success: function(response){
-							if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+							if(i==selected_list.length-1) {
+								document.getElementById('loading_bar').style.visibility='hidden';
+								refresh_lists();
+							}
 							document.getElementById("plugin_startstop-output").innerHTML += board_name +': '+JSON.stringify(response.message) +'<br />';
 						},
 						error: function(response){
@@ -454,7 +462,10 @@ $('#call_plugin').click(function(){
 						data: JSON.stringify(data),
 
 						success: function(response){
-							if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+							if(i==selected_list.length-1) {
+								document.getElementById('loading_bar').style.visibility='hidden';
+								refresh_lists();
+							}
 							document.getElementById("plugin_call-output").innerHTML += board_name +': '+JSON.stringify(response.message) +'<br />';
 						},
 						error: function(response){
@@ -506,6 +517,7 @@ $('#remove_plugin').click(function(){
 								if(i==variables.length-1) {
 									refresh_tableplugins("plugin_remove_table", "remove", board_id);
 									document.getElementById('loading_bar').style.visibility='hidden';
+									refresh_lists();
 								}
 								document.getElementById("plugin_remove-output").innerHTML += JSON.stringify(response.message);
 							},

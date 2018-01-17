@@ -18,7 +18,7 @@
 $('[data-reveal-id="modal-show-boards"]').on('click',
 	function() {
 
-		var fields_to_show = ["label", "status", "latest_update", "mobile", "net_enabled", "notify"];
+		var fields_to_show = ["label", "status", "latest_update", "mobile", "net_enabled", "notify", "board_id"];
 
 		$.ajax({
 			url: s4t_api_url+"/boards",
@@ -61,19 +61,7 @@ $('[data-reveal-id="modal-register-new-board"]').on('click',
 		$("#board_create_net_enabled").val("false");
 		$("#board_create_notify_enabled").val("false");
 
-
-		var flag_endpoints = false;
-		$.each(endpoints[0], function(key, value){
-			//console.log(key+" "+value);
-			if(value == true) flag_endpoints = true;
-		});
-		if(!flag_endpoints)
-			$('#board_create_endpoints_section').hide();
-		else{
-			$('#board_create_endpoints_section').show();
-			endpoints_list(endpoints[0], "board_create_endpoints_section", "board_create_endpoints", "board_create_endpointlist");
-		}
-
+		$('#board_create_endpoints_section').hide();
 
 		var array_promise = [];
 
@@ -354,24 +342,7 @@ $('#create-board').click(function(){
 		}
 
 		document.getElementById("board_create-output").innerHTML ='';
-		//console.log(data);
-		//console.log(endpoints);
-		//for(key in endpoints[0]) console.log(key +":"+endpoints[0][key]);
 
-		var endpoints_list = document.getElementsByClassName("board_create_endpointlist");
-		var endpoints_promise = [];
-
-		flag = "false";
-		for(i=0; i<endpoints_list.length; i++){
-			if (endpoints_list[i].checked){
-				flag = "true";
-				endpoints_promise.push(new Promise(function(resolve){
-					window[endpoints_list[i].id](data, resolve);
-				}));
-			}
-		}
-		if(flag == "true")
-			Promise.all(endpoints_promise).then(document.getElementById('loading_bar').style.visibility='hidden');
 
 		$.ajax({
 			url: s4t_api_url+"/boards",
@@ -384,7 +355,8 @@ $('#create-board').click(function(){
 				//console.log(response);
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("board_create-output").innerHTML = JSON.stringify(response.message);
-				update_boardsv2('create_boardlist');
+				//update_boardsv2('create_boardlist');
+				refresh_lists();
 			},
 			error: function(response){
 				//console.log('ERROR: '+JSON.stringify(response));
@@ -493,6 +465,7 @@ $('#update-board').click(function(){
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("board_update-output").innerHTML = JSON.stringify(response.message);
 				update_boardsv2('update_boardlist');
+				refresh_lists();
 			},
 			error: function(response){
 				//console.log('ERROR: '+JSON.stringify(response));
@@ -536,6 +509,7 @@ $('#delete_board').click(function(){
 						success: function(response){
 							if(i==variables.length-1) {
 								refresh_tableboards("delete_tableboards", "remove");
+								refresh_lists();
 								document.getElementById('loading_bar').style.visibility='hidden';
 							}
 							document.getElementById("board_delete-output").innerHTML += JSON.stringify(response.message)+"<br />";
@@ -585,6 +559,8 @@ $('#action-board').click(function(){
 				document.getElementById("board_action-output").innerHTML = JSON.stringify(response.message);
 				if(action =="reboot")
 					update_boardsv2('action_boardlist', 'C');
+
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -621,28 +597,6 @@ function refresh_tableboards(table_id, action) {
 	});
 }
 
-
-
-function endpoints_list(endpoints, divsection, outputlist, outputclass){
-
-	$('#'+outputlist).empty();
-
-	if(endpoints.length != 0){
-		for(key in endpoints) {
-			if(endpoints[key]){
-				//window[key]();
-				$('#'+outputlist).append('<input class="'+outputclass+'" type="checkbox" id="'+key+'">'+key+'</input><br>');
-			}
-		}
-	}
-	else
-		$('#'+divsection).hide();
-}
-
-
-
-
-
 //OLD VERSION (see below...)
 /*
 $('[data-reveal-id="modal-plugins_sensors-lists"]').on('click',
@@ -652,10 +606,28 @@ $('[data-reveal-id="modal-plugins_sensors-lists"]').on('click',
 );
 */
 
+
+function hideall_except(sel_div_id){
+
+	var nested_divs = $('#info-container').children("div");
+	//console.log(nested_divs);
+
+	for(i=0;i<nested_divs.length;i++){
+		id = nested_divs[i]["id"];
+
+		if(id != sel_div_id) 
+			$("#"+id).hide();
+		else
+			$("#"+id).show();
+	}
+}
+
+
 function populate_board_info(board_id){
 //function populate_board_info(data){
 	//$('#sensors_on_board').empty();
 
+	hideall_except("info-details");
 
 	//OLD VERSION
 	/*
@@ -727,11 +699,13 @@ function populate_board_info(board_id){
 						$("#info_tableservices").find("thead").remove();
 						$("#info_tableservices").find("tbody").remove();
 
-						create_table_from_json("info_tableservices", response.message.services, null);
+						create_table_from_json("info_tableservices", services, null);
 					}
 				}
-				else
+				else{
 					$('#cloud_services_section').hide();
+					$('#info-services').hide();
+				}
 
 				//Plugins
 				if(plugins_flag){
@@ -746,11 +720,13 @@ function populate_board_info(board_id){
 						$("#info_tableplugins").find("thead").remove();
 						$("#info_tableplugins").find("tbody").remove();
 						
-						create_table_from_json("info_tableplugins", response.message.plugins, null);
+						create_table_from_json("info_tableplugins", plugins, null);
 					}
 				}
-				else
+				else{
 					$('#plugins_section').hide();
+					$('#info-plugins').hide();
+				}
 
 				//Drivers
 				if(drivers_flag){
@@ -765,12 +741,13 @@ function populate_board_info(board_id){
 						$("#info_tabledrivers").find("thead").remove();
 						$("#info_tabledrivers").find("tbody").remove();
 
-						create_table_from_json("info_tabledrivers", response.message.drivers, null);
+						create_table_from_json("info_tabledrivers", drivers, null);
 					}
 				}
-				else
+				else{
 					$('#drivers_section').hide();
-
+					$('#info-drivers').hide();
+				}
 
 				//Networks
 				if(networks_flag){
@@ -778,18 +755,20 @@ function populate_board_info(board_id){
 						$('#info_tablenetworks').html('<tr><td style="text-align:center">No networks</td></tr>');
 					}
 					else{
-						networks = response.message.networks.sort(SortByName);
+						networks = response.message.vnets.sort(SortByVlanName);
 
-						$("#vnets_section").hide();
+						$("#vnets_section").show();
 
 						$("#info_tablenetworks").find("thead").remove();
 						$("#info_tablenetworks").find("tbody").remove();
 
-						create_table_from_json("info_tablenetworks", response.message.networks, null);
+						create_table_from_json("info_tablenetworks", networks, null);
 					}
 				}
-				else
+				else{
 					$('#vnets_section').hide();
+					$('#info-networks').hide();
+				}
 			},
 			error: function(response){
 				verify_token_expired(response.responseJSON.message, response.responseJSON.result);

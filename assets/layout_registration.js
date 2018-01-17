@@ -170,6 +170,7 @@ $('#create-layout').click(function(){
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("layout_create-output").innerHTML = JSON.stringify(response.message);
 				//update_layouts("unregister_layoutlist", "layout_delete-output");
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -212,7 +213,7 @@ $('#update-layout').click(function(){
 				document.getElementById("layout_update-output").innerHTML = JSON.stringify(response.message);
 				update_layouts("update_layoutlist");
 				clean_layout_fields("layout_update");
-
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -247,6 +248,7 @@ $("#unregister-layout").click(function(){
 				update_layouts("unregister_layoutlist");
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("layout_delete-output").innerHTML = JSON.stringify(response.message);
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';

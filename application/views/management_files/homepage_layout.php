@@ -20,17 +20,15 @@ limitations under the License.
 	<div class="inner-wrap">
 		<nav class="tab-bar">
 			<section class="left-small">
-				<a class="left-off-canvas-toggle menu-icon" ><span></span></a>
+				<a class="left-off-canvas-toggle menu-icon"><span></span></a>
 			</section>
 
 			<section class="middle tab-bar-section">
 				<h1 class="title">Stack4Things</h1>
 			</section>
-			<!--
 			<section class="right-small">
-					<a class="right-off-canvas-toggle menu-icon" ><span></span></a>
+				<a class="right-off-canvas-toggle menu-icon"><span>Credits</span></a>
 			</section>
-			-->
 		</nav>
 
 		<aside class="left-off-canvas-menu">
@@ -82,38 +80,22 @@ limitations under the License.
 				</li>
 			</ul>
 		</aside>
-		<!--
+
 		<aside class="right-off-canvas-menu">
 			<ul class="off-canvas-list">
-				<li><label>Users</label></li>
-				<li><a href="#">Hari Seldon</a></li>
-				<li class="has-submenu"><a href="#">R. Giskard Reventlov</a>
-					<ul class="right-submenu">
-						<li class="back"><a href="#">Back</a></li>
-						<li><label>Level 1</label></li>
-						<li><a href="#">Link 1</a></li>
-						<li class="has-submenu"><a href="#">Link 2 w/ submenu</a>
-							<ul class="right-submenu">
-								<li class="back"><a href="#">Back</a></li>
-								<li><label>Level 2</label></li>
-								<li><a href="#">...</a></li>
-							</ul>
-						</li>
-						<li><a href="#">...</a></li>
-					</ul>
-				</li>
-				<li><a href="#">...</a></li>
+				<li><label>Credits</label></li>
+				<li><a target="_blank" href="http://stack4things.unime.it/">Stack4Things</a></li>
+				<li><a target="_blank" href="<?= $this -> config -> item('swagger_url')?>">API</a></li>
 			</ul>
 		</aside>
-		-->
 
 		<section class="main-section">
 			<!-- content goes here -->
 			<table id="table_mainview">
 				<tr>
 					<td style="width:20%" valign="middle">
-						<div id="boards_status" style="text-align: center;"></div>
 						<div id="wrapper">
+							<div id="boards_status" style="text-align: center;"></div>
 						        <ul id="boardlist_status"></ul>
 						</div>
 						<!--
@@ -135,7 +117,7 @@ limitations under the License.
 					<td style="width:75%" valign="middle">
 						<div class="main-fieldset map-fieldset" id="mapdiv"></div>
 					</td>
-					<td style="width:5%" valign="middle">
+					<td style="width:5%; padding-top: 9px; padding-right: 20px; padding-bottom: 9px; padding-left: 0px" valign="middle">
 						<!--<div class="icon-bar vertical five-up">-->
 
 
@@ -145,16 +127,16 @@ limitations under the License.
 
 								<? if ($this -> config -> item('load_cloud_services_management')): ?>
 									<li>
-										<a>
+										<a class="side-menu">
 											<img src="<?= $this -> config -> site_url() ?>assets/images/foundation_svgs/fi-cloud.svg" >
 											<label>Services</label>
 										</a>
 										<ul>
 											<li><a data-reveal-id="modal-show-services">Show</a></li>
+											<li><a data-reveal-id="modal-status-service">Actions</a></li>
 											<li><a data-reveal-id="modal-register-service">Register</a></li>
 											<li><a data-reveal-id="modal-update-service">Update</a></li>
 											<li><a data-reveal-id="modal-delete-service">Delete</a></li>
-											<li><a data-reveal-id="modal-status-service">Actions</a></li>
 											<li><a data-reveal-id="modal-board-services">Show board services</a></li>
 										</ul>
 									</li>
@@ -162,7 +144,7 @@ limitations under the License.
 
 								<? if ($this -> config -> item('load_plugin_management')): ?>
 									<li>
-										<a>
+										<a class="side-menu">
 											<img src="<?= $this -> config -> site_url() ?>assets/images/foundation_svgs/fi-puzzle.svg" >
 											<label>Plugin</label>
 										</a>
@@ -181,7 +163,7 @@ limitations under the License.
 
 								<? if ($this -> config -> item('load_network_management')): ?>
 									<li>
-										<a>
+										<a class="side-menu">
 											<img src="<?= $this -> config -> site_url() ?>assets/images/foundation_svgs/fi-link.svg" >
 											<label>Network</label>
 										</a>
@@ -199,7 +181,7 @@ limitations under the License.
 								<? endif ?>
 								<? if ($this -> config -> item('load_gpio_management')): ?>
 									<li>
-										<a>
+										<a class="side-menu">
 											<img src="<?= $this -> config -> site_url() ?>assets/images/foundation_svgs/fi-usb.svg" >
 											<label>GPIO</label>
 										</a>
@@ -211,7 +193,7 @@ limitations under the License.
 								<? endif ?>
 								<? if ($this -> config -> item('load_driver_management')): ?>
 									<li>
-										<a>
+										<a class="side-menu">
 											<img src="<?= $this -> config -> site_url() ?>assets/images/foundation_svgs/fi-database.svg" >
 											<label>Driver</label>
 										</a>
@@ -231,7 +213,7 @@ limitations under the License.
 								<? endif ?>
 								<? if ($this -> config -> item('load_vfs_management')): ?>
 									<li>
-										<a>
+										<a class="side-menu">
 											<img src="<?= $this -> config -> site_url() ?>assets/images/foundation_svgs/fi-page-multiple.svg" >
 											<label>VFS</label>
 										</a>

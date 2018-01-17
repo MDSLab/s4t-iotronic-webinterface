@@ -35,7 +35,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="gpio_pin_mode" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="gpio_pin_mode" class="custom_button">
 					Action
 				</button>
 			</div>
@@ -82,7 +82,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="gpio_action" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="gpio_action" class="custom_button">
 					Submit
 				</button>
 			</div>

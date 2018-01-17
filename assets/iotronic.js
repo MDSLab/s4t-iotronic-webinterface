@@ -83,6 +83,9 @@ function SortByUsername(x,y) {
 	return ((x.username == y.username) ? 0 : ((x.username > y.username) ? 1 : -1 ));
 }
 
+function round(value, decimals) {
+	return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+}
 
 function loading(){
 	var loader_pathfile = site_url+"uploads/ajax-loader.gif";
@@ -161,6 +164,11 @@ if ( typeof String.prototype.startsWith != 'function' ) {
 		return this.substring( 0, str.length ) === str;
 	}
 };
+
+//UpperCase first letter !!!
+String.prototype.ucfirst = function(){
+    return this.charAt(0).toUpperCase() + this.substr(1);
+}
 
 
 function logout(){
@@ -292,18 +300,20 @@ function refresh_lists(){
 			connected = connected.sort(SortByLabel);
 			disconnected = disconnected.sort(SortByLabel);
 
-			document.getElementById("boards_status").innerHTML ='<font size="4"><b>Boards (<img src="'+site_url+'uploads/green-circle.png" width=20 height=20><span> '+connected.length+'</span> / <img src="'+site_url+'uploads/red-circle.png" width=20 height=20><span> '+disconnected.length+'</span>)</b></font><br />';
+			document.getElementById("boards_status").innerHTML ='<font size="4"><b>Boards (<img src="'+site_url+'uploads/green-circle.png" width=20 height=20><span> '+connected.length+'</span> / <img src="'+site_url+'uploads/red-circle.png" width=20 height=20><span> '+disconnected.length+'</span>)</b></font><br /><br />';
 			
 			for(i=0;i<connected.length;i++){
 				$('#boardlist_status').append('<li>' +
-								'<a href="#" onclick=populate_board_info("'+connected[i].board_id+'"); data-reveal-id="modal-plugins_sensors-lists">'+
+							//	'<a href="#" onclick=populate_board_info("'+connected[i].board_id+'"); data-reveal-id="modal-plugins_sensors-lists">'+
+								'<a href="#" onclick=populate_board_info("'+connected[i].board_id+'"); data-reveal-id="modal-board-info">'+
 								'<img src="'+site_url+'uploads/green-circle.png" width=20 height=20>'+
 								'<span>'+connected[i].label+'</span>'+
 							       '</li>');
 			}
 			for(j=0;j<disconnected.length;j++){
 				$('#boardlist_status').append('<li>'+
-								'<a href="#" onclick=populate_board_info("'+disconnected[j].board_id+'"); data-reveal-id="modal-plugins_sensors-lists">'+
+							//	'<a href="#" onclick=populate_board_info("'+disconnected[j].board_id+'"); data-reveal-id="modal-plugins_sensors-lists">'+
+								'<a href="#" onclick=populate_board_info("'+disconnected[j].board_id+'"); data-reveal-id="modal-board-info">'+
 									'<img src="'+site_url+'uploads/red-circle.png" width=20 height=20>'+
 									'<span>'+disconnected[j].label+'</span>'+
 								'</a>'+
@@ -454,12 +464,15 @@ function create_table_from_json(table_id, obj, array, checkbox_name){
 			}
 
 			for(j=0;j<content[i].length;j++){
-				
-				//Added to remove iotronic from fields to show in tables
-				if(String(content[i][j]).startsWith(String(s4t_iotronic_folder)))
-					content[i][j] = String(content[i][j]).replace(s4t_iotronic_folder, '');
+				if(table_id != "show_vfs_table" && table_id != "unmount_vfs_tabledirs"){
+					//Added to remove iotronic from fields to show in tables
+					if(String(content[i][j]).startsWith(String(s4t_iotronic_folder)))
+						content[i][j] = String(content[i][j]).replace(s4t_iotronic_folder, '');
 
-				tbd += "<td>"+content[i][j]+"</td>";
+					tbd += "<td>"+content[i][j]+"</td>";
+				}
+				else
+					tbd += '<td style="word-wrap: break-word; max-width: 180px">'+content[i][j]+'</td>';
 			}
 			tbd += "</tr>";
 			line_count++;
@@ -540,7 +553,40 @@ $('[data-reveal-id^="modal"]').on('click',
         }
 );
 
+
 $(':button').click(function(){
-	refresh_lists();
+	loading();
+	//refresh_lists();
 });
 
+
+//Start from here to manage the icon-bar menu on the right
+$(".side-menu").on({mouseover:
+	function(){
+		var children_number = $(this).parent().find('li').length;
+		var elem_offset = $(this).offset();
+		var item_size_h = $("#menu ul li ul li").height();
+		var item_size_w = $("#menu ul li ul li").width();
+		/*
+		console.log(children_number);
+		console.log(elem_offset);
+		console.log(item_size_h +" "+ item_size_w);
+		console.log($(document).height()+" "+ $(window).height());
+		//$('#menu ul li ul').css("margin-top", "70px");
+		*/
+
+		//40 is the footer height !!!
+		if(elem_offset.top + children_number * item_size_h > $(window).height()-40){
+
+			if(elem_offset.top > $(window).height()/2){
+				offset = children_number * item_size_h;
+				$('#menu ul li ul').css("margin-top", "-"+offset+"px");
+			}
+			else
+				$('#menu ul li ul').css("margin-top", "-"+elem_offset.top+"px");
+			
+		}
+		else
+			$('#menu ul li ul').css("margin-top", "-70px");
+	}
+});

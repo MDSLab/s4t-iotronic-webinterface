@@ -40,7 +40,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="create_driver" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="create_driver" class="custom_button">
 					Create
 				</button>
 			</div>
@@ -60,7 +60,7 @@ limitations under the License.
 		<table id="destroy_tabledrivers" style="width: 100%"></table>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="destroy_driver" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="destroy_driver" class="custom_button">
 					Remove
 				</button>
 			</div>
@@ -92,7 +92,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="inject_driver" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="inject_driver" class="custom_button">
 					Inject
 				</button>
 			</div>
@@ -131,7 +131,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="mount_driver" class="button tiny radius mount_umount_driver" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="mount_driver" class="custom_button mount_umount_driver">
 					Mount
 				</button>
 			</div>
@@ -157,7 +157,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="unmount_driver" class="button tiny radius mount_umount_driver" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="unmount_driver" class="custom_button mount_umount_driver">
 					Unmount
 				</button>
 			</div>
@@ -188,7 +188,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="write_driver" class="button tiny radius mount_umount_driver" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="write_driver" class="custom_button mount_umount_driver">
 					Write
 				</button>
 			</div>
@@ -220,7 +220,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="read_driver" class="button tiny radius mount_umount_driver" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="read_driver" class="custom_button mount_umount_driver">
 					Read
 				</button>
 			</div>
@@ -251,7 +251,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="remove_driver" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="remove_driver" class="custom_button">
 					Remove
 				</button>
 			</div>

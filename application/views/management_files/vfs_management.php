@@ -54,7 +54,7 @@ limitations under the License.
 		</fieldset>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="mount_vfs" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="mount_vfs" class="custom_button">
 					Mount
 				</button>
 			</div>
@@ -91,7 +91,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="unmount_vfs" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="unmount_vfs" class="custom_button">
 					Unmount
 				</button>
 			</div>
@@ -134,7 +134,7 @@ limitations under the License.
 		</fieldset>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="forcemount_vfs" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="forcemount_vfs" class="custom_button">
 					Mount
 				</button>
 			</div>

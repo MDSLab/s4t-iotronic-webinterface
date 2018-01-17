@@ -43,9 +43,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="register_service" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
-					Register
-				</button>
+				<button id="register_service" class="custom_button">Register</button>
 			</div>
 		</div>
 	</section>
@@ -79,9 +77,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="update_service" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
-					Update
-				</button>
+				<button id="update_service" class="custom_button">Update</button>
 			</div>
 		</div>
 	</section>
@@ -103,9 +99,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="delete_service" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
-					Delete
-				</button>
+				<button id="delete_service" class="custom_button">Delete</button>
 			</div>
 		</div>
 	</section>
@@ -117,7 +111,7 @@ limitations under the License.
 
 
 
-<div id="modal-status-service" class="reveal-modal" data-reveal>
+<div id="modal-status-service" class="reveal-modal small" data-reveal>
 	<section>
 		<h3>Service Actions</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
@@ -130,15 +124,25 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="enable_service" class="button tiny radius status_service" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
-					Enable
-				</button>
-				<button id="disable_service" class="button tiny radius status_service" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
-					Disable
-				</button>
-				<button id="restore_service" class="button tiny radius status_service" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
-					Restore
-				</button>
+				<table class="table_info">
+				<tr>
+					<td style="text-align: center;">
+						<button id="enable_service" class="custom_button status_service" style="float: none; display: inline-block;">
+							Enable
+						</button>
+					</td>
+					<td style="text-align: center;">
+						<button id="disable_service" class="custom_button status_service" style="float: none; display: inline-block;">
+							Disable
+						</button>
+					</td>
+					<td style="text-align: center;">
+						<button id="restore_service" class="custom_button status_service" style="float: none; display: inline-block;">
+							Restore
+						</button>
+					</td>
+				</tr>
+				</table>
 			</div>
 		</div>
 	</section>

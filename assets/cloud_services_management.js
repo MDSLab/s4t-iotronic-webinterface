@@ -137,6 +137,7 @@ $('#register_service').click(function(){
 			success: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("service_register-output").innerHTML = JSON.stringify(response.message);
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -182,6 +183,7 @@ $('#update_service').click(function(){
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("service_update-output").innerHTML = JSON.stringify(response.message);
 				update_services("update_servicelist");
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -217,7 +219,7 @@ $('#delete_service').click(function(){
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("service_delete-output").innerHTML = JSON.stringify(response.message);
 				update_services("delete_servicelist");
-				//refresh_lists();
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -272,7 +274,7 @@ $('.status_service').click(function(){
 						success: function(response){
 							if(i==selected_list.length-1){
 								document.getElementById('loading_bar').style.visibility='hidden';
-								//refresh_lists();
+								refresh_lists();
 							}
 							document.getElementById("service_status-output").innerHTML += label+': '+JSON.stringify(response.message);
 						},

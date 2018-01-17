@@ -15,6 +15,140 @@ limitations under the License.
 -->
 
 
+<div id="modal-board-info" class="reveal-modal" data-reveal>
+	<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+	<h3>Board Information</h3>
+	<table class="table_info">
+	<tr>
+		<td style="width: 20%; overflow-y: scroll;">
+			<div>
+				<ul class="side-nav">
+					<li><a href="#" onclick='hideall_except("info-details")'>Details</a></li>
+					<li><a href="#" onclick='hideall_except("info-enablers")'>Enablers</a></li>
+
+					<? if ($this -> config -> item('load_cloud_services_management')): ?>
+					<li><a href="#" onclick='hideall_except("info-services")'>Services</a></li>
+					<? endif ?>
+
+					<? if ($this -> config -> item('load_plugin_management')): ?>
+					<li><a href="#" onclick='hideall_except("info-plugins")'>Plugins</a></li>
+					<? endif ?>
+
+					<? if ($this -> config -> item('load_driver_management')): ?>
+					<li><a href="#" onclick='hideall_except("info-drivers")'>Drivers</a></li>
+					<? endif ?>
+
+					<? if ($this -> config -> item('load_vfs_management')): ?>
+					<li><a href="#" onclick='hideall_except("info-networks")'>Networks</a></li>
+					<? endif ?>
+				</ul>
+			</div>
+		</td>
+		<td valign="top" style="width: 80%; overflow-y: scroll;">
+			<div id="info-container">
+				<div id="info-details">
+					<h4><b>Details</b></h4>
+					<table class="table_info">
+					<tr>
+						<td>
+							<div id="info-uuid"></div>
+							<div id="info-description"></div>
+							<div id="info-user"></div>
+							<div id="info-project"></div>
+							<div id="info-model"></div>
+							<div id="info-manufacturer"></div>
+							<div id="info-image"></div>
+						</td>
+						<td style="vertical-align:top">
+							<div id="info-lat"></div>
+							<div id="info-lon"></div>
+							<div id="info-alt"></div>
+							<div id="info-timestamp"></div>
+						</td>
+					</tr>
+					</table>
+					<div class="mini_map" id="info-map" style="width: 100%; height: 100%"></div>
+				</div>
+
+				<div id="info-enablers">
+					<h4><b>Enablers</b></h4>
+					<!--
+					<table class="table_info">
+						<tr>
+							<td style="width: 30%; text-align:center">
+								<input type="checkbox" id="info_mobile_enabled"><label>Mobile</label></input>
+							</td>
+							<td style="width: 30%; text-align:center">
+								<input type="checkbox" id="info_net_enabled"><label>Network</label></input>
+							</td>
+							<td style="width: 30%; text-align:center">
+								<input type="checkbox" id="info_notify_enabled"><label>Notify</label></input>
+							</td>
+						</tr>
+					</table>
+					-->
+					<table class="table_info">
+						<tr>
+							<td style="width: 18%;">
+								<input type="checkbox" id="info_mobile_enabled"><label>Mobile</label></input>
+							</td>
+							<td style="width: 82%;">
+								<textarea placeholder="" name="" rows="2" readonly>If the board is a mobile device and it could move, this flag should be set.</textarea>
+							</td>
+						</tr>
+						<tr>
+							<td style="width: 18%;">
+								<input type="checkbox" id="info_net_enabled"><label>Network</label></input>
+							</td>
+							<td style="width: 82%;">
+								<textarea placeholder="" name="" rows="2" readonly>This flag indicates if a board could exploit the network functionalities.</textarea>
+							</td>
+						</tr>
+						<tr>
+							<td style="width: 18%;">
+								<input type="checkbox" id="info_notify_enabled"><label>Notify</label></input>
+							</td>
+							<td style="width: 82%;">
+								<textarea placeholder="" name="" rows="2" readonly>It allows the user/owner of the board to be notified if something is going wrong.</textarea>
+							</td>
+						</tr>
+					</table>
+				</div>
+
+				<div id="info-services">
+					<div id="cloud_services_section">
+						<h4><b>Services</b></h4>
+						<table id="info_tableservices" style="width: 100%"></table>
+					</div>
+				</div>
+
+				<div id="info-plugins">
+					<div id="plugins_section">
+						<h4><b>Plugins</b></h4>
+						<table id="info_tableplugins" style="width: 100%"></table>
+					</div>
+				</div>
+
+				<div id="info-drivers">
+					<div id="drivers_section">
+						<h4><b>Drivers</b></h4>
+						<table id="info_tabledrivers" style="width: 100%"></table>
+					</div>
+				</div>
+
+				<div id="info-networks">
+					<div id="vnets_section">
+						<h4><b>Networks</b></h4>
+						<table id="info_tablenetworks" style="width: 100%"></table>
+					</div>
+				</div>
+			</div>
+		</td>
+	</tr>
+	</table>
+</div>
+
+<!-- !!! TO BE REMOVED !!! -->
 <div id="modal-plugins_sensors-lists" class="reveal-modal" data-reveal>
 	<section>
 		<h3>Board Information</h3>
@@ -243,7 +377,7 @@ limitations under the License.
 
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="create-board" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="create-board" class="custom_button">
 					Register
 				</button>
 			</div>
@@ -358,7 +492,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="update-board" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="update-board" class="custom_button">
 					Update
 				</button>
 			</div>
@@ -380,7 +514,7 @@ limitations under the License.
 
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="delete_board" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="delete_board" class="custom_button">
 					Remove
 				</button>
 			</div>
@@ -407,7 +541,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="action-board" class="button tiny radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="action-board" class="custom_button">
 					Execute
 				</button>
 			</div>

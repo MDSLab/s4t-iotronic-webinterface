@@ -62,6 +62,7 @@ $('#gpio_pin_mode').click(function(){
 			success: function (response) {
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("gpio_pinmode-output").innerHTML = JSON.stringify(response.message);
+				refresh_lists();
 			},
 			error: function (response) {
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -102,6 +103,7 @@ $('#gpio_action').click(function(){
 				success: function (response) {
 					document.getElementById('loading_bar').style.visibility='hidden';
 					document.getElementById("gpio_readwrite-output").innerHTML = JSON.stringify(response.message);
+					refresh_lists();
 				},
 				error: function (response) {
 					document.getElementById('loading_bar').style.visibility='hidden';
@@ -131,6 +133,7 @@ $('#gpio_action').click(function(){
 					success: function (response) {
 						document.getElementById('loading_bar').style.visibility='hidden';
 						document.getElementById("gpio_readwrite-output").innerHTML = JSON.stringify(response.message);
+						refresh_lists();
 					},
 					error: function (response) {
 						document.getElementById('loading_bar').style.visibility='hidden';

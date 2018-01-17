@@ -24,9 +24,9 @@ limitations under the License.
 			<?= form_open('admin/web_ui'); ?>
 				Username<input type="text" name="username" value="admin">
 				Password<input type="password" name="password" value="">
-				<center>
-					<button class="button tiny radius">Login</button>
-				</center>
+				<div style="text-align: center;">
+					<button class="custom_button" style="float: none">Login</button>
+				</div>
 			<?= form_close() ?>
 		</div>
 

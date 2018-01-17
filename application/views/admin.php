@@ -40,34 +40,6 @@ limitations under the License.
 	};
 	
 	var boards_list = "";
-
-
-
-	//Load ckan parameters
-	ckan_params = [];
-	ckan = JSON.parse('[<?= json_encode($this -> config -> item('ckan'))?>]');
-	if(ckan[0].length != 0){
-		for(key in ckan[0]){
-			//console.log(key+ " "+ckan[0][key]);
-			ckan_params[key] = ckan[0][key];
-		}
-	}
-	//console.log("CKAN: "+ckan_params["address"]+" ORG: "+ckan_params["organization"]+" AUTH_ID: "+ckan_params["m_authid"]);
-
-	
-	//Load endpoints scripts
-	endpoints = JSON.parse('[<?= json_encode($this -> config -> item('endpoints'))?>]');
-	//console.log(endpoints);
-	if(endpoints[0].length != 0){
-		for(key in endpoints[0]){
-			if(endpoints[0][key]){
-				elem = document.body.appendChild(document.createElement("script"));
-				elem.src = site_url+"assets/endpoints_management/"+key+"/"+key+".js";
-				//console.log(key +":"+endpoints[0][key]);
-				//window[key]();
-			}
-		}
-	}
 </script>
 
 

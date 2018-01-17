@@ -42,7 +42,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="create-layout" class="button small radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">Register</button>
+				<button id="create-layout" class="custom_button">Register</button>
 			</div>
 		</div>
 	</section>
@@ -75,7 +75,7 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="update-layout" class="button small radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">Update</button>
+				<button id="update-layout" class="custom_button">Update</button>
 			</div>
 		</div>
 	</section>
@@ -99,7 +99,7 @@ limitations under the License.
 		</fieldset>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="unregister-layout" class="button small radius" style="font-size:1.0rem; color:#fff; float:right;" onclick="loading();">
+				<button id="unregister-layout" class="custom_button">
 					Unregister
 				</button>
 			</div>

@@ -262,6 +262,7 @@ $('#create_driver').click(function(){
 			success: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("driver_create-output").innerHTML = JSON.stringify(response.message);
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -303,6 +304,7 @@ $('#destroy_driver').click(function(){
 							if(i==variables.length-1) {
 								refresh_tabledrivers("destroy_tabledrivers", "destroy");
 								document.getElementById('loading_bar').style.visibility='hidden';
+								refresh_lists();
 							}
 							document.getElementById("driver_destroy-output").innerHTML += JSON.stringify(response.message);
 						},
@@ -366,7 +368,10 @@ $('#inject_driver').click(function(){
 						data: JSON.stringify(data),
 
 						success: function(response){
-							if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+							if(i==selected_list.length-1) {
+								document.getElementById('loading_bar').style.visibility='hidden';
+								refresh_lists();
+							}
 							document.getElementById("driver_inject-output").innerHTML += board_name+ ' with '+ driver_name+': '+JSON.stringify(response.message) +'<br />';
 						},
 						error: function(response){
@@ -436,6 +441,7 @@ $('#mount_driver').click(function(){
 					document.getElementById("driver_mount-output").innerHTML = local_boardname +' with remote '+remote_boardname+': '+JSON.stringify(response.message) +'<br />';
 				else
 					document.getElementById("driver_mount-output").innerHTML = local_boardname +': '+JSON.stringify(response.message) +'<br />';
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -487,6 +493,7 @@ $('#unmount_driver').click(function(){
 			success: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("driver_unmount-output").innerHTML = board_name +': '+JSON.stringify(response.message) +'<br />';
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -532,6 +539,7 @@ $('#write_driver').click(function(){
 					document.getElementById("driver_write-output").innerHTML = board_name+'--> Result: '+JSON.stringify(response.message.value);
 				else
 					document.getElementById("driver_write-output").innerHTML = board_name+'--> Error: '+JSON.stringify(response.message.response);
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -572,6 +580,7 @@ $('#read_driver').click(function(){
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("read_file_content").innerHTML = response.message.value;
 				document.getElementById("driver_read-output").innerHTML = +board_name+'--> Value: '+JSON.stringify(response.message.value);
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -618,6 +627,7 @@ $('#remove_driver').click(function(){
 								if(i==variables.length-1) {
 									refresh_tabledrivers("driver_remove_table", "remove", board_id);
 									document.getElementById('loading_bar').style.visibility='hidden';
+									refresh_lists();
 								}
 								document.getElementById("driver_remove-output").innerHTML += JSON.stringify(response.message);
 							},

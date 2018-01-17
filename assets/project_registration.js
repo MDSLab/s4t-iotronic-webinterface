@@ -157,6 +157,7 @@ $('#create-project').click(function(){
 				//document.getElementById("project_create-output").innerHTML = '<pre>'+JSON.stringify(response.message) +'</pre>';
 				document.getElementById("project_create-output").innerHTML = JSON.stringify(response.message);
 				//update_projects("unregister_projectlist", "project_delete-output");
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -196,7 +197,7 @@ $('#update-project').click(function(){
 				document.getElementById("project_update-output").innerHTML = JSON.stringify(response.message);
 				update_projects("update_projectlist");
 				clean_project_fields("project_update");
-
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -229,6 +230,7 @@ $("#unregister-project").click(function(){
 				update_projects("unregister_projectlist");
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("project_delete-output").innerHTML = JSON.stringify(response.message);
+				refresh_lists();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
