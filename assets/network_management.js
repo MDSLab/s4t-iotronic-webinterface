@@ -234,7 +234,10 @@ $('#addboard_network').click(function(){
 			success: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
 				//document.getElementById("network_add-board-output").innerHTML = '<pre>'+JSON.stringify(response.message,null,"\t")+'</pre>';
-				document.getElementById("network_add-board-output").innerHTML = JSON.stringify(response.message);
+				if(response.result == "SUCCESS")
+					document.getElementById("network_add-board-output").innerHTML = "The board is added to network "+response.message.vnet_name+" with the following IP: "+response.message.vnet_ip;
+				else if(response.result == "WARNING")
+					document.getElementById("network_add-board-output").innerHTML = JSON.stringify(response.message);
 				refresh_lists();
 			},
 			error: function(response){
@@ -280,7 +283,7 @@ $('#removeboard_network').click(function(){
 
 							success: function(response){
 								if(i==variables.length-1) {
-									refresh_tablenetworks("remove_tablenetworks", "remove", board_id);
+									update_net_boards(network_uuid, "remove_tablenetworks", "network_remove-board-output");
 									document.getElementById('loading_bar').style.visibility='hidden';
 									refresh_lists();
 								}

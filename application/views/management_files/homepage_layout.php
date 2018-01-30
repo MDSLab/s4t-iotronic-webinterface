@@ -27,7 +27,7 @@ limitations under the License.
 				<h1 class="title">Stack4Things</h1>
 			</section>
 			<section class="right-small">
-				<a class="right-off-canvas-toggle menu-icon"><span>Credits</span></a>
+				<a class="right-off-canvas-toggle menu-icon"><span>Support</span></a>
 			</section>
 		</nav>
 
@@ -83,7 +83,7 @@ limitations under the License.
 
 		<aside class="right-off-canvas-menu">
 			<ul class="off-canvas-list">
-				<li><label>Credits</label></li>
+				<li><label>Support</label></li>
 				<li><a target="_blank" href="http://stack4things.unime.it/">Stack4Things</a></li>
 				<li><a target="_blank" href="<?= $this -> config -> item('swagger_url')?>">API</a></li>
 			</ul>
@@ -117,14 +117,12 @@ limitations under the License.
 					<td style="width:75%" valign="middle">
 						<div class="main-fieldset map-fieldset" id="mapdiv"></div>
 					</td>
-					<td style="width:5%; padding-top: 9px; padding-right: 20px; padding-bottom: 9px; padding-left: 0px" valign="middle">
+					<td id="iconbar_container" style="width:5%; padding-top: 9px; padding-right: 20px; padding-bottom: 9px; padding-left: 0px" valign="middle">
 						<!--<div class="icon-bar vertical five-up">-->
 
-
+						<!--<div id="pre-menu"></div>-->
 						<nav id="menu">
 							<ul class="parent-menu">
-
-
 								<? if ($this -> config -> item('load_cloud_services_management')): ?>
 									<li>
 										<a class="side-menu">
@@ -149,14 +147,14 @@ limitations under the License.
 											<label>Plugin</label>
 										</a>
 										<ul>
+											<li><a data-reveal-id="modal-startstop-plugin">Actions</a></li>
+											<li><a data-reveal-id="modal-inject-plugin">Inject</a></li>
+											<li><a data-reveal-id="modal-call-plugin">Call</a></li>
+											<li><a data-reveal-id="modal-board-plugins">Show board plugins</a></li>
+											<li><a data-reveal-id="modal-remove-plugin">Remove from board</a></li>
 											<li><a data-reveal-id="modal-show-plugins">Show</a></li>
 											<li><a data-reveal-id="modal-create-plugin">Create</a></li>
 											<li><a data-reveal-id="modal-destroy-plugin">Destroy</a></li>
-											<li><a data-reveal-id="modal-inject-plugin">Inject</a></li>
-											<li><a data-reveal-id="modal-startstop-plugin">Actions</a></li>
-											<li><a data-reveal-id="modal-call-plugin">Call</a></li>
-											<li><a data-reveal-id="modal-remove-plugin">Remove from board</a></li>
-											<li><a data-reveal-id="modal-board-plugins">Show board plugins</a></li>
 										</ul>
 									</li>
 								<? endif ?>

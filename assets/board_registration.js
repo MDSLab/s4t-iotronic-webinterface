@@ -47,6 +47,8 @@ $('[data-reveal-id="modal-register-new-board"]').on('click',
 		$('#board_create_notify_section').hide();
 		$('#board_create_refresh_coordinates').hide();
 
+		document.getElementById("board_create-output").innerHTML = '';
+
 		//Cleaning old data
 		document.getElementById('board_create_label').value = "";
 		document.getElementById('board_create_description').value = "";
@@ -61,7 +63,6 @@ $('[data-reveal-id="modal-register-new-board"]').on('click',
 		$("#board_create_net_enabled").val("false");
 		$("#board_create_notify_enabled").val("false");
 
-		$('#board_create_endpoints_section').hide();
 
 		var array_promise = [];
 
@@ -102,6 +103,12 @@ $('[data-reveal-id="modal-action-board"]').on('click',
 			$('#board_actionlist').append('<option title="'+actions_array[i]+'" value="'+actions_array[i]+'" data-unit="">'+actions_array[i]+'</option>');
 	}
 );
+
+
+$('#board_generate_uuid').click(function(){
+	document.getElementById('loading_bar').style.visibility='hidden';
+	generate_uuid("board_create_uuid");
+});
 
 
 //UNIFY THESE ACTIONS (in couples)!!!
@@ -191,6 +198,7 @@ $('[id="update_boardlist"]').on('change',
 						//console.log(JSON.stringify(response));
 
 						info = response.message.info;
+						//console.log(info);
 
 						document.getElementById("board_update_label").value = info.label;
 						document.getElementById("board_update_description").value = info.description;
@@ -343,7 +351,6 @@ $('#create-board').click(function(){
 
 		document.getElementById("board_create-output").innerHTML ='';
 
-
 		$.ajax({
 			url: s4t_api_url+"/boards",
 			type: 'POST',
@@ -373,6 +380,7 @@ $('#create-board').click(function(){
 $('#update-board').click(function(){
 
 	data = {};
+	document.getElementById("board_update-output").innerHTML ='';
 
 	//document.getElementById('loading_bar').style.visibility='visible';
 	/*
@@ -650,7 +658,7 @@ function populate_board_info(board_id){
 
 				info = response.message.info;
 
-				$('#info-label').html('<center><b>'+info.label+'</b></center>');
+				$('#info-label').html('<b>Label: </b>'+info.label);
 				$('#info-uuid').html('<b>UUID: </b>'+info.board_id);
 				$('#info-description').html('<b>Description: </b>'+info.description);
 

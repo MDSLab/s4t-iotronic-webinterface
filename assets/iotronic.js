@@ -561,32 +561,56 @@ $(':button').click(function(){
 
 
 //Start from here to manage the icon-bar menu on the right
-$(".side-menu").on({mouseover:
-	function(){
-		var children_number = $(this).parent().find('li').length;
-		var elem_offset = $(this).offset();
-		var item_size_h = $("#menu ul li ul li").height();
-		var item_size_w = $("#menu ul li ul li").width();
-		/*
-		console.log(children_number);
-		console.log(elem_offset);
-		console.log(item_size_h +" "+ item_size_w);
-		console.log($(document).height()+" "+ $(window).height());
-		//$('#menu ul li ul').css("margin-top", "70px");
-		*/
 
-		//40 is the footer height !!!
-		if(elem_offset.top + children_number * item_size_h > $(window).height()-40){
+//$('#iconbar_container').mouseover(function() {
+$('#pre-menu').mouseover(function() {
+	$('#menu ul li ul').removeAttr("style");
+	//console.log("HERE");
+});
 
-			if(elem_offset.top > $(window).height()/2){
-				offset = children_number * item_size_h;
-				$('#menu ul li ul').css("margin-top", "-"+offset+"px");
-			}
-			else
-				$('#menu ul li ul').css("margin-top", "-"+elem_offset.top+"px");
-			
+$('#pre-menu, .side-menu, .parent-menu').mouseout(function() {
+	$('#menu ul li ul').removeAttr("style");
+	//console.log("HERE2");
+});
+
+$('.side-menu').mouseover(function(){
+	//console.log("THERE");
+
+	var children_number = $(this).parent().find('ul').find('li').length;
+	var elem_offset = $(this).offset();
+	var item_size_h = $("#menu ul li ul li").height();
+	var item_size_w = $("#menu ul li ul li").width();
+
+	/*
+	console.log(children_number);
+	console.log(elem_offset);
+	console.log(item_size_h +" "+ item_size_w);
+	console.log($(document).height()+" "+ $(window).height());
+	*/
+
+	//40 is the footer height !!!
+	if(elem_offset.top + children_number * item_size_h > $(window).height()-40){
+	
+		if(elem_offset.top > $(window).height()/2){
+			offset = children_number * item_size_h;
+			$('#menu ul li ul').css("margin-top", "-"+offset+"px");
 		}
 		else
-			$('#menu ul li ul').css("margin-top", "-70px");
+			$('#menu ul li ul').css("margin-top", "-"+elem_offset.top+"px");
 	}
+	else
+		$('#menu ul li ul').css("margin-top", "-70px");
+
+	return false;
 });
+
+
+/*
+$(document).ready(function() {
+	height = ( $('#mapdiv').height() - $(".parent-menu").height() ) /2;
+	console.log(height);
+	$('#pre-menu').css("height", height);
+});
+*/
+
+

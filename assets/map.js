@@ -18,7 +18,7 @@
 //WORKING VERSION WITH LEAFLET
 // ---------------------------------------------------------------------------------------------------------------------------------------------
 
-var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+var osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 //var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
 //var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});
 var osm = new L.TileLayer(osmUrl, {});
@@ -28,20 +28,26 @@ var map = L.map('mapdiv', {scrollWheelZoom:false, worldCopyJump: true}).setView(
 map.addLayer(osm);
 
 //Copyright
-L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> - by <b>MDSLab</b>'
+//L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> - by <b>MDSLab</b>'
 }).addTo(map);
 
 
 //MiniMap for board_info
-/*
 var info_map = L.map('info-map', {scrollWheelZoom:false}).setView([38.20523,15.55972], 12);
 info_map.addLayer(osm);
-L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> - by <b>MDSLab</b>'
+//L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> - by <b>MDSLab</b>'
 }).addTo(info_map);
-*/
 
+
+//FIX for OSM map: not loading correctly sizes in modals (https://github.com/Leaflet/Leaflet/issues/941)
+info_map.getSize = function(){
+	//return new L.Point(this._container.clientWidth, this._container.clientHeight);
+	return new L.Point(700, 400);
+}
 
 
 var markers = null;
@@ -142,7 +148,6 @@ function refresh_map(){
 				'Longitude: <b>'+longitude[sel]+'</b><br />' +
 				'Altitude: <b>'+altitude[sel]+'</b><br /><br />';
 
-
 			global_popup = open_popup + default_popup +"</div>";
 			var popup = L.popup().setLatLng(e.latlng).setContent(global_popup).openOn(map);
 		});
@@ -155,15 +160,10 @@ function refresh_map(){
 
 
 function boardinfo_map(board_status, lat, lng){
-	var info_map = L.map('info-map', {scrollWheelZoom:false, worldCopyJump: true}).setView([lat,lng], 6);
-	info_map.addLayer(osm);
-	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> - by <b>MDSLab</b>'
-	}).addTo(info_map);
-	//info_map.map.updateSize();
+	info_map.setView([lat,lng], 6);
+	info_map.invalidateSize();
+	document.getElementById('info-map').style.display = 'block';
 
-	//info_map.invalidateSize();
-	//info_map.setView([lat,lng], 6);
 	var boardinfo_markers = L.markerClusterGroup({ disableClusteringAtZoom: 17 });
 	var boardinfo_marker = L.marker([lat, lng]);
 

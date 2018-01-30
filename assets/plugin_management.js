@@ -115,22 +115,25 @@ $('[id="remove_plugin_boardlist"]').on('change',
 		var board_id = $( "#remove_plugin_boardlist option:selected" ).val();
 
 		if(board_id == '--'){
+			$('#plugin_remove_table_section').hide();
 			document.getElementById("plugin_remove-output").innerHTML ='';
 		}
 		else{
+			$('#plugin_remove_table_section').show();
 			$.ajax({
-				url: s4t_api_url+"/boards/"+board_id,
+				url: s4t_api_url+"/boards/"+board_id+"/plugins",
 				type: 'GET',
 				dataType: 'json',
 				headers: ajax_headers,
 
 				success: function(response){
-					if(response.message.plugins.length !=0){
-						$('#plugin_remove_table_section').show();
-						create_table_from_json("plugin_remove_table", response.message.plugins, null, "remove");
+					if(response.message.length ==0){
+						$("#plugin_remove_table").html('<tr><td style="text-align:center">No plugins</td></tr>');
 					}
 					else{
-						$('#plugin_remove_table_section').hide();
+						var fields_to_show = ["name", "id", "category", "state"];
+						parsed_response = parse_json_fields(fields_to_show, response.message, false);
+						create_table_from_json("plugin_remove_table", parsed_response, fields_to_show, "remove");
 					}
 				},
 				error: function(response){

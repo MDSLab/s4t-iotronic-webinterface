@@ -51,6 +51,7 @@ limitations under the License.
 					<table class="table_info">
 					<tr>
 						<td>
+							<div id="info-label"></div>
 							<div id="info-uuid"></div>
 							<div id="info-description"></div>
 							<div id="info-user"></div>
@@ -276,7 +277,18 @@ limitations under the License.
 
 		<div class="row">
 			<label>Board UUID</label>
-			<input id="board_create_uuid" type="text" value="" />
+			<!--<input id="board_create_uuid" type="text" value="" />-->
+
+			<table class="table_info" style="padding: 0px">
+			<tr>
+				<td style="width: 90%; padding: 0px">
+					<input id="board_create_uuid" type="text" value="" />
+				</td>
+				<td style="width: 10%; padding: 0px">
+					<button id="board_generate_uuid" class="custom_button">New</button>
+				</td>
+			</tr>
+			</table>
 
 			<label>Label</label>
 			<input id="board_create_label" type="text" placeholder="Label" value="" />
@@ -364,14 +376,6 @@ limitations under the License.
 
 				<label>Notify Retry</label>
 				<input id="board_create_notify_retry" type="number" min="1" max="5" step="1" value="3"/>
-			</div>
-
-			<div id="board_create_endpoints_section">
-				<label>Endpoints</label>
-				<fieldset>
-					<center><div id="board_create_endpoints"></div></center>
-				</fieldset>
-
 			</div>
 		</div>
 

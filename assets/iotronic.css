@@ -249,6 +249,7 @@ span {
 	padding: 10px 15px 10px 15px;
 	text-decoration: none;
 	float:right;
+	outline:none;
 }
 
 .custom_button:hover {
@@ -285,6 +286,11 @@ span {
 	border-radius: 10px;
 	box-shadow: 10px 10px 5px #888888;
 }
+
+.side-menu ul{
+	margin-top: -200px;
+}
+
 
 #menu ul{
 	list-style-type:none;
