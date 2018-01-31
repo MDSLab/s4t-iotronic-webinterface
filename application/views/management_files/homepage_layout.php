@@ -120,7 +120,7 @@ limitations under the License.
 					<td id="iconbar_container" style="width:5%; padding-top: 9px; padding-right: 20px; padding-bottom: 9px; padding-left: 0px" valign="middle">
 						<!--<div class="icon-bar vertical five-up">-->
 
-						<!--<div id="pre-menu"></div>-->
+						<div id="pre-menu"></div>
 						<nav id="menu">
 							<ul class="parent-menu">
 								<? if ($this -> config -> item('load_cloud_services_management')): ?>

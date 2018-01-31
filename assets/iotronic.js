@@ -568,7 +568,8 @@ $('#pre-menu').mouseover(function() {
 	//console.log("HERE");
 });
 
-$('#pre-menu, .side-menu, .parent-menu').mouseout(function() {
+//$('#pre-menu, .side-menu, .parent-menu').mouseout(function() {
+$('#pre-menu').mouseout(function() {
 	$('#menu ul li ul').removeAttr("style");
 	//console.log("HERE2");
 });
@@ -605,12 +606,11 @@ $('.side-menu').mouseover(function(){
 });
 
 
-/*
+
 $(document).ready(function() {
 	height = ( $('#mapdiv').height() - $(".parent-menu").height() ) /2;
 	console.log(height);
 	$('#pre-menu').css("height", height);
 });
-*/
 
 
