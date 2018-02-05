@@ -58,21 +58,11 @@ var longitude = [];
 var altitude = [];
 
 var last_update = [];
-var model = [];
-var manufacturer = [];
-//var sensors_ids = [];
 
 
 var marker_pathfile = site_url+"uploads/marker-icon.png";
 var marker_pathfile_green = site_url+"uploads/marker-icon-green.png";
 var marker_pathfile_red = site_url+"uploads/marker-icon-red.png";
-
-
-var marker_shadow = L.icon({
-	iconUrl: "",
-	iconAnchor:[12.5, 41],
-	shadowUrl: site_url+'assets/images/marker-shadow.png'
-});
 
 
 var marker_red = L.icon({
