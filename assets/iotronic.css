@@ -188,7 +188,9 @@ span {
 
 	min-height: 600px;
 	max-width: 100%;
-	overflow-x: hidden;
+	/*overflow-x: hidden;*/
+	max-height: 70%;
+	overflow: scroll;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
