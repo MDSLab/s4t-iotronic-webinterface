@@ -126,9 +126,11 @@ function refresh_map(){
                 		}
 		        }
 
-			var img = '<img src="'+site_url+'uploads/red-circle.png" width=10 height=10>';
+			var img = '<img src="'+site_url+'uploads/blue-circle.png" width=10 height=10>';
 			if(boards_list[sel].status == "C")
 				img = '<img src="'+site_url+'uploads/green-circle.png" width=10 height=10>';
+			else if(boards_list[sel].status == "D")
+				img = '<img src="'+site_url+'uploads/red-circle.png" width=10 height=10>';
 
 			var open_popup = '<div>';
 
