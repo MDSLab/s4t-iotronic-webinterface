@@ -130,7 +130,7 @@ function update_layouts(select_id, output_id, callback){
 			layouts_list = response.message.sort(SortByModel);
 
 			for(i=0;i<layouts_list.length;i++){
-				$('#'+select_id).append('<option title="'+layouts_list[i].manufacturer+'" value="'+layouts_list[i].id_layout+'" data-unit="">'+layouts_list[i].model+'</option>');
+				$('#'+select_id).append('<option title="'+layouts_list[i].manufacturer+'" value="'+layouts_list[i].id_layout+'" data-unit="">'+layouts_list[i].model+' [ '+layouts_list[i].image+' ]</option>');
 			}
 
 

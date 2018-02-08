@@ -609,7 +609,7 @@ $('.side-menu').mouseover(function(){
 
 $(document).ready(function() {
 	height = ( $('#mapdiv').height() - $(".parent-menu").height() ) /2;
-	console.log(height);
+	//console.log(height);
 	$('#pre-menu').css("height", height);
 });
 
