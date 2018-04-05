@@ -16,7 +16,7 @@ limitations under the License.
 
 <div id="modal-show-vfs" class="reveal-modal" data-reveal>
 	<section>
-		<h3>vfs</h3>
+		<h3>VFS</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<table id="show_vfs_table" style="width: 100%"></table>
 	</section>
@@ -149,10 +149,10 @@ limitations under the License.
 
 <div id="modal-board-vfs" class="reveal-modal" data-reveal>
 	<section>
-		<h3>Show vfs active on Board</h3>
+		<h3>Show VFS active on Board</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<div class="row">
-			<label>Board List</label>
+			<label>Boards List</label>
 			<select id="vfs_boardlist"></select>
 
 			<div id="show_boardvfs_section">

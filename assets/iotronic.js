@@ -83,6 +83,32 @@ function SortByUsername(x,y) {
 	return ((x.username == y.username) ? 0 : ((x.username > y.username) ? 1 : -1 ));
 }
 
+function getCookie(cname) {
+	var name = cname + "=";
+	var cookies = document.cookie.split(';');
+	//console.log(cookies);
+
+	for(var i=0; i<cookies.length; i++){
+		//remove space at the beginning of the string
+		cookies[i] = cookies[i].replace(/\s/g, '');
+		var ca = cookies[i].split(name);
+		if(ca.length >1){
+			//console.log(ca);
+			return ca[1];
+		}
+	}
+	/*
+	for(var i=0; i<cookies.length; i++){
+		var ca = cookies[i].split(name);
+
+		if(ca.length > 1){
+			var json = JSON.parse(ca[1]);
+			return json;
+		}
+	}
+	*/
+}
+
 function round(value, decimals) {
 	return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
 }
@@ -267,9 +293,11 @@ function get_boardname_from_uuid(uuid){
 
 
 function refresh_lists(){
+	var project_id = getCookie("selected_prj");
+	//console.log(project_id);
 
 	$.ajax({
-		url: s4t_api_url+"/boards",
+		url: s4t_api_url+"/boards?project="+project_id,
 		type: 'GET',
 		dataType: 'json',
 		headers: ajax_headers,
@@ -282,9 +310,8 @@ function refresh_lists(){
 			var disconnected_count = 0;
 			//console.log(response);
 
-
 			boards_list = response.message.sort(SortByStatus);
-			
+
 			connected = [];
 			disconnected = [];
 			
@@ -300,7 +327,8 @@ function refresh_lists(){
 			connected = connected.sort(SortByLabel);
 			disconnected = disconnected.sort(SortByLabel);
 
-			document.getElementById("boards_status").innerHTML ='<font size="4"><b>Boards (<img src="'+site_url+'uploads/green-circle.png" width=20 height=20><span> '+connected.length+'</span> / <img src="'+site_url+'uploads/red-circle.png" width=20 height=20><span> '+disconnected.length+'</span>)</b></font><br /><br />';
+			document.getElementById("boards_status").innerHTML = '<font size="4"><b>Boards (<img src="'+site_url+'uploads/green-circle.png" width=20 height=20><span> '+connected.length+'</span> / <img src="'+site_url+'uploads/red-circle.png" width=20 height=20><span> '+disconnected.length+'</span>)</b></font><br /><br />';
+			
 			
 			for(i=0;i<connected.length;i++){
 				$('#boardlist_status').append('<li>' +
@@ -378,8 +406,12 @@ function sensors_list(select_id, callback){
 
 
 function update_boardsv2(select_id, status, flag){
+
+	var prj = getCookie("selected_prj");
+
 	$.ajax({
-		url: s4t_api_url+"/boards",
+		//url: s4t_api_url+"/boards",
+		url: s4t_api_url+"/boards?project="+prj,
 		type: 'GET',
 		dataType: 'json',
 		headers: ajax_headers,
@@ -611,6 +643,5 @@ $(document).ready(function() {
 	height = ( $('#mapdiv').height() - $(".parent-menu").height() ) /2;
 	//console.log(height);
 	$('#pre-menu').css("height", height);
+	//get_projects_list();
 });
-
-

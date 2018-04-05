@@ -139,10 +139,10 @@ limitations under the License.
 
 <div id="modal-show-boards-network" class="reveal-modal" data-reveal>
 	<section>
-		<h3>Show Boards</h3>
+		<h3>Show Boards in vnet</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<div class="row">
-			<label>Board List</label>
+			<label>Networks List</label>
 			<select id="show_boards_vnetlist"></select>
 
 			<div id="network_showboards_table_section">

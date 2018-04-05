@@ -3,3 +3,4 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond $1 !^(index\.php|css|js|images|robots\.txt)
 RewriteRule ^(.*)$ index.php/$1 [L]
+php_flag session.auto_start 1

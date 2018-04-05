@@ -94,6 +94,9 @@ limitations under the License.
 			<table id="table_mainview">
 				<tr>
 					<td style="width:20%" valign="middle">
+						<div id="boards_project">
+							<select id="select_project"></select>
+						</div>
 						<div id="wrapper">
 							<div id="boards_status" style="text-align: center;"></div>
 						        <ul id="boardlist_status"></ul>
@@ -171,7 +174,7 @@ limitations under the License.
 											<li><a data-reveal-id="modal-destroy-network">Destroy</a></li>
 											<li><a data-reveal-id="modal-add-board-network">Add board</a></li>
 											<li><a data-reveal-id="modal-remove-board-network">Remove board</a></li>
-											<li><a data-reveal-id="modal-show-boards-network">Show boards</a></li>
+											<li><a data-reveal-id="modal-show-boards-network">Show boards in vnet</a></li>
 											<li><a data-reveal-id="modal-board-networks">Show board vnets</a></li>
 											<li><a data-reveal-id="modal-activate-boards-network">Enable boards</a></li>
 										</ul>

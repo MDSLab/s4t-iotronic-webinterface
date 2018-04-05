@@ -1,14 +1,16 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-
-$config['s4t_api_url'] = '<URL>:<PORT>/<VERSION>';
+$machine_address = '<IP_OR_HOSTNAME>';
+$config['s4t_api_url'] = 'https://'.$machine_address.':<PORT>/<VERSION>';
 
 $config['s4t_iotronic_folder'] = '/var/lib/iotronic/';
 
 //Swagger
-$config['swagger_url'] = '<SWAGGER_URL>';
+$config['swagger_url'] = 'https://'.$machine_address.'/iotronic-api-docs';
 
+//Default project
+$config['default_project'] = 'Admin';
 
 //Commands management
 //-------------------------------------------------------------------------
@@ -62,7 +64,7 @@ $config['show_string_or_json_lists'] = TRUE;
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = '<URL>/iotronic/';
+$config['base_url'] = 'https://'.$machine_address.'/iotronic/';
 
 /*
 |--------------------------------------------------------------------------

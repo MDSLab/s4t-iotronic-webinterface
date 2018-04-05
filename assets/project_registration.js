@@ -14,6 +14,62 @@
  * limitations under the License.
  */
 
+function get_projects_list(flag){
+	var fields_to_show = ["name", "uuid"];
+
+	$.ajax({
+		url: s4t_api_url+"/projects",
+		type: "GET",
+		dataType: 'json',
+		headers: ajax_headers,
+		success: function(response){
+			parsed_response = parse_json_fields(fields_to_show, response.message, false).sort(SortByName);
+			//console.log(parsed_response);
+
+			prjs = parsed_response;
+
+			var default_prj_id = null;
+			$("#select_project").empty();
+			for(var i=0; i<prjs.length; i++){
+				$("#select_project").append('<option value="'+prjs[i].uuid+'">'+prjs[i].name+'</option>');
+
+				//console.log(getCookie("selected_prj"));
+				if(getCookie("selected_prj") == undefined || flag){
+					if(prjs[i].name == default_project){
+						default_prj_id = prjs[i].uuid;
+					}
+				}
+			}
+			
+			//console.log(default_prj_id);
+			if(getCookie("selected_prj") == undefined || flag){
+				document.cookie = "selected_prj="+default_prj_id;
+				$("#select_project").val(default_prj_id);
+			}
+			else{
+				$("#select_project").val(getCookie("selected_prj"));
+			}
+
+			//document.cookie = "projects_list="+JSON.stringify(parsed_response);
+			//document.cookie = "bla=ff";
+
+			refresh_lists();
+		},
+		error: function(response){
+			verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+		}
+	});
+}
+
+$('[id="select_project"]').on('change',
+	function() {
+		var project_id = $( "#select_project option:selected" ).val();
+		//console.log(project_id);
+		document.cookie = "selected_prj="+project_id;
+		refresh_lists();
+	}
+);
+
 $('[data-reveal-id="modal-show-projects"]').on('click',
 	function() {
 		$('#projects_show-output').empty();
@@ -27,7 +83,7 @@ $('[data-reveal-id="modal-show-projects"]').on('click',
 			headers: ajax_headers,
 
 			success: function(response){
-				parsed_response = parse_json_fields(fields_to_show, response.message, false);
+				parsed_response = parse_json_fields(fields_to_show, response.message, false).sort(SortByName);
 				create_table_from_json("show_projects_table", parsed_response, fields_to_show);
 
 
@@ -157,7 +213,8 @@ $('#create-project').click(function(){
 				//document.getElementById("project_create-output").innerHTML = '<pre>'+JSON.stringify(response.message) +'</pre>';
 				document.getElementById("project_create-output").innerHTML = JSON.stringify(response.message);
 				//update_projects("unregister_projectlist", "project_delete-output");
-				refresh_lists();
+				//refresh_lists();
+				get_projects_list();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -197,7 +254,8 @@ $('#update-project').click(function(){
 				document.getElementById("project_update-output").innerHTML = JSON.stringify(response.message);
 				update_projects("update_projectlist");
 				clean_project_fields("project_update");
-				refresh_lists();
+				//refresh_lists();
+				get_projects_list();
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';
@@ -230,7 +288,8 @@ $("#unregister-project").click(function(){
 				update_projects("unregister_projectlist");
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("project_delete-output").innerHTML = JSON.stringify(response.message);
-				refresh_lists();
+				//refresh_lists();
+				get_projects_list(true);
 			},
 			error: function(response){
 				document.getElementById('loading_bar').style.visibility='hidden';

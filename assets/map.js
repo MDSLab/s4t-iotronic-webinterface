@@ -91,7 +91,7 @@ function refresh_map(){
 	markers = L.markerClusterGroup({
 		spiderfyOnMaxZoom: false, 
 		disableClusteringAtZoom: 17
-	 });
+	});
 
 	for(var i=0; i< boards_list.length; i++){
 		labels[i] = boards_list[i].label;
@@ -139,6 +139,7 @@ function refresh_map(){
 				'Latitude: <b>'+latitude[sel]+ '</b><br />' +
 				'Longitude: <b>'+longitude[sel]+'</b><br />' +
 				'Altitude: <b>'+altitude[sel]+'</b><br /><br />';
+
 
 			global_popup = open_popup + default_popup +"</div>";
 			var popup = L.popup().setLatLng(e.latlng).setContent(global_popup).openOn(map);

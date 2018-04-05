@@ -47,6 +47,7 @@ class Admin extends CI_Controller {
 			if(!$this -> session -> userdata('token_or_log')){
 				$token_or_log = $this -> get_token($this -> input -> post('username'), $this -> input -> post('password'));
 				$this -> session -> set_userdata('token_or_log', $token_or_log);
+				$this -> session -> set_userdata('default_project', $this -> config -> item('default_project'));
 			}
 		
 			if($this -> session -> userdata('result') == "SUCCESS"){

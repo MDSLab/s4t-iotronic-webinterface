@@ -63,6 +63,7 @@ $('[data-reveal-id="modal-register-new-board"]').on('click',
 		$("#board_create_net_enabled").val("false");
 		$("#board_create_notify_enabled").val("false");
 
+		$('#board_create_endpoints_section').hide();
 
 		var array_promise = [];
 
@@ -350,6 +351,7 @@ $('#create-board').click(function(){
 		}
 
 		document.getElementById("board_create-output").innerHTML ='';
+
 
 		$.ajax({
 			url: s4t_api_url+"/boards",

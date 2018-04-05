@@ -44,6 +44,7 @@ $('[data-reveal-id="modal-show-users"]').on('click',
 function clean_user_fields(form_name, flag_output){
 	document.getElementById(form_name+"_username").value = '';
 	document.getElementById(form_name+"_password").value = '';
+	document.getElementById(form_name+"_verify_password").value = '';
 	document.getElementById(form_name+"_email").value = '';
 	document.getElementById(form_name+"_fname").value = '';
 	document.getElementById(form_name+"_lname").value = '';
@@ -149,10 +150,15 @@ $('#create-user').click(function(){
 	data = {};
 
 	var username = document.getElementById("user_create_username").value;
+
 	var password = document.getElementById("user_create_password").value;
+	var verify_password = document.getElementById("user_create_verify_password").value;
+
 	var email = document.getElementById("user_create_email").value;
 
-	if(username == "") { alert("Insert a username!"); document.getElementById('loading_bar').style.visibility='hidden';}
+
+	if(password != verify_password) { alert("The two passwords are different!"); document.getElementById('loading_bar').style.visibility='hidden'; }
+	else if(username == "") { alert("Insert a username!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(password == "") { alert("Specify a password!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(email == "") { alert("Insert a valid email!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else{
@@ -200,35 +206,44 @@ $('#update-user').click(function(){
 	else{
 		data.username = username;
 		password = document.getElementById("user_update_password").value;
-		if(password != "")
-			data.password = password;
+		verify_password = document.getElementById("user_update_verify_password").value;
 
-		data.email = email;
-		data.f_name = document.getElementById("user_update_fname").value;
-		data.l_name = document.getElementById("user_update_lname").value;
+		if(password != verify_password){
+			alert("The two passwords are different!");
+			document.getElementById("user_update-output").innerHTML ='';
+			document.getElementById('loading_bar').style.visibility='hidden';
+		}
+		else{
+			if(password != "")
+				data.password = password;
 
-		document.getElementById("user_update-output").innerHTML ='';
+			data.email = email;
+			data.f_name = document.getElementById("user_update_fname").value;
+			data.l_name = document.getElementById("user_update_lname").value;
 
-		$.ajax({
-			url: s4t_api_url+"/users/"+user_id,
-			type: 'PATCH',
-			dataType: 'json',
-			headers: ajax_headers,
-			data: JSON.stringify(data),
+			document.getElementById("user_update-output").innerHTML ='';
 
-			success: function(response){
-				document.getElementById('loading_bar').style.visibility='hidden';
-				document.getElementById("user_update-output").innerHTML = JSON.stringify(response.message);
-				update_users("update_userlist");
-				clean_user_fields("user_update");
-				refresh_lists();
-			},
-			error: function(response){
-				document.getElementById('loading_bar').style.visibility='hidden';
-				verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-				document.getElementById("user_update-output").innerHTML = JSON.stringify(response.responseJSON.message);
-			}
-		});
+			$.ajax({
+				url: s4t_api_url+"/users/"+user_id,
+				type: 'PATCH',
+				dataType: 'json',
+				headers: ajax_headers,
+				data: JSON.stringify(data),
+
+				success: function(response){
+					document.getElementById('loading_bar').style.visibility='hidden';
+					document.getElementById("user_update-output").innerHTML = JSON.stringify(response.message);
+					update_users("update_userlist");
+					clean_user_fields("user_update");
+					refresh_lists();
+				},
+				error: function(response){
+					document.getElementById('loading_bar').style.visibility='hidden';
+					verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+					document.getElementById("user_update-output").innerHTML = JSON.stringify(response.responseJSON.message);
+				}
+			});
+		}
 	}
 });
 

@@ -15,6 +15,8 @@ limitations under the License.
 -->
 
 <script>
+	<?php echo 'var default_project = "'.$this -> session -> userdata('default_project').'";'; ?>
+
 
 	cloud_services_flag = "<?= $this -> config -> item('load_cloud_services_management')?>";
 	plugins_flag = "<?= $this -> config -> item('load_plugin_management')?>";
@@ -40,6 +42,7 @@ limitations under the License.
 	};
 	
 	var boards_list = "";
+
 </script>
 
 
@@ -114,8 +117,8 @@ limitations under the License.
 <script>
 	window.onload = function() {
 		verify_token_expired();
-		refresh_lists();
+		get_projects_list();
+		//refresh_lists();
 		//refresh_map();
 	};
 </script>
-

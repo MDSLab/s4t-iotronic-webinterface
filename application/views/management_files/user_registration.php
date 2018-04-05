@@ -35,7 +35,9 @@ limitations under the License.
 			<input id="user_create_username" type="text" placeholder="Username" value="" />
 
 			<label>Password</label>
-			<input id="user_create_password" type="text" placeholder="Password" value="" />
+			<input id="user_create_password" type="password" placeholder="Password" value="" />
+			<label>Verify Password</label>
+			<input id="user_create_verify_password" type="password" placeholder="Password" value="" />
 
 			<label for="user_create_email">Email (example: paolo.rossi@gmail.com)</label>
 			<input type="email" name="email" id="user_create_email" placeholder="Email">
@@ -83,7 +85,10 @@ limitations under the License.
 			<input id="user_update_username" type="text" placeholder="Username" value="" />
 
 			<label>Password (only if change)</label>
-			<input id="user_update_password" type="text" placeholder="Password" value="" />
+			<!--<input id="user_update_password" type="text" placeholder="Password" value="" />-->
+			<input id="user_update_password" type="password" placeholder="Password" value="" />
+			<label>Verify Password</label>
+			<input id="user_update_verify_password" type="password" placeholder="Password" value="" />
 
 			<label for="user_update_email">Email (example: paolo.rossi@gmail.com)</label>
 			<input type="email" name="email" id="user_update_email" placeholder="Email">
