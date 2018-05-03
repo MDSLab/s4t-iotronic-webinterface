@@ -18,7 +18,7 @@ $('[data-reveal-id="modal-show-layouts"]').on('click',
 	function() {
 		$('#layouts_show-output').empty();
 
-		var fields_to_show = ["id_layout", "manufacturer", "model", "image"];
+		var fields_to_show = ["id_layout", "manufacturer", "model", "layout", "image"];
 
 		$.ajax({
 			url: s4t_api_url+"/layouts",
@@ -43,7 +43,8 @@ $('[data-reveal-id="modal-show-layouts"]').on('click',
 
 
 function clean_layout_fields(form_name, flag_output){
-	document.getElementById(form_name+"_layoutmodel").value = '';
+	document.getElementById(form_name+"_model").value = '';
+	document.getElementById(form_name+"_layout").value = '';
 	document.getElementById(form_name+"_manufacturer").value = '';
 	document.getElementById(form_name+"_image").value = '';
 
@@ -92,7 +93,8 @@ $('[id="update_layoutlist"]').on('change',
 				headers: ajax_headers,
 
 				success: function(response){
-					document.getElementById("layout_update_layoutmodel").value = response.message.model;
+					document.getElementById("layout_update_model").value = response.message.model;
+					document.getElementById("layout_update_layout").value = response.message.layout;
 					document.getElementById("layout_update_manufacturer").value = response.message.manufacturer;
 					document.getElementById("layout_update_image").value = response.message.image;
 				},
@@ -131,10 +133,12 @@ function update_layouts(select_id, output_id, callback){
 
 			for(i=0;i<layouts_list.length;i++){
 				$('#'+select_id).append('<option title="'+layouts_list[i].manufacturer+'" value="'+layouts_list[i].id_layout+'" data-unit="">'+layouts_list[i].model+' [ '+layouts_list[i].image+' ]</option>');
+
+				if(i==layouts_list.length-1)
+					if(callback) callback("OK");
 			}
 
-
-			if(callback) callback("OK");
+			//if(callback) callback("OK");
 		},
 		error: function(response){
 			verify_token_expired(response.responseJSON.message, response.responseJSON.result);
@@ -149,13 +153,16 @@ $('#create-layout').click(function(){
 
 	data = {};
 
-	var model = document.getElementById("layout_create_layoutmodel").value;
+	var model = document.getElementById("layout_create_model").value;
+	var layout = document.getElementById("layout_create_layout").value;
 	var manufacturer = document.getElementById("layout_create_manufacturer").value;
 
 	if(model == "") {alert('Insert a model!');document.getElementById('loading_bar').style.visibility='hidden';}
+	else if(layout == "") {alert('Insert a layout!');document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(manufacturer == "") {alert('Insert a manufacturer!');document.getElementById('loading_bar').style.visibility='hidden';}
 	else{
 		data.model = model;
+		data.layout = layout;
 		data.manufacturer = manufacturer;
 		data.image = document.getElementById("layout_create_image").value;
 
@@ -188,14 +195,17 @@ $('#update-layout').click(function(){
 	data = {};
 
 	var layout_id = document.getElementById("update_layoutlist").value;
-	var model = document.getElementById("layout_update_layoutmodel").value;
+	var model = document.getElementById("layout_update_model").value;
+	var layout = document.getElementById("layout_update_layout").value;
 	var manufacturer = document.getElementById("layout_update_manufacturer").value;
 
 	if(layout_id == "--"){alert('Select a Layout'); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(model == "") {alert('Insert a model!');document.getElementById('loading_bar').style.visibility='hidden';}
+	else if(layout == "") {alert('Insert a layout!');document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(manufacturer == "") {alert('Insert a manufacturer!');document.getElementById('loading_bar').style.visibility='hidden';}
 	else{
 		data.model = model;
+		data.layout = layout;
 		data.manufacturer = manufacturer;
 		data.image = document.getElementById("layout_update_image").value;
 

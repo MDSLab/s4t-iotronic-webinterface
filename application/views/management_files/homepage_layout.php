@@ -40,6 +40,7 @@ limitations under the License.
 						<li><label>Boards</label></li>
 						<li><a data-reveal-id="modal-show-boards">List</a></li>
 						<li><a data-reveal-id="modal-register-new-board">Register</a></li>
+						<li><a data-reveal-id="modal-configure-board">Configure</a></li>
 						<li><a data-reveal-id="modal-update-board">Update</a></li>
 						<li><a data-reveal-id="modal-unregister-board">Unregister</a></li>
 						<li><a data-reveal-id="modal-action-board">Action</a></li>
@@ -152,9 +153,10 @@ limitations under the License.
 										<ul>
 											<li><a data-reveal-id="modal-startstop-plugin">Actions</a></li>
 											<li><a data-reveal-id="modal-inject-plugin">Inject</a></li>
-											<li><a data-reveal-id="modal-call-plugin">Call</a></li>
+											<!-- <li><a data-reveal-id="modal-call-plugin">Call</a></li> -->
 											<li><a data-reveal-id="modal-board-plugins">Show board plugins</a></li>
-											<li><a data-reveal-id="modal-remove-plugin">Remove from board</a></li>
+											<li><a data-reveal-id="modal-remove-plugins">Remove from board</a></li>
+											<li><a data-reveal-id="modal-remove-plugin">Remove from boards</a></li>
 											<li><a data-reveal-id="modal-show-plugins">Show</a></li>
 											<li><a data-reveal-id="modal-create-plugin">Create</a></li>
 											<li><a data-reveal-id="modal-destroy-plugin">Destroy</a></li>

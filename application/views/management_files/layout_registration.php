@@ -16,7 +16,7 @@ limitations under the License.
 
 <!-- Modal size class: tiny (30%), small (50%), large (90%), full (100%) wide -->
 
-<div id="modal-show-layouts" class="reveal-modal small" data-reveal>
+<div id="modal-show-layouts" class="reveal-modal" data-reveal>
 	<section>
 		<h3>Layouts</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
@@ -31,8 +31,11 @@ limitations under the License.
 		<h3>Add new Layout to the Cloud</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<div class="row">
-			<label>Layout Model</label>
-			<input id="layout_create_layoutmodel" type="text" placeholder="Model" value="" />
+			<label>Model</label>
+			<input id="layout_create_model" type="text" placeholder="Model" value="" />
+
+			<label>Layout</label>
+			<input id="layout_create_layout" type="text" placeholder="Layout" value="" />
 
 			<label>Manufacturer</label>
 			<input id="layout_create_manufacturer" type="text" placeholder="Manufacturer" value="" />
@@ -65,7 +68,10 @@ limitations under the License.
 			</select>
 
 			<label>Model</label>
-			<input id="layout_update_layoutmodel" type="text" placeholder="Model" value="" />
+			<input id="layout_update_model" type="text" placeholder="Model" value="" />
+
+			<label>Layout</label>
+			<input id="layout_update_layout" type="text" placeholder="Layout" value="" />
 
 			<label>Manufacturer</label>
 			<input id="layout_update_manufacturer" type="text" placeholder="Manufacturer" value="" />

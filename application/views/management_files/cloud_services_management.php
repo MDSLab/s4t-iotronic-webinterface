@@ -119,8 +119,19 @@ limitations under the License.
 			<label>Service Name</label>
 			<select id="status_servicelist"></select>
 
-			<label>Board List</label>
-			<select id="servicestatus_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+			<div style="text-align:center;">
+				<div style="width: 49%; margin-top: 5px; text-align:center; vertical-align: top; display: inline-block;">
+					<label>Enable / Disable per project action</label>
+				</div>
+				<div class="switch round small" style="margin-bottom: 0px; width: 15%; text-align:center; display: inline-block;">
+					<input id="servicestatus_project" class="flag_project" type="checkbox" />
+					<label for="servicestatus_project"></label>
+				</div>
+			</div>
+			<div id="servicestatus_boardlist_bundle">
+				<label>Board List</label>
+				<select id="servicestatus_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+			</div>
 		</div>
 		<div class="row">
 			<div class="large-12 columns">

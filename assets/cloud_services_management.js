@@ -237,18 +237,8 @@ $('.status_service').click(function(){
 	var service_name = $('#status_servicelist').find(":selected").data("value").service_name;
 	document.getElementById("service_status-output").innerHTML ='';
 
-	var list = document.getElementById("servicestatus_boardlist");
-	var selected_list = [];
-	var selected_label = [];
-	for(var i=0; i< list.length; i++){
-		if (list.options[i].selected){
-			selected_list.push(list[i].value);
-			selected_label.push(list[i].text);
-		}
-	}
-
 	if(!service_name){ alert("Select a service!"); document.getElementById('loading_bar').style.visibility='hidden';	}
-	else if(selected_list.length == 0){ alert("Select a board!"); document.getElementById('loading_bar').style.visibility='hidden'; }
+	//else if(selected_list.length == 0){ alert("Select a board!"); document.getElementById('loading_bar').style.visibility='hidden'; }
 	else{
 		data = {};
 
@@ -256,40 +246,79 @@ $('.status_service').click(function(){
 		else if (this.id == "disable_service") data.service_action = "disable";
 		else data.service_action = "enable";
 
-		for(var i=0; i< selected_list.length; i++){
-			//---------------------------------------------------------------------------------
-			(function(i){
-				setTimeout(function(){
+
+		if ($('#servicestatus_project').is(':checked')){
+
+			var project_id = getCookie("selected_prj");
+
+			$.ajax({
+				url: s4t_api_url+"/projects/"+project_id+"/services/"+service_name+"/action",
+				type: "POST",
+				dataType: 'json',
+				headers: ajax_headers,
+				data: JSON.stringify(data),
+			
+				success: function(response){
+					document.getElementById('loading_bar').style.visibility='hidden';
+					document.getElementById("service_status-output").innerHTML = JSON.stringify(response.message);
+					refresh_lists();
+				},
+				error: function(response){
+					document.getElementById('loading_bar').style.visibility='hidden';
+					verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+					document.getElementById("service_status-output").innerHTML = JSON.stringify(response.responseJSON.message);
+				}
+			});
+		}
+		else{
+			var list = document.getElementById("servicestatus_boardlist");
+			var selected_list = [];
+			var selected_label = [];
+			for(var i=0; i< list.length; i++){
+				if (list.options[i].selected){
+					selected_list.push(list[i].value);
+					selected_label.push(list[i].text);
+				}
+			}
+
+			if(selected_list.length == 0){ alert("Select a board!"); document.getElementById('loading_bar').style.visibility='hidden'; }
+			else{
+				for(var i=0; i< selected_list.length; i++){
 					//---------------------------------------------------------------------------------
-					var board_id = selected_list[i];
-					var label = selected_label[i];
+					(function(i){
+						setTimeout(function(){
+							//---------------------------------------------------------------------------------
+							var board_id = selected_list[i];
+							var label = selected_label[i];
 
-					$.ajax({
-						url: s4t_api_url+"/boards/"+board_id+"/services/"+service_name+"/action",
-						type: 'POST',
-						dataType: 'json',
-						headers: ajax_headers,
-						data: JSON.stringify(data),
+							$.ajax({
+								url: s4t_api_url+"/boards/"+board_id+"/services/"+service_name+"/action",
+								type: 'POST',
+								dataType: 'json',
+								headers: ajax_headers,
+								data: JSON.stringify(data),
 
-						success: function(response){
-							if(i==selected_list.length-1){
-								document.getElementById('loading_bar').style.visibility='hidden';
-								refresh_lists();
-							}
-							document.getElementById("service_status-output").innerHTML += label+': '+JSON.stringify(response.message);
-						},
-						error: function(response){
-							verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-							if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+								success: function(response){
+									if(i==selected_list.length-1){
+										document.getElementById('loading_bar').style.visibility='hidden';
+										refresh_lists();
+									}
+									document.getElementById("service_status-output").innerHTML += label+': '+JSON.stringify(response.message)+'<br />';
+								},
+								error: function(response){
+									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+									if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
 							
-							document.getElementById("service_status-output").innerHTML += label+': '+JSON.stringify(response.responseJSON.message);
-							//refresh_lists();
-						}
-					});
+									document.getElementById("service_status-output").innerHTML += label+': '+JSON.stringify(response.responseJSON.message)+'<br />';
+									//refresh_lists();
+								}
+							});
+							//---------------------------------------------------------------------------------
+						},delay*i);
+					})(i);
 					//---------------------------------------------------------------------------------
-				},delay*i);
-			})(i);
-			//---------------------------------------------------------------------------------
+				}
+			}
 		}
 	}
 });

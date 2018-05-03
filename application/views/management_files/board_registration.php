@@ -57,6 +57,7 @@ limitations under the License.
 							<div id="info-user"></div>
 							<div id="info-project"></div>
 							<div id="info-model"></div>
+							<div id="info-layout"></div>
 							<div id="info-manufacturer"></div>
 							<div id="info-image"></div>
 						</td>
@@ -394,6 +395,42 @@ limitations under the License.
 </div>
 
 
+<div id="modal-configure-board" class="reveal-modal small" data-reveal>
+	<section>
+		<h3>Board(s) Configuration</h3>
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+		<div class="row">
+
+			<div style="text-align:center;">
+				<div style="width: 49%; text-align:center; vertical-align: top; display: inline-block;">
+					<label>Enable / Disable per project configuration</label>
+				</div>
+				<div class="switch round small" style="margin-top: 5px; margin-bottom: 0px; width: 15%; text-align:center; display: inline-block;">
+					<input id="configure_project" class="flag_project" type="checkbox" />
+					<label for="configure_project"></label>
+				</div>
+			</div>
+			<div id="configure_boardlist_bundle">
+				<label>Boards List</label>
+				<select id="configure_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+			</div>
+		</div>
+		<div class="row">
+			<div class="large-12 columns">
+				<button id="configure-board" class="custom_button">
+					Configure
+				</button>
+			</div>
+		</div>
+	</section>
+	<fieldset>
+		<legend>Output</legend>
+		<p id="board_configure-output" />
+	</fieldset>
+</div>
+
+
+
 <div id="modal-update-board" class="reveal-modal small" data-reveal>
 	<section>
 		<h3>Update Board</h3>
@@ -406,6 +443,9 @@ limitations under the License.
 			</select>
 
 			<div id="board_update_data_section">
+
+				<input id="board_update_state" type="hidden">
+
 				<label>Label</label>
 				<input id="board_update_label" type="text" placeholder="Label" value="" />
 
@@ -512,9 +552,22 @@ limitations under the License.
 
 <div id="modal-unregister-board" class="reveal-modal" data-reveal>
 	<section>
-		<h3>unregister board</h3>
+		<h3>Unregister Board(s)</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
-		<table id="delete_tableboards" style="width: 100%"></table>
+
+		<div style="text-align:center;">
+			<div style="width: 49%; margin-top: 5px; text-align:center; vertical-align: top; display: inline-block;">
+				<label>Enable / Disable per project delete</label>
+			</div>
+			<div class="switch round small" style="margin-bottom: 0px; width: 15%; text-align:center; display: inline-block;">
+				<input id="deleteboard_project" class="flag_project" type="checkbox" />
+				<label for="deleteboard_project"></label>
+			</div>
+		</div>
+
+		<div id="deleteboard_boardlist_bundle">
+			<table id="delete_tableboards" style="width: 100%"></table>
+		</div>
 
 		<div class="row">
 			<div class="large-12 columns">
@@ -534,14 +587,30 @@ limitations under the License.
 
 <div id="modal-action-board" class="reveal-modal small" data-reveal>
 	<section>
-		<h3>Board Action</h3>
+		<h3>Board(s) Action</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<div class="row">
-			<label>Board List</label>
-			<select id="action_boardlist"></select>
 
 			<label>Action</label>
 			<select id="board_actionlist"></select>
+
+			<div style="text-align:center;">
+				<div style="width: 49%; margin-top: 5px; text-align:center; vertical-align: top; display: inline-block;">
+					<label>Enable / Disable per project action</label>
+				</div>
+				<div class="switch round small" style="margin-bottom: 0px; width: 15%; text-align:center; display: inline-block;">
+					<input id="action_project" class="flag_project" type="checkbox" />
+					<label for="action_project"></label>
+				</div>
+			</div>
+			<div id="action_boardlist_bundle">
+				<label>Boards List</label>
+				<select id="action_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+
+			</div>
+
+			<label>Parameters</label>
+			<textarea id="board_parameters" placeholder="Insert here the parameters (json format)" name="text" rows="3"></textarea>
 		</div>
 		<div class="row">
 			<div class="large-12 columns">

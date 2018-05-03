@@ -18,7 +18,8 @@
 //WORKING VERSION WITH LEAFLET
 // ---------------------------------------------------------------------------------------------------------------------------------------------
 
-var osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+//var osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+var osmUrl='http://212.189.207.177/osm_tiles/{z}/{x}/{y}.png';
 //var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
 //var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});
 var osm = new L.TileLayer(osmUrl, {});
@@ -29,7 +30,8 @@ map.addLayer(osm);
 
 //Copyright
 //L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+//L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+L.tileLayer('http://212.189.207.177/osm_tiles/{z}/{x}/{y}.png', {
 	attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> - by <b>MDSLab</b>'
 }).addTo(map);
 
@@ -38,7 +40,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 var info_map = L.map('info-map', {scrollWheelZoom:false}).setView([38.20523,15.55972], 12);
 info_map.addLayer(osm);
 //L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+//L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+L.tileLayer('http://212.189.207.177/osm_tiles/{z}/{x}/{y}.png', {
 	attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> - by <b>MDSLab</b>'
 }).addTo(info_map);
 
@@ -139,7 +142,6 @@ function refresh_map(){
 				'Latitude: <b>'+latitude[sel]+ '</b><br />' +
 				'Longitude: <b>'+longitude[sel]+'</b><br />' +
 				'Altitude: <b>'+altitude[sel]+'</b><br /><br />';
-
 
 			global_popup = open_popup + default_popup +"</div>";
 			var popup = L.popup().setLatLng(e.latlng).setContent(global_popup).openOn(map);

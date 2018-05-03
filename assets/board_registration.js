@@ -89,15 +89,34 @@ $('[data-reveal-id="modal-register-new-board"]').on('click',
 	}
 );
 
+
+$('[data-reveal-id="modal-configure-board"]').on('click',
+	function(){
+		document.getElementById("board_configure-output").innerHTML ='';
+
+		$('#configure_project').prop('checked', false);
+		$('#configure_boardlist_bundle').show();
+
+		update_boardsv2('configure_boardlist', 'C', true);
+	}
+);
+
+
 $('[data-reveal-id="modal-action-board"]').on('click',
 	function(){
 
+		//$('#action_boardlist').val("--");
 		$('#board_actionlist').empty();
+		$('#board_parameters').val("");
+		
 		document.getElementById("board_action-output").innerHTML ='';
 
-		actions_array = ["hostname", "reboot"];
+		$('#action_project').prop('checked', false);
+		$('#action_boardlist_bundle').show();
 
-		update_boardsv2('action_boardlist', 'C');
+		actions_array = ["hostname", "reboot", "restart_lr"];
+
+		update_boardsv2('action_boardlist', 'C', true);
 
 		$('#board_actionlist').append('<option title="--" value="--" data-unit="">--</option>');
 		for(i=0;i<actions_array.length;i++)
@@ -123,6 +142,9 @@ $('[data-reveal-id="modal-update-board"]').on('click',
 
 $('[data-reveal-id="modal-unregister-board"]').on('click',
 	function(){
+		$('#deleteboard_project').prop('checked', false);
+		$('#deleteboard_boardlist_bundle').show();
+
 		document.getElementById("board_delete-output").innerHTML ='';
 		refresh_tableboards("delete_tableboards", "remove");
 	}
@@ -200,6 +222,7 @@ $('[id="update_boardlist"]').on('change',
 
 						info = response.message.info;
 						//console.log(info);
+						document.getElementById("board_update_state").value = info.state;
 
 						document.getElementById("board_update_label").value = info.label;
 						document.getElementById("board_update_description").value = info.description;
@@ -220,7 +243,7 @@ $('[id="update_boardlist"]').on('change',
 
 						document.getElementById("board_update_extra").value = JSON.stringify(info.extra);
 
-						$("#board_update_layout").val(info.layout);
+						$("#board_update_layout").val(info.layout_id);
 						$("#board_update_project option[title='"+info.project+"']").prop('selected', true);
 						$("#board_update_user option[title='"+info.user+"']").prop('selected', true);
 
@@ -238,6 +261,17 @@ $('[id="update_boardlist"]').on('change',
 						document.getElementById("board_update_notify_retry").value = info.notify_retry;
 
 						document.getElementById('loading_bar').style.visibility='hidden';
+
+
+						//Just in case the calls were too slow and the following fields were not updated correctly
+						if( $("#board_update_layout").val() == "--" || $("#board_update_project").val() == "--" || $("#board_update_user").val() == "--"){
+							console.log("INCOMPLETE....reselecting");
+							$("#board_update_layout").val(info.layout_id);
+							$("#board_update_project option[title='"+info.project+"']").prop('selected', true);
+							$("#board_update_user option[title='"+info.user+"']").prop('selected', true);
+						}
+
+
 					},
 					error: function(response){
 						verify_token_expired(response.responseJSON.message, response.responseJSON.result);
@@ -307,7 +341,7 @@ $('#create-board').click(function(){
 	else if(altitude == "")		{ alert("Insert latitude!");			document.getElementById('loading_bar').style.visibility='hidden';}
 
 	else{
-		data.type_id = layout;
+		data.layout_id = layout;
 		data.project_id = project;
 		data.user_id = user;
 
@@ -351,7 +385,6 @@ $('#create-board').click(function(){
 		}
 
 		document.getElementById("board_create-output").innerHTML ='';
-
 
 		$.ajax({
 			url: s4t_api_url+"/boards",
@@ -406,6 +439,8 @@ $('#update-board').click(function(){
 
 	//console.log(sensors);
 
+	var state = document.getElementById("board_update_state").value;
+
 	var select_layout = document.getElementById("board_update_layout");
 	var select_project = document.getElementById("board_update_project");
 	var select_user = document.getElementById("board_update_user");
@@ -436,7 +471,7 @@ $('#update-board').click(function(){
 	else{
 		board_id = document.getElementById("update_boardlist").value;
 
-		data.type_id = layout;
+		data.layout_id = layout;
 		data.project_id = project;
 		data.user_id = user;
 
@@ -459,6 +494,8 @@ $('#update-board').click(function(){
 		data.notify = document.getElementById("board_update_notify_enabled").value;
 		data.notify_rate = document.getElementById("board_update_notify_rate").value;
 		data.notify_retry = document.getElementById("board_update_notify_retry").value;
+
+		data.state = state;
 
 		document.getElementById("board_update-output").innerHTML ='';
 		//console.log(data);
@@ -491,93 +528,246 @@ $('#update-board').click(function(){
 
 $('#delete_board').click(function(){
 
-	return_array = get_selected_rows_from_table("delete_tableboards", "remove");
-
-	headers = return_array[0];
-	variables = return_array[1];
-
 	document.getElementById("board_delete-output").innerHTML ='';
 
-	if(variables.length == 0){
-		alert('No board(s) to delete are selected!');
-		document.getElementById('loading_bar').style.visibility='hidden';
+	if ($('#deleteboard_project').is(':checked')){
+		var project_id = getCookie("selected_prj");
+
+		$.ajax({
+			url: s4t_api_url+"/projects/"+project_id+"/boards",
+			type: "DELETE",
+			dataType: 'json',
+			headers: ajax_headers,
+
+			success: function(response){
+				refresh_tableboards("delete_tableboards", "remove");
+				refresh_lists();
+				document.getElementById('loading_bar').style.visibility='hidden';
+				document.getElementById("board_delete-output").innerHTML += JSON.stringify(response.message)+"<br />";
+			},
+			error: function(response){
+				verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+				document.getElementById('loading_bar').style.visibility='hidden';
+				document.getElementById("board_delete-output").innerHTML += JSON.stringify(response.responseJSON.message)+"<br />";
+			}
+		});
 	}
 	else{
-		for(var i=0; i< variables.length; i++){
-			//---------------------------------------------------------------------------------
-			(function(i){
-				setTimeout(function(){
-					//---------------------------------------------------------------------------------
-					var board_id = variables[i][1];
 
-					$.ajax({
-						url: s4t_api_url+"/boards/"+board_id,
-						type: "DELETE",
-						dataType: 'json',
-						headers: ajax_headers,
+		return_array = get_selected_rows_from_table("delete_tableboards", "remove");
 
-						success: function(response){
-							if(i==variables.length-1) {
-								refresh_tableboards("delete_tableboards", "remove");
-								refresh_lists();
-								document.getElementById('loading_bar').style.visibility='hidden';
+		headers = return_array[0];
+		variables = return_array[1];
+
+		if(variables.length == 0){
+			alert('No board(s) to delete are selected!');
+			document.getElementById('loading_bar').style.visibility='hidden';
+		}
+		else{
+			for(var i=0; i< variables.length; i++){
+				//---------------------------------------------------------------------------------
+				(function(i){
+					setTimeout(function(){
+						//---------------------------------------------------------------------------------
+						var board_id = variables[i][1];
+
+						$.ajax({
+							url: s4t_api_url+"/boards/"+board_id,
+							type: "DELETE",
+							dataType: 'json',
+							headers: ajax_headers,
+
+							success: function(response){
+								if(i==variables.length-1) {
+									refresh_tableboards("delete_tableboards", "remove");
+									refresh_lists();
+									document.getElementById('loading_bar').style.visibility='hidden';
+								}
+								document.getElementById("board_delete-output").innerHTML += JSON.stringify(response.message)+"<br />";
+							},
+							error: function(response){
+								verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+								if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+								document.getElementById("board_delete-output").innerHTML += JSON.stringify(response.responseJSON.message)+"<br />";
 							}
-							document.getElementById("board_delete-output").innerHTML += JSON.stringify(response.message)+"<br />";
-						},
-						error: function(response){
-							verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-							if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
-							document.getElementById("board_delete-output").innerHTML += JSON.stringify(response.responseJSON.message)+"<br />";
-						}
-					});
-					//---------------------------------------------------------------------------------
-				},delay*i);
-			})(i);
-			//---------------------------------------------------------------------------------
+						});
+						//---------------------------------------------------------------------------------
+					},delay*i);
+				})(i);
+				//---------------------------------------------------------------------------------
+			}
 		}
 	}
-
 });
 
 
+$('#configure-board').click(function(){
+	document.getElementById("board_configure-output").innerHTML ='';
+
+	if(!$('#configure_project').is(':checked') && $('#configure_boardlist option:selected').length == 0) {alert('Select a Board'); document.getElementById('loading_bar').style.visibility='hidden';}
+
+	else{
+		data = {};
+
+		if ($('#configure_project').is(':checked')){
+			var project_id = getCookie("selected_prj");
+
+			$.ajax({
+				url: s4t_api_url+"/projects/"+project_id+"/boards/conf",
+				type: "PUT",
+				dataType: 'json',
+				headers: ajax_headers,
+				data: JSON.stringify(data),
+
+				success: function(response){
+					document.getElementById('loading_bar').style.visibility='hidden';
+					document.getElementById("board_configure-output").innerHTML = JSON.stringify(response.message);
+					refresh_lists();
+				},
+				error: function(response){
+					document.getElementById('loading_bar').style.visibility='hidden';
+					verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+					document.getElementById("board_configure-output").innerHTML = JSON.stringify(response.responseJSON.message);
+				}
+			});
+		}
+		else{
+			//document.getElementById('loading_bar').style.visibility='visible';
+			var list = document.getElementById("configure_boardlist");
+			var selected_list = [];
+			var output_string = '';
+
+			for(var i=0; i< list.length; i++){
+				if (list.options[i].selected){
+					selected_list.push(list[i].value);
+				}
+			}
+
+			for(var i=0; i< selected_list.length; i++){
+				//---------------------------------------------------------------------------------
+				(function(i){
+					setTimeout(function(){
+						//---------------------------------------------------------------------------------
+						var board_id = selected_list[i];
+
+						$.ajax({
+							url: s4t_api_url+"/boards/"+board_id+"/conf",
+							type: "PUT",
+							dataType: 'json',
+							headers: ajax_headers,
+							data: JSON.stringify(data),
+
+							success: function(response){
+								document.getElementById('loading_bar').style.visibility='hidden';
+								document.getElementById("board_configure-output").innerHTML = JSON.stringify(response.message);
+								refresh_lists();
+							},
+							error: function(response){
+								document.getElementById('loading_bar').style.visibility='hidden';
+								verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+								document.getElementById("board_configure-output").innerHTML = JSON.stringify(response.responseJSON.message);
+							}
+						});
+						//---------------------------------------------------------------------------------
+					},delay*i);
+				})(i);
+				//---------------------------------------------------------------------------------
+			}
+		}
+	}
+});
+
 
 $('#action-board').click(function(){
-	var board_id = document.getElementById("action_boardlist").value;
-	var action = document.getElementById("board_actionlist").value;
+	document.getElementById("board_action-output").innerHTML ='';
 
-	if(board_id == "--"){
-		document.getElementById('loading_bar').style.visibility='hidden';
-		alert("Select a board!");
-	}
-	else if(action == "--"){
-		document.getElementById('loading_bar').style.visibility='hidden';
-		alert("Select an action!");
-	}
+	var action = document.getElementById("board_actionlist").value;
+	var parameters = document.getElementById("board_parameters").value;
+
+	if(action == "--"){ document.getElementById('loading_bar').style.visibility='hidden'; alert("Select an action!"); }
+	else if(!$('#action_project').is(':checked') && $('#action_boardlist option:selected').length == 0) {alert('Select a Board'); document.getElementById('loading_bar').style.visibility='hidden';}
+
 	else{
 		data = {};
 		data.action = action;
+		data.parameters = parameters;
 
-		$.ajax({
-			url: s4t_api_url+"/boards/"+board_id+"/action",
-			type: "POST",
-			dataType: 'json',
-			headers: ajax_headers,
-			data: JSON.stringify(data),
 
-			success: function(response){
-				document.getElementById('loading_bar').style.visibility='hidden';
-				document.getElementById("board_action-output").innerHTML = JSON.stringify(response.message);
-				if(action =="reboot")
-					update_boardsv2('action_boardlist', 'C');
+		if ($('#action_project').is(':checked')){
+			var project_id = getCookie("selected_prj");
 
-				refresh_lists();
-			},
-			error: function(response){
-				document.getElementById('loading_bar').style.visibility='hidden';
-				verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-				document.getElementById("board_action-output").innerHTML = JSON.stringify(response.responseJSON.message);
+			$.ajax({
+				url: s4t_api_url+"/projects/"+project_id+"/boards/action",
+				type: "POST",
+				dataType: 'json',
+				headers: ajax_headers,
+				data: JSON.stringify(data),
+			
+				success: function(response){
+					document.getElementById('loading_bar').style.visibility='hidden';
+					document.getElementById("board_action-output").innerHTML = JSON.stringify(response.message);
+					if(action == "reboot" || action == "restart_lr")
+						update_boardsv2('action_boardlist', 'C', true);
+			
+					refresh_lists();
+					$('#board_actionlist').val("--");
+					$('#board_parameters').val("");
+				},
+				error: function(response){
+					document.getElementById('loading_bar').style.visibility='hidden';
+					verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+					document.getElementById("board_action-output").innerHTML = JSON.stringify(response.responseJSON.message);
+				}
+			});
+		}
+		else{
+			//document.getElementById('loading_bar').style.visibility='visible';
+			var list = document.getElementById("action_boardlist");
+			var selected_list = [];
+			var output_string = '';
+			
+			for(var i=0; i< list.length; i++){
+				if (list.options[i].selected){
+					selected_list.push(list[i].value);
+				}
 			}
-		});
+
+			for(var i=0; i< selected_list.length; i++){
+				//---------------------------------------------------------------------------------
+				(function(i){
+					setTimeout(function(){
+						//---------------------------------------------------------------------------------
+						var board_id = selected_list[i];
+			
+						$.ajax({
+							url: s4t_api_url+"/boards/"+board_id+"/action",
+							type: "POST",
+							dataType: 'json',
+							headers: ajax_headers,
+							data: JSON.stringify(data),
+
+							success: function(response){
+								document.getElementById('loading_bar').style.visibility='hidden';
+								document.getElementById("board_action-output").innerHTML = JSON.stringify(response.message);
+								if(action == "reboot" || action == "restart_lr")
+									update_boardsv2('action_boardlist', 'C', true);
+
+								refresh_lists();
+								$('#board_actionlist').val("--");
+								$('#board_parameters').val("");
+							},
+							error: function(response){
+								document.getElementById('loading_bar').style.visibility='hidden';
+								verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+								document.getElementById("board_action-output").innerHTML = JSON.stringify(response.responseJSON.message);
+							}
+						});
+						//---------------------------------------------------------------------------------
+					},delay*i);
+				})(i);
+				//---------------------------------------------------------------------------------
+			}
+		}
 	}
 });
 
@@ -667,6 +857,7 @@ function populate_board_info(board_id){
 				$('#info-user').html('<b>User: </b>'+info.user);
 				$('#info-project').html('<b>Project: </b>'+info.project);
 				$('#info-model').html('<b>Model: </b>'+info.model);
+				$('#info-layout').html('<b>IoTronic Layout: </b>'+info.layout);
 				$('#info-manufacturer').html('<b>Manufacturer: </b>'+info.manufacturer);
 				$('#info-image').html('<b>Image: </b>'+info.image);
 

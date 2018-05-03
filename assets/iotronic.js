@@ -24,6 +24,39 @@ function generate_uuid(input_id){
 	$('#'+input_id).val(id);
 }
 
+function verify_new_version(new_version, old_version){
+	var array_old = old_version.split('.');
+	var array_new = new_version.split('.');
+
+	if(array_new.length != 3 || old_version == new_version){
+		return false;
+	}
+	else{
+		var array_pos = [];
+		for(var i=0; i<array_new.length; i++){
+			if( parseInt(array_new[i]) > parseInt(array_old[i]) )
+				array_pos[i] = "true";
+			else if( parseInt(array_new[i]) == parseInt(array_old[i]) )
+				array_pos[i] = "equal";
+			else
+				array_pos[i] = "false";
+		}
+		//console.log(array_pos);
+		if(array_pos[0] == "true") return true;
+		else if(array_pos[0] == "equal"){
+			if(array_pos[1] == "true") return true;
+			else if(array_pos[1] == "equal"){
+				if(array_pos[2] == "true") return true;
+				else return false; //example: OLD: 1.2.3 --> NEW: 1.2.0
+			}
+			else return false; //example: OLD: 1.2.3 --> NEW: 1.0.3
+		}
+		else
+			return false; //example: OLD: 1.2.3 --> NEW: 0.2.3
+	}
+}
+
+
 $('input[name="email"]').blur(function () {
 	//console.log("BLUR");
 	var email = $(this).val();
@@ -46,9 +79,6 @@ $('input[name="email"]').blur(function () {
 		$('#'+button_id).hide();
 	}
 });
-
-
-function GetCallback(data) { return data; }
 
 
 function SortByLabel(x,y) {
@@ -581,12 +611,14 @@ function get_selected_rows_from_table(table_id, checkboxes_id_like){
 //Refresh boards list on click at any modal and button
 $('[data-reveal-id^="modal"]').on('click',
         function(){
+		last_valid_selection = null;
 		refresh_lists();
         }
 );
 
 
 $(':button').click(function(){
+	last_valid_selection = null;
 	loading();
 	//refresh_lists();
 });
@@ -644,4 +676,50 @@ $(document).ready(function() {
 	//console.log(height);
 	$('#pre-menu').css("height", height);
 	//get_projects_list();
+
+
+	// Force the selection of a limited number of options in selects (even if multiple is enabled)
+	last_valid_selection = null;
+	$('.select_one').change(function(event) {
+		if ($(this).val().length > 1)
+			$(this).val(last_valid_selection);
+		else
+			last_valid_selection = $(this).val();
+	});
+
+
+	//For BATCH/not BATCH api calls it is necessary to hide/show the boardlists in the modals
+	$('.flag_project').on('change',
+		function(){
+			var id = this.getAttribute("id");
+			var reveal_modal_id = this.closest(".reveal-modal").getAttribute("id");
+
+			//Clean output fieldset
+			var p_id = $('#'+reveal_modal_id).find("p");
+			p_id[0].innerHTML = "";
+	
+			var array = id.split("_");
+			var section = array[0];
+	
+			if ($('#'+id).is(':checked')){
+				//console.log("CHECKED");
+				$('#'+section+'_boardlist_bundle').hide();
+/*
+				if(reveal_modal_id == "modal-unregister-board"){
+					$('#'+reveal_modal_id).attr("class", "reveal-modal small");
+				}
+*/
+			}
+			else{
+				//console.log("NOT CHECKED");
+				$('#'+section+'_boardlist_bundle').show();
+/*
+				if(reveal_modal_id == "modal-unregister-board"){
+					$('#'+reveal_modal_id).attr("class", "reveal-modal open");
+				}
+*/
+			}
+		}
+	);
+
 });

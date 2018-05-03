@@ -132,9 +132,11 @@ function update_users(select_id, output_id, callback){
 
 			for(i=0;i<users_list.length;i++){
 				$('#'+select_id).append('<option title="'+users_list[i].username+'" value="'+users_list[i].uuid+'" data-unit="">'+users_list[i].username+'</option>');
+				if(i==users_list.length-1)
+					if(callback) callback("OK");
 			}
 
-			if(callback) callback("OK");
+			//if(callback) callback("OK");
 		},
 		error: function(response){
 			verify_token_expired(response.responseJSON.message, response.responseJSON.result);

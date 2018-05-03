@@ -42,7 +42,6 @@ limitations under the License.
 	};
 	
 	var boards_list = "";
-
 </script>
 
 
@@ -69,6 +68,9 @@ limitations under the License.
 
 	//OPENSTREETMAP
 	echo '<script src="'.$this -> config -> site_url().'assets/map.js"></script>';
+
+	//Others
+	echo '<script src="'.$this -> config -> site_url().'assets/md5.js"></script>';
 ?>
 <!-- ########################################################## -->
 

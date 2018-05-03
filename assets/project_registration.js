@@ -176,9 +176,11 @@ function update_projects(select_id, output_id, callback){
 
 			for(i=0;i<projects_list.length;i++){
 				$('#'+select_id).append('<option title="'+projects_list[i].name+'" value="'+projects_list[i].uuid+'" data-unit="">'+projects_list[i].name+'</option>');
+				if(i==projects_list.length-1)
+					if(callback) callback("OK");
 			}
 
-			if(callback) callback("OK");
+			//if(callback) callback("OK");
 		},
 		error: function(response){
 			verify_token_expired(response.responseJSON.message, response.responseJSON.result);
