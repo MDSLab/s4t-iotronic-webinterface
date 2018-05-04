@@ -25,7 +25,8 @@ var osmUrl='http://212.189.207.177/osm_tiles/{z}/{x}/{y}.png';
 var osm = new L.TileLayer(osmUrl, {});
 
 
-var map = L.map('mapdiv', {scrollWheelZoom:false, worldCopyJump: true}).setView([38.20523,15.55972], 12);
+//var map = L.map('mapdiv', {scrollWheelZoom:false, worldCopyJump: true}).setView([38.20523,15.55972], 12);
+var map = L.map('mapdiv', {scrollWheelZoom:false, worldCopyJump: true}).setView([41.814,13.711], 6);
 map.addLayer(osm);
 
 //Copyright
@@ -142,6 +143,7 @@ function refresh_map(){
 				'Latitude: <b>'+latitude[sel]+ '</b><br />' +
 				'Longitude: <b>'+longitude[sel]+'</b><br />' +
 				'Altitude: <b>'+altitude[sel]+'</b><br /><br />';
+
 
 			global_popup = open_popup + default_popup +"</div>";
 			var popup = L.popup().setLatLng(e.latlng).setContent(global_popup).openOn(map);

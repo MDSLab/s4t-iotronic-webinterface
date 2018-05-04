@@ -164,6 +164,79 @@ limitations under the License.
 </div>
 
 
+<div id="modal-tag-plugin" class="reveal-modal small" data-reveal>
+	<section>
+		<h3 name="info_text"></h3>
+		<div class="row">
+			<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+
+			<input id="tag_plugin_id" type="hidden" name="id">
+
+			<div style="text-align:center;">
+				<div style="width: 49%; text-align:center; display: inline-block;">
+					<label>Tag</label>
+					<select id="tag_plugin_release" name="tag_plugin">
+						<option value="1">Released</option>
+						<option value="2">Unreleased</option>
+					</select>
+				</div>
+			</div>
+
+			<div style="text-align:center;">
+				<div style="width: 70%; text-align:center; display: inline-block;">
+					<label>Plugin Name</label>
+					<input id="tag_plugin_name" type="text" placeholder="Plugin Name" name="name" readonly/>
+				</div>
+				<div style="width: 29%; text-align:center; display: inline-block;">
+					<label>Version</label>
+					<input id="tag_plugin_version" type="text" placeholder="1.2.3" name="version" value="" onkeypress="return (event.charCode == 8 || event.charCode == 0) ? null : ( (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46)" readonly/>
+				</div>
+			</div>
+
+			<label>Description</label>
+			<textarea id="tag_plugin_description" placeholder="Insert description" name="description" rows="3" readonly></textarea>
+
+			<label>Plugin Parameters</label>
+			<textarea id="tag_plugin_parameters" placeholder="Insert here the parameters (json format)" name="parameters" rows="5" readonly></textarea>
+
+			<label>Code</label>
+			<textarea id="tag_plugin_code" placeholder="Insert here the code" name="code" rows="15" readonly></textarea>
+		</div>
+		<div class="row">
+			<div class="large-12 columns">
+				<button id="tag_plugin" class="custom_button">
+					Update Tag
+				</button>
+			</div>
+		</div>
+	</section>
+	<fieldset>
+		<legend>Output</legend>
+		<p id="plugin_tag-output" />
+	</fieldset>
+</div>
+
+
+<div id="modal-changetag-plugin" class="reveal-modal" data-reveal>
+	<section>
+		<h3>Change Tag to Plugin</h3>
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+		<table id="changetag_tableplugins" style="width: 100%"></table>
+
+		<div class="row">
+			<div class="large-12 columns">
+				<button id="chagetag_plugin" class="custom_button">
+					Remove
+				</button>
+			</div>
+		</div>
+	</section>
+	<fieldset>
+		<legend>Output</legend>
+		<p id="plugin_changetag-output" />
+	</fieldset>
+</div>
+
 
 <div id="modal-destroy-plugin" class="reveal-modal" data-reveal>
 	<section>
@@ -320,7 +393,7 @@ limitations under the License.
 				<select id="startstop_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
 			</div>
 
-			<label>Parameters [OPTIONAL if stopping]</label>
+			<label>Parameters [OPTIONAL]</label>
 			<textarea id="startstop_plugin_parameters" placeholder="Insert here the parameters (in json format)" name="text" rows="10"></textarea>
 		</div>
 		<div class="row">

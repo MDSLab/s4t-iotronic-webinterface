@@ -153,6 +153,7 @@ limitations under the License.
 										<ul>
 											<li><a data-reveal-id="modal-startstop-plugin">Actions</a></li>
 											<li><a data-reveal-id="modal-inject-plugin">Inject</a></li>
+											<li><a data-reveal-id="modal-changetag-plugin">Change Tag</a></li>
 											<!-- <li><a data-reveal-id="modal-call-plugin">Call</a></li> -->
 											<li><a data-reveal-id="modal-board-plugins">Show board plugins</a></li>
 											<li><a data-reveal-id="modal-remove-plugins">Remove from board</a></li>

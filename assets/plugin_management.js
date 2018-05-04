@@ -54,9 +54,9 @@ function customize_plugin_table(fields_to_show, response_message, reveal_id){
 		else
 			parsed_response[i].type_id = "Python";
 	
-		if(parsed_response[i].tag_id == "1")
+		if(parsed_response[i].tag_id == "2")
 			parsed_response[i].tag_id = "Unreleased";
-		else
+		else if(parsed_response[i].tag_id == "1")
 			parsed_response[i].tag_id = "Released";
 	
 		parsed_response[i].name = '<a data-reveal-id="'+reveal_id+'" id="'+parsed_response[i].id+'" onclick=populate_plugin_info(this)>'+parsed_response[i].name+'</a>';
@@ -70,6 +70,12 @@ function populate_plugin_info(a){
 	var id = a.getAttribute("id");
 	var reveal_id = a.getAttribute("data-reveal-id");
 
+	var state = "";
+	//console.log(reveal_id);
+	if(reveal_id.indexOf("read") > -1) state = "Info";
+	else if(reveal_id.indexOf("modify") > -1) state = "Update";
+	else if(reveal_id.indexOf("tag") > -1) state = "Tag";
+
 	$.ajax({
 		url: s4t_api_url+"/plugins/"+id,
 		type: "GET",
@@ -78,13 +84,19 @@ function populate_plugin_info(a){
 
 		success: function(response){
 			var info = response.message;
+			//console.log(info);
 
 			//Needed to verify on submit if the new version is "greater" than the actual one
 			actual_version = info.version;
 
 			//var targetModal = $('#modal-modify-plugin');
 			var targetModal = $('#'+reveal_id);
-			targetModal.find('[name=info_text]').text("Info Plugin "+info.name);
+
+			//targetModal.find('[name=info_text]').text("Update Plugin "+info.name);
+			targetModal.find('[name=info_text]').text(state+" Plugin "+info.name);
+
+			if(reveal_id.indexOf("tag") > -1)
+				targetModal.find('[name=tag_plugin]').val(info.tag_id);
 
 			targetModal.find('[name=saved_name]').val(info.name);
 			targetModal.find('[name=saved_description]').val(info.description);
@@ -110,14 +122,14 @@ function populate_plugin_info(a){
 
 $("select[class^='plugin_']").on('change', function(){
 	var array = this.id.split("_");
-	console.log(array);
+	//console.log(array);
 	var section = array[0];
 
 	//Get values of selects
 	var type = document.getElementById(section+"_type").value;
 	var category = document.getElementById(section+"_category").value;
 	var name = document.getElementById(section+"_name").value;
-	console.log(type+" "+category+" "+name);
+	//console.log(type+" "+category+" "+name);
 
 	if(section == "inject"){
 		$("#plugin_inject-output").empty();
@@ -149,7 +161,7 @@ $("select[class^='plugin_']").on('change', function(){
 	}
 
 	show_plugins_list = filter_plugins_list(type, category);
-	console.log(show_plugins_list);
+	//console.log(show_plugins_list);
 
 	if(array[1] != "name"){
 		refresh_plugins_unique_names(section+"_name", show_plugins_list);
@@ -301,6 +313,14 @@ $('[data-reveal-id="modal-create-plugin"]').on('click',
 	function() {
 		clean_plugin_fields("create_plugin", true);
 	}
+);
+
+
+$('[data-reveal-id="modal-changetag-plugin"]').on('click',
+    function() {
+        $('#plugin_destroy-output').empty();
+        refresh_tableplugins('changetag_tableplugins', null, null, 'modal-tag-plugin');
+    }
 );
 
 
@@ -541,6 +561,39 @@ $('#create_plugin').click(function(){
 });
 
 
+$('#tag_plugin').click(function(){
+
+	document.getElementById("plugin_tag-output").innerHTML ='';
+
+	var plugin_id = document.getElementById("tag_plugin_id").value;
+	var tag = document.getElementById("tag_plugin_release").value;
+
+	data = {};
+	data.tag_id = tag;
+	
+	$.ajax({
+		url: s4t_api_url+"/plugins/"+plugin_id+"/tag",
+		type: "POST",
+		dataType: 'json',
+		headers: ajax_headers,
+		data: JSON.stringify(data),
+	
+		success: function(response){
+			document.getElementById('loading_bar').style.visibility='hidden';
+			refresh_lists();
+			document.getElementById("plugin_tag-output").innerHTML = JSON.stringify(response.message);
+		},
+		error: function(response){
+			verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+			document.getElementById('loading_bar').style.visibility='hidden';
+			document.getElementById("plugin_tag-output").innerHTML = JSON.stringify(response.responseJSON.message);
+		}
+	});
+
+
+});
+
+
 $('#destroy_plugin').click(function(){
 
 	return_array = get_selected_rows_from_table("destroy_tableplugins", "destroy");
@@ -654,12 +707,12 @@ $('#update_plugin').click(function(){
 	else if(saved_description != plugin_description || saved_parameters != plugin_parameters){
 		if(flag_version || saved_name != plugin_name || flag_code){
 			//POST
-			console.log("POST 1");
+			//console.log("POST 1");
 			flag_action = true;
 		}
 		else{
 			//PATCH
-			console.log("PATCH 1");
+			//console.log("PATCH 1");
 			flag_action = true;
 			post_or_patch = true;
 		}
@@ -667,7 +720,7 @@ $('#update_plugin').click(function(){
 	else if(flag_code){
 		if(flag_version || saved_name != plugin_name){
 			//POST
-			console.log("POST 2");
+			//console.log("POST 2");
 			flag_action = true;
 		}
 		else{
@@ -678,13 +731,13 @@ $('#update_plugin').click(function(){
 	}
 	else if(saved_name != plugin_name){
 		//PATCH
-		console.log("PATCH 2");
+		//console.log("PATCH 2");
 		flag_action = true;
 		post_or_patch = true;
 	}
 	else if(flag_version){
 		//POST
-		console.log("POST 3");
+		//console.log("POST 3");
 		flag_action = true;
 	}
 	else
@@ -695,7 +748,7 @@ $('#update_plugin').click(function(){
 		//PATCH
 		if(post_or_patch){
 			data.defaults = plugin_parameters;
-			data.tag = 1;
+			data.tag = 2;
 			type = 'PATCH';
 			url = s4t_api_url+"/plugins/"+plugin_id;
 		}
@@ -845,9 +898,8 @@ $('.startstop_plugin').click(function(){
 	document.getElementById("plugin_startstop-output").innerHTML ='';
 
 	if (!$('#startstop_project').is(':checked') && $('#startstop_boardlist option:selected').length == 0) { alert('Select a Board');document.getElementById('loading_bar').style.visibility='hidden';}
-	//else if(plugin_name == "" || plugin_name == "--"){ alert("Select a plugin!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if ($('#startstop_pluginlist option:selected').length == 0) {alert('Select a Plugin'); document.getElementById('loading_bar').style.visibility='hidden';}
-	else if(start_stop_flag == "start" && plugin_parameters == "") {alert("On start, please add parameters (in json format)!"); document.getElementById('loading_bar').style.visibility='hidden';}
+	//else if(start_stop_flag == "start" && plugin_parameters == "") {alert("On start, please add parameters (in json format)!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else {
 
 		var plugin_id = document.getElementById("startstop_pluginlist").value;
@@ -962,8 +1014,7 @@ $('#call_plugin').click(function(){
 
 	if (!$('#startstop_project').is(':checked') && $('#startstop_boardlist option:selected').length == 0) { alert('Select a Board'); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if ($('#startstop_pluginlist option:selected').length == 0) {alert('Select a Plugin'); document.getElementById('loading_bar').style.visibility='hidden';}
-	//else if(plugin_name == "" || plugin_name == "--"){ alert("Select a plugin!"); document.getElementById('loading_bar').style.visibility='hidden';}
-	else if(plugin_parameters == "") {alert("On start, please add the parameters needed!"); document.getElementById('loading_bar').style.visibility='hidden';}
+	//else if(plugin_parameters == "") {alert("On start, please add the parameters needed!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else {
 
 		var plugin_id = document.getElementById("startstop_pluginlist").value;
