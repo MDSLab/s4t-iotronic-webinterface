@@ -33,7 +33,7 @@ map.addLayer(osm);
 //L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 L.tileLayer('http://212.189.207.177/osm_tiles/{z}/{x}/{y}.png', {
-	attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> - by <b>MDSLab</b>'
+	attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> - by <b>SmartME.io</b>'
 }).addTo(map);
 
 
@@ -43,7 +43,7 @@ info_map.addLayer(osm);
 //L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 L.tileLayer('http://212.189.207.177/osm_tiles/{z}/{x}/{y}.png', {
-	attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> - by <b>MDSLab</b>'
+	attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> - by <b>SmartME.io</b>'
 }).addTo(info_map);
 
 
