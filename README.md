@@ -13,7 +13,7 @@ The WebInterface created at UniMe for the IoTronic project is based on a framewo
 
 
 # Server preliminary installation and configuration
-* Install some libraries: ```apt-get install php5 libapache2-mod-php5 php5-curl``` (or ```apt-get install libapache2-mod-php php7.0-curl``` in recent releases)
+* Install some libraries: ```apt-get install php5 libapache2-mod-php5 php5-curl``` (or ```apt-get install php7.0 libapache2-mod-php php7.0-curl``` in recent releases)
 * Enable the rewrite Apache module: ```a2enmod rewrite```
 * Append the following lines in the Apache config file: ```/etc/apache2/sites-enabled/000-default.conf```
 ```
