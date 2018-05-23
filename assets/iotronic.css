@@ -61,6 +61,10 @@
 .icon-bar.vertical, .icon-bar.small-vertical{
 	height: auto;
 }
+
+.left-submenu {
+	height: auto;
+}
 /* ------------------------------------------------ */
 
 .main-fieldset {
