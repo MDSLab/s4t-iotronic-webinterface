@@ -85,6 +85,10 @@ limitations under the License.
 		<aside class="right-off-canvas-menu">
 			<ul class="off-canvas-list">
 				<li><label>Support</label></li>
+				<!-- TO REMOVE WHEN COMMITTING TO GITHUB -->
+				<li><a target="_blank" href="http://smartme-data.unime.it/">SmartME CKAN</a></li>
+				<!-- TO REMOVE WHEN COMMITTING TO GITHUB -->
+
 				<li><a target="_blank" href="http://stack4things.unime.it/">Stack4Things</a></li>
 				<li><a target="_blank" href="<?= $this -> config -> item('swagger_url')?>">API</a></li>
 			</ul>
@@ -153,7 +157,7 @@ limitations under the License.
 										<ul>
 											<li><a data-reveal-id="modal-startstop-plugin">Actions</a></li>
 											<li><a data-reveal-id="modal-inject-plugin">Inject</a></li>
-											<li><a data-reveal-id="modal-changetag-plugin">Change Tag</a></li>
+											<li><a data-reveal-id="modal-changetag-plugin">Change Status</a></li>
 											<!-- <li><a data-reveal-id="modal-call-plugin">Call</a></li> -->
 											<li><a data-reveal-id="modal-board-plugins">Show board plugins</a></li>
 											<li><a data-reveal-id="modal-remove-plugins">Remove from board</a></li>
