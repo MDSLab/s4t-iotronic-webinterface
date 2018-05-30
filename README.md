@@ -11,8 +11,11 @@ The WebInterface created at UniMe for the IoTronic project is based on a framewo
   * Curl.php
 * A responsive front-end framework (foundation-5.5.3 --> http://foundation.zurb.com/downloads/foundation-5.5.3.zip). 
 
+# Automatic installation
+Launch the script install_dash.sh
 
-# Server preliminary installation and configuration
+# Manual installation and configuration
+If the automatic installation above didn't complete correctly you can do the same steps manually following these steps.
 * Install some libraries: ```apt-get install php5 libapache2-mod-php5 php5-curl``` (or ```apt-get install php7.0 libapache2-mod-php php7.0-curl``` in recent releases)
 * Enable the rewrite Apache module: ```a2enmod rewrite```
 * Append the following lines in the Apache config file: ```/etc/apache2/sites-enabled/000-default.conf```
