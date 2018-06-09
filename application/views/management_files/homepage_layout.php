@@ -76,6 +76,13 @@ limitations under the License.
 						<li><a data-reveal-id="modal-delete-layout">Delete</a></li>
 					</ul>
 				</li>
+				<li class="has-submenu"><a href="#">Requests</a>
+					<ul class="left-submenu">
+						<li class="back"><a href="#">Back</a></li>
+						<li><label>Requests</label></li>
+						<li><a data-reveal-id="modal-show-project-requests">Manage</a></li>
+					</ul>
+				</li>
 				<li>
 					<a href="" onclick="logout();">Logout</a>
 				</li>
@@ -85,10 +92,6 @@ limitations under the License.
 		<aside class="right-off-canvas-menu">
 			<ul class="off-canvas-list">
 				<li><label>Support</label></li>
-				<!-- TO REMOVE WHEN COMMITTING TO GITHUB -->
-				<li><a target="_blank" href="http://smartme-data.unime.it/">SmartME CKAN</a></li>
-				<!-- TO REMOVE WHEN COMMITTING TO GITHUB -->
-
 				<li><a target="_blank" href="http://stack4things.unime.it/">Stack4Things</a></li>
 				<li><a target="_blank" href="<?= $this -> config -> item('swagger_url')?>">API</a></li>
 			</ul>

@@ -16,7 +16,6 @@
 
 $('[data-reveal-id="modal-show-users"]').on('click',
 	function() {
-		//$('#users_show-output').empty();
 
 		var fields_to_show = ["username", "email", "first_name", "last_name", "uuid"];
 
@@ -30,11 +29,9 @@ $('[data-reveal-id="modal-show-users"]').on('click',
 				response.message = response.message.sort(SortByUsername);
 				parsed_response = parse_json_fields(fields_to_show, response.message, false);
 				create_table_from_json("show_users_table", parsed_response, fields_to_show);
-				//document.getElementById("users_show-output").innerHTML = parsed_response;
 			},
 			error: function(response){
 				verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-				//document.getElementById("users_show-output").innerHTML = JSON.stringify(response.responseJSON.message);
 			}
 		});
 	}

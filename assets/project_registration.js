@@ -72,7 +72,6 @@ $('[id="select_project"]').on('change',
 
 $('[data-reveal-id="modal-show-projects"]').on('click',
 	function() {
-		$('#projects_show-output').empty();
 
 		var fields_to_show = ["name", "description", "uuid"];
 
@@ -85,14 +84,9 @@ $('[data-reveal-id="modal-show-projects"]').on('click',
 			success: function(response){
 				parsed_response = parse_json_fields(fields_to_show, response.message, false).sort(SortByName);
 				create_table_from_json("show_projects_table", parsed_response, fields_to_show);
-
-
-				//parsed_response = parse_json_fields(fields_to_show, response.message, string_or_json);
-				//document.getElementById("projects_show-output").innerHTML = parsed_response;
 			},
 			error: function(response){
 				verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-				//document.getElementById("projects_show-output").innerHTML = JSON.stringify(response.responseJSON.message);
 			}
 		});
 	}

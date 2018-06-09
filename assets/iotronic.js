@@ -113,6 +113,10 @@ function SortByUsername(x,y) {
 	return ((x.username == y.username) ? 0 : ((x.username > y.username) ? 1 : -1 ));
 }
 
+function SortByTimestamp(x,y) {
+	return ((x.timestamp == y.timestamp) ? 0 : ((x.timestamp > y.timestamp) ? 1 : -1 ));
+}
+
 function getCookie(cname) {
 	var name = cname + "=";
 	var cookies = document.cookie.split(';');
@@ -473,6 +477,10 @@ function update_boardsv2(select_id, status, flag){
 function create_table_from_json(table_id, obj, array, checkbox_name){
 	var result = "";
 
+	//Clean the table if not already empty
+	if($('#'+table_id).html() != "") $('#'+table_id).DataTable().destroy();
+
+
 	if( !(obj instanceof Array) || (obj instanceof Array && obj.length ==0) ){
 		result = '<thead><tr><th>Empty</th></tr></thead>';
 		result +='<tbody><tr><td>No entries</td></tr></tbody>';
@@ -498,8 +506,11 @@ function create_table_from_json(table_id, obj, array, checkbox_name){
 
 		//THEAD
 		ths = "";
-		if(checkbox_name)
-			ths = "<th>"+checkbox_name+"</th>";
+		//If we don't want to add the "checkbox_name" label on the first column of the table
+		//FROM
+		//if(checkbox_name) ths = "<th>"+checkbox_name+"</th>";
+		//TO
+		if(checkbox_name) ths = "<th></th>";
 
 
 		for(i=0;i<headers.length;i++){
@@ -518,7 +529,8 @@ function create_table_from_json(table_id, obj, array, checkbox_name){
 
 			if(checkbox_name){
 				tbd += '<td>'+
-					'<div class="switch round tiny" style="margin-bottom: 0px">'+
+					//'<div class="switch round tiny" style="margin-bottom: 0px">'+
+					'<div style="text-align: center; margin-bottom: 0px">'+
 						'<input id="'+checkbox_name+line_count+'" type="checkbox" />'+
 						'<label for="'+checkbox_name+line_count+'"></label>'+
 					'</div>'+
@@ -544,6 +556,57 @@ function create_table_from_json(table_id, obj, array, checkbox_name){
 		result = thead + tbody;
 	}
 	$('#'+table_id).html(result);
+
+	//To add space just after the table
+	var div_id = $('#'+table_id).closest("div")[0].id;
+	$('#'+div_id).css('margin-bottom', '20px');
+
+	//To correcty render the DataTable
+	$('#'+table_id).DataTable();	//WORKING !!!
+
+	//TESTING...
+	/*
+	//$('#'+table_id).DataTable().on('page.dt', function () {console.log('Page');});
+
+
+	let example = $('#'+table_id).DataTable({
+		columnDefs: [{
+			orderable: false,
+			className: 'select-checkbox',
+			targets: 0
+		}],
+		select: {
+			style: 'os',
+			selector: 'td:first-child'
+		},
+		order: [
+			[1, 'asc']
+		]
+	});
+	example.on("click", "th.select-checkbox", function() {
+
+		if ($("th.select-checkbox").hasClass("selected")) {
+			//example.rows().deselect();
+			$("th.select-checkbox").removeClass("selected");
+			console.log("IF");
+		} else {
+			//example.rows().select();
+			$("th.select-checkbox").addClass("selected");
+			console.log("ELSE");
+		}
+	}).on("select deselect", function() {
+		("Some selection or deselection going on")
+		if (example.rows({
+				selected: true
+			}).count() !== example.rows().count()) {
+			$("th.select-checkbox").removeClass("selected");
+		} else {
+			$("th.select-checkbox").addClass("selected");
+		}
+	});
+*/
+
+
 }
 
 
@@ -672,6 +735,12 @@ $('.side-menu').mouseover(function(){
 
 
 $(document).ready(function() {
+
+	//To resolve the problem of "Uncaught TypeError: $(...).DataTable is not a function"
+	$.noConflict();
+
+
+	//Mapdiv section
 	height = ( $('#mapdiv').height() - $(".parent-menu").height() ) /2;
 	//console.log(height);
 	$('#pre-menu').css("height", height);
@@ -688,7 +757,7 @@ $(document).ready(function() {
 	});
 
 
-	//For BATCH/not BATCH api calls it is necessary to hide/show the boardlists in the modals
+	//For BATCH/not BATCH api calls it is necessary to hide/show the "table lists" in the modals
 	$('.flag_project').on('change',
 		function(){
 			var id = this.getAttribute("id");
@@ -703,21 +772,28 @@ $(document).ready(function() {
 	
 			if ($('#'+id).is(':checked')){
 				//console.log("CHECKED");
-				$('#'+section+'_boardlist_bundle').hide();
-/*
-				if(reveal_modal_id == "modal-unregister-board"){
-					$('#'+reveal_modal_id).attr("class", "reveal-modal small");
+
+				if(section == 'deleterequest'){
+					$('#'+section+'_requestlist_bundle').hide();
+
+					//TESTING
+					//var inputs = $('#'+section+'_requestlist_bundle :input[type="checkbox"]');
+					//console.log(inputs);
 				}
-*/
+				else
+					$('#'+section+'_boardlist_bundle').hide();
+
+				$("#"+reveal_modal_id).addClass("small");
 			}
 			else{
 				//console.log("NOT CHECKED");
-				$('#'+section+'_boardlist_bundle').show();
-/*
-				if(reveal_modal_id == "modal-unregister-board"){
-					$('#'+reveal_modal_id).attr("class", "reveal-modal open");
-				}
-*/
+
+				if(section == 'deleterequest')
+					$('#'+section+'_requestlist_bundle').show();
+				else
+					$('#'+section+'_boardlist_bundle').show();
+
+				$("#"+reveal_modal_id).removeClass("small");
 			}
 		}
 	);

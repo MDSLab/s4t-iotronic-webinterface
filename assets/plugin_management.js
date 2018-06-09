@@ -208,7 +208,7 @@ function refresh_plugins_unique_names(select_id, plugins_list){
 	$.each(plugins_list, function(index, value){
 		if($.inArray(value.name, names) == -1){
 			names.push(value.name);
-			$('#'+select_id).append('<option value="'+value.name+'">'+value.name+'</option>');
+			$('#'+select_id).append('<option value="'+value.name+'" class="'+value.category+'">'+value.name+'</option>');
 		}
 	});
 }
@@ -226,7 +226,7 @@ function refresh_cloud_pluginsv2(select_id, plugins_list, name){
 	}
 
 	for(var i=0; i<plugins_list.length; i++){
-		$('#'+select_id).append('<option value="'+plugins_list[i].id+'">'+plugins_list[i].name+' [V: '+plugins_list[i].version+']</option>');
+		$('#'+select_id).append('<option value="'+plugins_list[i].id+'" class="'+plugins_list[i].category+'">'+plugins_list[i].name+' [V: '+plugins_list[i].version+']</option>');
 	}
 }
 
@@ -251,7 +251,7 @@ function getall_cloud_plugins(select_id){
 				//console.log(global_plugins_list);
 
 				for(i=0; i<response.message.length; i++)
-					$('#'+select_id).append('<option value="'+response.message[i].id+'">'+response.message[i].name+' [V: '+response.message[i].version+']</option>');
+					$('#'+select_id).append('<option value="'+response.message[i].id+'" class="'+response.message[i].category+'">'+response.message[i].name+' [V: '+response.message[i].version+']</option>');
 
 				refresh_plugins_unique_names(section+"_name", global_plugins_list);
 			}
@@ -318,7 +318,7 @@ $('[data-reveal-id="modal-create-plugin"]').on('click',
 
 $('[data-reveal-id="modal-changetag-plugin"]').on('click',
     function() {
-        $('#plugin_destroy-output').empty();
+        $('#plugin_changetag-output').empty();
         refresh_tableplugins('changetag_tableplugins', null, null, 'modal-tag-plugin');
     }
 );
@@ -353,6 +353,28 @@ $('[data-reveal-id="modal-inject-plugin"]').on('click',
 		$("#inject_force").val("false");
 	}
 );
+
+
+$('select[id="startstop_pluginlist"]').on('click', function(){
+        var selected_plugin_class = $('select[id="startstop_pluginlist"] :selected').attr("class");
+console.log(selected_plugin_class);
+	if(selected_plugin_class == "sync"){
+		$("#plugin_call-output").show();
+		$("#plugin_call-output").empty();
+		$("#plugin_startstop-output").hide();
+
+		$("#startstop_actions").hide();
+		$("#call_actions").show();
+	}
+	else if(selected_plugin_class == "async"){
+		$("#plugin_startstop-output").show();
+		$("#plugin_startstop-output").empty();
+		$("#plugin_call-output").hide();
+
+		$("#startstop_actions").show();
+		$("#call_actions").hide();
+	}
+});
 
 
 $('[data-reveal-id="modal-startstop-plugin"]').on('click',

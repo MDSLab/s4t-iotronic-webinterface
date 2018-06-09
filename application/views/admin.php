@@ -57,6 +57,8 @@ limitations under the License.
 	include 'management_files/user_registration.php';
 	include 'management_files/project_registration.php';
 	include 'management_files/layout_registration.php';
+	include 'management_files/request_management.php';
+
 
 	//Iotronic
 	echo '<link rel="stylesheet" href="'.$this -> config -> site_url().'assets/iotronic.css"></link>';
@@ -65,6 +67,7 @@ limitations under the License.
 	echo '<script src="'.$this -> config -> site_url().'assets/user_registration.js"></script>';
 	echo '<script src="'.$this -> config -> site_url().'assets/project_registration.js"></script>';
 	echo '<script src="'.$this -> config -> site_url().'assets/layout_registration.js"></script>';
+	echo '<script src="'.$this -> config -> site_url().'assets/request_management.js"></script>';
 
 	//OPENSTREETMAP
 	echo '<script src="'.$this -> config -> site_url().'assets/map.js"></script>';

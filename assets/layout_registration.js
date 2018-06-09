@@ -16,7 +16,6 @@
 
 $('[data-reveal-id="modal-show-layouts"]').on('click',
 	function() {
-		$('#layouts_show-output').empty();
 
 		var fields_to_show = ["id_layout", "manufacturer", "model", "layout", "image"];
 
@@ -29,13 +28,9 @@ $('[data-reveal-id="modal-show-layouts"]').on('click',
 			success: function(response){
 				parsed_response = parse_json_fields(fields_to_show, response.message, false);
 				create_table_from_json("show_layouts_table", parsed_response, fields_to_show);
-
-				//parsed_response = parse_json_fields(fields_to_show, response.message, string_or_json);
-				//document.getElementById("layouts_show-output").innerHTML = parsed_response;
 			},
 			error: function(response){
 				verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-				//document.getElementById("layouts_show-output").innerHTML = '<pre>'+JSON.stringify(response.message,null,"\t")+'</pre>';
 			}
 		});
 	}

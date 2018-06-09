@@ -22,6 +22,8 @@ limitations under the License.
 		<link rel="stylesheet" href="<?= $this -> config -> site_url() ?>assets/bower_components/foundation/css/foundation.min.css" />
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 		<script src="<?= $this -> config -> site_url() ?>assets/bower_components/foundation/js/vendor/modernizr.js"></script>
+
+
 		<!-- Openstreetmap -->
 		<!-- Leaflet  https://github.com/Leaflet/Leaflet.markercluster#using-the-plugin -->
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.0/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin=""/>
@@ -35,6 +37,13 @@ limitations under the License.
 		<!--<script src="https://www.openlayers.org/api/OpenLayers.js"></script>-->
 		<script src="https://openlayers.org/api/OpenLayers.js"></script>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+		<!-- DataTables -->
+		<!--<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>-->
+		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
+
 	</head>
 
 	<body>
