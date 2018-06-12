@@ -21,6 +21,7 @@ limitations under the License.
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 
 		<input type="hidden" id="request_id" value="">
+		<input type="hidden" id="subject" value="">
 
 		<div class="project_requests">
 			<h3>Requests</h3>
@@ -58,7 +59,9 @@ limitations under the License.
 			</div>
 		</div>
 		<div id="boards_x_request">
-			<h3 name="request_text"></h3>
+			<h3>Request</h3>
+			<h5 name="request_text" align="center"></h5>
+			<h5 name="subject_text" align="center"></h5></br>
 			<table id="show_request_boards_table" style="width: 100%"></table>
 			<button class="custom_button" onclick="reload_project_requests()">Previous</button>
 		</div>

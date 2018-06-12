@@ -17,6 +17,7 @@ limitations under the License.
 <div id="modal-show-services" class="reveal-modal small" data-reveal>
 	<section>
 		<h3>Services</h3>
+		<label name="services_text"></label></br>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<table id="show_services_table" style="width: 100%"></table>
 	</section>
@@ -173,6 +174,7 @@ limitations under the License.
 			<select id="services_boardlist"></select>
 
 			<div id="show_boardservices_section">
+				<label name="services_text"></label></br>
 				<table id="show_boardservices_table" style="width: 100%"></table>
 			</div>
 		</div>

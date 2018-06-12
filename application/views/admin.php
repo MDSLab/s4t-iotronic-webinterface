@@ -17,6 +17,7 @@ limitations under the License.
 <script>
 	<?php echo 'var default_project = "'.$this -> session -> userdata('default_project').'";'; ?>
 
+	wstun_ip = "<?= $this -> config -> item('wstun_ip')?>";
 
 	cloud_services_flag = "<?= $this -> config -> item('load_cloud_services_management')?>";
 	plugins_flag = "<?= $this -> config -> item('load_plugin_management')?>";
@@ -42,6 +43,7 @@ limitations under the License.
 	};
 	
 	var boards_list = "";
+
 </script>
 
 

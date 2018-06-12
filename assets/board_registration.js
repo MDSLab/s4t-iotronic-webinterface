@@ -889,6 +889,9 @@ function populate_board_info(board_id){
 
 				//Services
 				if(cloud_services_flag){
+
+					$('[name="services_text"]').text("Exposed on: "+wstun_ip);
+
 					if(response.message.services.length == 0){
 						$('#info_tableservices').html('<tr><td style="text-align:center">No services</td></tr>');
 					}

@@ -120,6 +120,7 @@ limitations under the License.
 				<div id="info-services">
 					<div id="cloud_services_section">
 						<h4><b>Services</b></h4>
+						<label name="services_text"></label></br>
 						<table id="info_tableservices" style="width: 100%"></table>
 					</div>
 				</div>

@@ -16,6 +16,10 @@
 
 $('[data-reveal-id="modal-show-services"]').on('click',
 	function() {
+
+		var id = this.getAttribute("data-reveal-id");
+		$('#'+id).find('[name=services_text]').text("Exposed on: "+wstun_ip);
+
 		$.ajax({
 			url: s4t_api_url+"/services",
 			type: "GET",
@@ -77,11 +81,13 @@ $('[data-reveal-id="modal-status-service"]').on('click',
 
 $('[data-reveal-id="modal-board-services"]').on('click',
 	function(){
+		var id = this.getAttribute("data-reveal-id");
+		$('#'+id).find('[name=services_text]').text("Exposed on: "+wstun_ip);
+
 		$('#show_boardservices_section').hide();
 		update_boardsv2('services_boardlist');
 	}
 );
-
 
 
 $('[id="status_servicelist"]').on('change',

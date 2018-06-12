@@ -51,6 +51,7 @@ function populate_project_requests() {
 	//$('#show_requests_table').empty();
 	//$('#show_requests_table').dataTable({"destroy": true});
 
+	var fields_to_parse = ["id_request", "subject", "timestamp", "result"];
 	var fields_to_show = ["id_request", "timestamp", "result"];
 	var project_id = getCookie("selected_prj");
 
@@ -70,7 +71,8 @@ function populate_project_requests() {
 			for(var i=0; i<response.message.length; i++)
 				requests_list.push(response.message[i].id_request);
 
-			parsed_response = customize_request_table(fields_to_show, response.message);
+			//parsed_response = customize_request_table(fields_to_show, response.message);
+			parsed_response = customize_request_table(fields_to_parse, response.message);
 			create_table_from_json("show_requests_table", parsed_response, fields_to_show, "remove");
 		},
 		error: function(response){
@@ -80,13 +82,15 @@ function populate_project_requests() {
 }
 
 
-function customize_request_table(fields_to_show, response_message){
+//function customize_request_table(fields_to_show, response_message){
+function customize_request_table(fields_to_parse, response_message){
 	//console.log("customize_request_table");
 
-	parsed_response = parse_json_fields(fields_to_show, response_message, false).sort(SortByTimestamp);
+	//parsed_response = parse_json_fields(fields_to_show, response_message, false).sort(SortByTimestamp);
+	parsed_response = parse_json_fields(fields_to_parse, response_message, false).sort(SortByTimestamp);
 
 	for(var i=0; i<parsed_response.length; i++){
-		parsed_response[i].id_request = '<a id="'+parsed_response[i].id_request+'" onclick=populate_request_info(this)>'+parsed_response[i].id_request+'</a>';
+		parsed_response[i].id_request = '<a id="'+parsed_response[i].id_request+'" value="'+parsed_response[i].subject+'" onclick=populate_request_info(this)>'+parsed_response[i].id_request+'</a>';
 	}
 	return parsed_response;
 }
@@ -103,7 +107,11 @@ function populate_request_info(a, flag){
 	var id = null;
 	if(flag)	id = a;
 	else		id = a.getAttribute("id");
+
+	var subject = a.getAttribute("value");
 	document.getElementById('request_id').value=id;
+	document.getElementById('subject').value=subject;
+
 
 	var fields_to_parse = ["board_id", "timestamp", "result", "message"];
 	var fields_to_show = ["board_id", "timestamp", "result"];
@@ -116,7 +124,8 @@ function populate_request_info(a, flag){
 
 		success: function(response){
 			var boards_div = $('#boards_x_request');
-			boards_div.find('[name=request_text]').text("Request "+id);
+			boards_div.find('[name=request_text]').text("Request ID: "+id);
+			boards_div.find('[name=subject_text]').text("Subject: "+subject);
 
 			parsed_response = customize_request_boards_table(fields_to_parse, response.message, "modal-board-info");
 			create_table_from_json("show_request_boards_table", parsed_response, fields_to_show);

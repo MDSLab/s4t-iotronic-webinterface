@@ -1,16 +1,30 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-$machine_address = '<IP_OR_HOSTNAME>';
-$config['s4t_api_url'] = 'https://'.$machine_address.':<PORT>/<VERSION>';
 
-$config['s4t_iotronic_folder'] = '/var/lib/iotronic/';
+//Iotronic Endpoints
+$default_api_address = '<IP_OR_HOSTNAME>';
+$default_iotronic_address = '<IP_OR_HOSTNAME>';
+$default_wstun_address = '<IP_OR_HOSTNAME>';
+
+$api_address = !empty(getenv('API_PUB_IP')) ? getenv('API_PUB_IP') : $default_api_address;
+$iotronic_address = !empty(getenv('IOTRONIC_PUB_IP')) ? getenv('IOTRONIC_PUB_IP') : $default_iotronic_address;
+//The only address which has to be shown in services and board_info
+$config['wstun_ip'] = !empty(getenv('WSTUN_IP')) ? getenv('WSTUN_IP') : $default_wstun_address;
+
+
+//API
+$config['s4t_api_url'] = 'https://'.$api_address.':<PORT>/<VERSION>';
+
 
 //Swagger
-$config['swagger_url'] = 'https://'.$machine_address.'/iotronic-api-docs';
+$config['swagger_url'] = 'https://'.$iotronic_address.'/iotronic-api-docs';
 
-//Default project
+
+//Default project and iotronic folder
 $config['default_project'] = 'Admin';
+$config['s4t_iotronic_folder'] = '/var/lib/iotronic/';
+
 
 //Commands management
 //-------------------------------------------------------------------------
@@ -64,7 +78,7 @@ $config['show_string_or_json_lists'] = TRUE;
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'https://'.$machine_address.'/iotronic/';
+$config['base_url'] = 'https://'.$iotronic_address.'/iotronic/';
 
 /*
 |--------------------------------------------------------------------------
