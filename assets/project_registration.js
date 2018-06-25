@@ -17,6 +17,8 @@
 function get_projects_list(flag){
 	var fields_to_show = ["name", "uuid"];
 
+	var project_id = getCookie("selected_prj");
+
 	$.ajax({
 		url: s4t_api_url+"/projects",
 		type: "GET",
@@ -33,8 +35,8 @@ function get_projects_list(flag){
 			for(var i=0; i<prjs.length; i++){
 				$("#select_project").append('<option value="'+prjs[i].uuid+'">'+prjs[i].name+'</option>');
 
-				//console.log(getCookie("selected_prj"));
-				if(getCookie("selected_prj") == undefined || flag){
+				//console.log(project_id);
+				if(project_id == undefined || flag){
 					if(prjs[i].name == default_project){
 						default_prj_id = prjs[i].uuid;
 					}
@@ -42,12 +44,12 @@ function get_projects_list(flag){
 			}
 			
 			//console.log(default_prj_id);
-			if(getCookie("selected_prj") == undefined || flag){
+			if(project_id == undefined || flag){
 				document.cookie = "selected_prj="+default_prj_id;
 				$("#select_project").val(default_prj_id);
 			}
 			else{
-				$("#select_project").val(getCookie("selected_prj"));
+				$("#select_project").val(project_id);
 			}
 
 			//document.cookie = "projects_list="+JSON.stringify(parsed_response);

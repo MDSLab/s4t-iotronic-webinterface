@@ -14,6 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
+<!-- Introduced these variables here because we added the login function in iotronic.js -->
+<? echo '<script src="'.$this -> config -> site_url().'assets/iotronic.js"></script>'; ?>
+<script>
+	site_url = "<?= $this -> config -> site_url()?>";
+	s4t_api_url = "<?= $this -> config -> item('s4t_api_url') ?>";
+	<?php echo 'var default_project = "'.$this -> config -> item('default_project').'";'; ?>
+</script>
+
+
 
 <? $message = $this -> session -> flashdata('message'); ?>
 <? $success = $this -> session -> flashdata('success'); ?>
@@ -21,13 +30,11 @@ limitations under the License.
 <center>
 	<div class="main-fieldset login-fieldset">
 		<div class="blockstyle">
-			<?= form_open('admin/web_ui'); ?>
-				Username<input type="text" name="username" value="admin">
-				Password<input type="password" name="password" value="">
-				<div style="text-align: center;">
-					<button class="custom_button" style="float: none">Login</button>
-				</div>
-			<?= form_close() ?>
+			Username<input type="text" id="username" name="username" value="admin">
+			Password<input type="password" id="password" name="password" value="">
+			<div style="text-align: center;">
+				<button class="custom_button" style="float: none" onclick="login();">Login</button>
+			</div>
 		</div>
 
 		<? if(isset($success) && $success == "ERROR") : ?>

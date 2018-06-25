@@ -15,8 +15,6 @@ limitations under the License.
 -->
 
 <script>
-	<?php echo 'var default_project = "'.$this -> session -> userdata('default_project').'";'; ?>
-
 	wstun_ip = "<?= $this -> config -> item('wstun_ip')?>";
 
 	cloud_services_flag = "<?= $this -> config -> item('load_cloud_services_management')?>";
@@ -29,21 +27,23 @@ limitations under the License.
 
 	delay = "<?= $this -> config -> item('polling_delay')?>";
 	string_or_json = "<?= $this -> config -> item('show_string_or_json_lists')?>";
-	
-	<?php echo 'var token_or_log = "'.$this -> session -> userdata('token_or_log').'";'; ?>
+
 	//<?php echo 'var result = "'.$this -> session -> userdata('result').'";'; ?>
 	
 	site_url = "<?= $this -> config -> site_url()?>";
 	s4t_api_url = "<?= $this -> config -> item('s4t_api_url') ?>";
 	s4t_iotronic_folder = "<?= $this -> config -> item('s4t_iotronic_folder') ?>";
-	
+
+	//Moved below because introduced the login function in iotronic.js
+	/*
+	<?php echo 'var default_project = "'.$this -> session -> userdata('default_project').'";'; ?>
+	<?php echo 'var token_or_log = "'.$this -> session -> userdata('token_or_log').'";'; ?>
 	ajax_headers = {
 		"x-auth-token": token_or_log,
 		"Content-Type": "application/json"
 	};
-	
+	*/	
 	var boards_list = "";
-
 </script>
 
 
@@ -123,6 +123,16 @@ limitations under the License.
 
 <script>
 	window.onload = function() {
+
+		//Added these variables 
+		default_project = getCookie('default_project');
+		token_or_log = getCookie('token');
+
+		ajax_headers = {
+			"x-auth-token": token_or_log,
+			"Content-Type": "application/json"
+		};
+
 		verify_token_expired();
 		get_projects_list();
 		//refresh_lists();

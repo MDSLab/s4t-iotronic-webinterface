@@ -37,10 +37,49 @@ class Admin extends CI_Controller {
 		$this -> load -> view('templates/footer_login');
 	}
 
+
+	public function web_ui(){
+
+		$data['page_title'] = 'UniME';
+
+		$this -> load -> view('templates/header');
+		$this -> load -> view('admin', $data);
+		$this -> load -> view('templates/footer');
+	}
+
+
+	//NOTE: global variables in php (defined in our config file) can be retrieved like this
+	//$host = $GLOBALS["api_address"];
+	
+
+	//Old approach...can be removed!!!
+	/*
 	public function web_ui (){
 
 		$data['page_title'] = 'UniME';
 		//$this -> session -> set_userdata('username', $this -> input -> post('username'));
+
+
+
+		if($this -> input -> post('username') == "admin" || $this -> input -> post('password') == "b"){
+			//$host = '212.189.207.201';
+			$host = $GLOBALS["api_address"];
+			$ports = array(80, 4843);
+
+			foreach ($ports as $port){
+				$connection = @fsockopen($host, $port,$errno, $errstr, 5);
+
+				if (is_resource($connection)){
+					echo '<h2>' . $host . ':' . $port . ' ' . '(' . getservbyport($port, 'tcp') . ') is open.</h2>' . "\n";
+					fclose($connection);
+				}
+				else{
+					echo '<h2>' . $host . ':' . $port . ' is not responding.</h2>' . "\n";
+				}
+			}
+		}
+
+
 		
 		if($this -> input -> post('username') != "" || $this -> input -> post('password') != ""){
 	
@@ -86,10 +125,10 @@ class Admin extends CI_Controller {
 			"FAILONERROR" => "FALSE",
 			"SSL_VERIFYPEER" =>  "FALSE",
 			"SSL_VERIFYHOST" =>  0
-			/*
-			"SSLVERSION" => 3,
-			"CAINFO" => "/opt/stack4things/ssl/iotronic_ca_cert.pem"
-			*/
+
+			//"SSLVERSION" => 3,
+			//"CAINFO" => "/opt/stack4things/ssl/iotronic_ca_cert.pem"
+
 		);
 
 		//We can use SSL VERIFYPEER e VERIFYHOST inside $options or with the following line!
@@ -106,6 +145,7 @@ class Admin extends CI_Controller {
 			return $obj["message"]["log"];
 		}
 	}
+	*/
 }
 ?>
 

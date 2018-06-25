@@ -3,19 +3,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 //Iotronic Endpoints
-$default_api_address = '<IP_OR_HOSTNAME>';
-$default_iotronic_address = '<IP_OR_HOSTNAME>';
-$default_wstun_address = '<IP_OR_HOSTNAME>';
+$default_api_address = '212.189.207.200:4843';
+$default_iotronic_address = '212.189.207.200';
+$default_wstun_address = '212.189.207.200';
 
 $api_address = !empty(getenv('API_PUB_IP')) ? getenv('API_PUB_IP') : $default_api_address;
 $iotronic_address = !empty(getenv('IOTRONIC_PUB_IP')) ? getenv('IOTRONIC_PUB_IP') : $default_iotronic_address;
 //The only address which has to be shown in services and board_info
 $config['wstun_ip'] = !empty(getenv('WSTUN_IP')) ? getenv('WSTUN_IP') : $default_wstun_address;
 
+//NOTE: this is how global variables are defined in php (see Admin.php for how to get it)
+//$GLOBALS["api_address"] = $api_address;
+
 
 //API
-$config['s4t_api_url'] = 'https://'.$api_address.':<PORT>/<VERSION>';
-
+$config['s4t_api_url'] = 'https://'.$api_address.'/v1';
 
 //Swagger
 $config['swagger_url'] = 'https://'.$iotronic_address.'/iotronic-api-docs';

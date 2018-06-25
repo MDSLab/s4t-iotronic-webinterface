@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+token_or_log = "";
+
+
 function uuid(){
 	return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 }
@@ -228,6 +231,53 @@ if ( typeof String.prototype.startsWith != 'function' ) {
 //UpperCase first letter !!!
 String.prototype.ucfirst = function(){
     return this.charAt(0).toUpperCase() + this.substr(1);
+}
+
+function login(){
+
+	var username = document.getElementById("username").value;
+	var password = document.getElementById("password").value;
+
+	if(username == "") alert('Missing username');
+	else if(password == "") alert('Missing password');
+	else{
+		$.ajax({
+			url: s4t_api_url+'/auth',
+			type: 'POST',
+			data: {username: username, password: password},
+			timeout: 5000, // sets timeout to 5 seconds
+			success: function(response){
+
+				var minutes = response.message.expire.slice(0,-1);
+
+				expiring_date = new Date();
+				expiring_date.setMinutes(expiring_date.getMinutes() + parseInt(minutes));
+	
+				document.cookie = "token="+response.message.token+"; expires="+expiring_date;
+				document.cookie = "default_project="+default_project;
+
+				window.location.href = site_url+"Admin/web_ui";
+			},
+			/*
+			error: function(response){
+				alert('ERROR: '+JSON.stringify(response.responseJSON.message.log));
+			}
+			*/
+			error: function(xmlhttprequest, textstatus, message) {
+				if(textstatus==="timeout") {
+					alert("API are temporary unavailable!");
+				} else {
+					if(message == "Forbidden"){
+						alert("Wrong Username and/or Password");
+					}
+					else{
+						alert("You need to accept first the certificate exception!");
+						window.open(s4t_api_url);
+					}
+				}
+			}
+		});
+	}
 }
 
 
