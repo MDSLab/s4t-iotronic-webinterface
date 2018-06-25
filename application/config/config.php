@@ -3,9 +3,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 //Iotronic Endpoints
-$default_api_address = '212.189.207.200:4843';
-$default_iotronic_address = '212.189.207.200';
-$default_wstun_address = '212.189.207.200';
+$default_api_address = '<IP_OR_HOSTNAME>:<PORT>';
+$default_iotronic_address = '<IP_OR_HOSTNAME>';
+$default_wstun_address = '<IP_OR_HOSTNAME>';
 
 $api_address = !empty(getenv('API_PUB_IP')) ? getenv('API_PUB_IP') : $default_api_address;
 $iotronic_address = !empty(getenv('IOTRONIC_PUB_IP')) ? getenv('IOTRONIC_PUB_IP') : $default_iotronic_address;
@@ -17,7 +17,7 @@ $config['wstun_ip'] = !empty(getenv('WSTUN_IP')) ? getenv('WSTUN_IP') : $default
 
 
 //API
-$config['s4t_api_url'] = 'https://'.$api_address.'/v1';
+$config['s4t_api_url'] = 'https://'.$api_address.'/<VERSION>';
 
 //Swagger
 $config['swagger_url'] = 'https://'.$iotronic_address.'/iotronic-api-docs';
