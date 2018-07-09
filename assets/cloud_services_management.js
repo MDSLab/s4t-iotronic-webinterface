@@ -37,10 +37,33 @@ $('[data-reveal-id="modal-show-services"]').on('click',
 );
 
 
+function get_protocols_list(select_id){
+	$('#'+select_id).empty();
+
+	var protocols_array = ["HTTP", "HTTPS", "MQTT", "SSH"];
+	protocols_array = protocols_array.sort();
+
+	for(var i=0; i<protocols_array.length; i++){
+		$('#'+select_id).append('<option value="'+protocols_array[i]+'">'+protocols_array[i]+'</option>');
+	}
+}
+
+
+function compose_service_shortcut(protocol, port){
+	var shortcut = "";
+	
+	if(protocol == "HTTP") shortcut = "http://"+wstun_ip+":"+port;
+	else if(protocol == "MQTT") shortcut = 'mosquitto_sub -t "#" -h '+wstun_ip+' -p '+port;
+	else if(protocol == "SSH") shortcut = "ssh -p "+port+" root@"+wstun_ip;
+
+	return shortcut;
+}
+
+
 function clean_service_fields(form_name, flag_output){
 	document.getElementById(form_name+"_service_name").value = '';
 	document.getElementById(form_name+"_port").value = '';
-	$("#"+form_name+"_protocol").val("TCP");
+	$("#"+form_name+"_protocol").val("HTTP");
 
 	if(flag_output)
 		document.getElementById("service_"+form_name+"-output").innerHTML ='';
@@ -49,6 +72,8 @@ function clean_service_fields(form_name, flag_output){
 
 $('[data-reveal-id="modal-register-service"]').on('click',
 	function() {
+
+		get_protocols_list("register_protocol");
 		clean_service_fields("register", true);
 	}
 );
@@ -56,6 +81,7 @@ $('[data-reveal-id="modal-register-service"]').on('click',
 
 $('[data-reveal-id="modal-update-service"]').on('click',
 	function() {
+		get_protocols_list("update_protocol");
 		clean_service_fields("update", true);
 		update_services('update_servicelist');
 	}
@@ -81,6 +107,7 @@ $('[data-reveal-id="modal-status-service"]').on('click',
 
 $('[data-reveal-id="modal-board-services"]').on('click',
 	function(){
+		$("#modal-board-services").addClass("small");
 		var id = this.getAttribute("data-reveal-id");
 		$('#'+id).find('[name=services_text]').text("Exposed on: "+wstun_ip);
 
@@ -103,7 +130,7 @@ $('[id="update_servicelist"]').on('change',
 		if($('#update_servicelist').find(":selected").data("value") == "--"){
 			document.getElementById("update_service_name").value = "";
 			document.getElementById("update_port").value = "";
-			$("#update_protocol").val("TCP");
+			$("#update_protocol").val("HTTP");
 		}
 		else{
 			document.getElementById("update_service_name").value = $(this).find(":selected").data("value").service_name;
@@ -201,7 +228,7 @@ $('#update_service').click(function(){
 			function(){
 				document.getElementById("update_service_name").value = "";
 				document.getElementById("update_port").value = "";
-				$("#update_protocol").val("TCP");
+				$("#update_protocol").val("HTTP");
 			});
 	}
 });
@@ -334,11 +361,13 @@ $('[id="services_boardlist"]').on('change',
 	function(){
 		var show_board_services = document.getElementById("services_boardlist").value;
 		if(show_board_services == "--"){
-			alert("Select a board!");
+			$("#modal-board-services").addClass("small");
+			//alert("Select a board!");
 			$("#show_boardservices_section").hide();
 			document.getElementById('loading_bar').style.visibility='hidden';
 		}
 		else{
+			$("#modal-board-services").removeClass("small");
 			$("#show_boardservices_section").show();
 
 			$.ajax({
@@ -353,9 +382,33 @@ $('[id="services_boardlist"]').on('change',
 						$("#show_boardservices_table").html('<tr><td style="text-align:center">No services</td></tr>');
 					}
 					else{
+						//Without extra data
+						//********************************************************************************************
+						/*
 						var fields_to_show = ["service_name", "public_port", "local_port", "protocol", "last_update"];
 						parsed_response = parse_json_fields(fields_to_show, response.message, false);
 						create_table_from_json("show_boardservices_table", parsed_response, fields_to_show);
+						*/
+						//********************************************************************************************
+
+
+						//With extra data
+						//********************************************************************************************
+						var fields_to_show = ["service_name", "public_port", "local_port", "protocol", "last_update"];
+						parsed_response = parse_json_fields(fields_to_show, response.message, false);
+
+						var extra_fields = ["shortcut"];
+
+						for(var i=0; i<extra_fields.length; i++){
+							fields_to_show.push(extra_fields[i]);
+
+							for(var j=0; j<parsed_response.length; j++){
+								var shortcut = compose_service_shortcut(parsed_response[j]["protocol"], parsed_response[j]["public_port"]);
+								parsed_response[j][extra_fields[i]] = shortcut;
+							}
+						}
+						create_table_from_json("show_boardservices_table", parsed_response, fields_to_show);
+						//********************************************************************************************
 					}
 				},
 				error: function(response){

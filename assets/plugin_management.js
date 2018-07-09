@@ -44,6 +44,52 @@ $('[data-reveal-id="modal-show-plugins"]').on('click',
 );
 
 
+function load_project_logs(){
+	$("#modal-show-plugin-logs").addClass("small");
+	$("#project_logs").show();
+	$("#boards_x_log_request").hide();
+	$("#board_log_message").hide();
+	$("#selected_board_log").hide();
+	getall_cloud_plugins('logs_pluginlist');
+}
+
+
+function show_selected_board_log(label, response){
+	$("#modal-show-plugin-logs").removeClass("small");
+        $("#project_logs").hide();
+        $("#boards_x_log_request").hide();
+        $("#board_log_message").hide();
+        $("#selected_board_log").show();
+
+
+	var restyled_message = '';
+	if(response.message instanceof Array){
+		for(var i=0; i<response.message.length; i++)
+			restyled_message += response.message[i] + '&#13;';
+		}
+	else
+		restyled_message = response.message;
+
+
+	var message_div = $('#selected_board_log');
+	message_div.find('[name=selected_message_log_text]').text("Message for board "+label);
+	message_div.find('[id=selected_board_log_result]').text("Result: "+response.result);
+	message_div.find('[id=selected_board_message]').html(restyled_message);
+}
+
+
+$('[data-reveal-id="modal-show-plugin-logs"]').on('click',
+	function() {
+
+		update_boardsv2('logs_boardlist', 'C', true);
+		$("#logs_project").prop("checked", false);
+		$("#logs_boardlist_bundle").show();
+		update_boardsv2('logs_boardlist', 'C', true);
+		load_project_logs();
+	}
+);
+
+
 function customize_plugin_table(fields_to_show, response_message, reveal_id){
 	
 	parsed_response = parse_json_fields(fields_to_show, response_message, false);
@@ -118,6 +164,94 @@ function populate_plugin_info(a){
 		}
 	});
 }
+
+
+function populate_project_logs(log_request){
+
+	if(log_request == undefined){
+		var req = $('#boards_x_log_request').find('[name=request_text]').text();
+		var array = req.split("Request ID: ");
+		log_request = array[1];
+	}
+
+	$("#modal-show-plugin-logs").removeClass("small");
+
+	$('#project_logs').hide();
+	$("#boards_x_log_request").show();
+	$("#board_log_message").hide();
+	$("#selected_board_log").hide();
+
+	var fields_to_parse = ["board_id", "timestamp", "result", "message"];
+	var fields_to_show = ["board_id", "timestamp", "result"];
+
+	$.ajax({
+		url: s4t_api_url+"/requests/"+log_request,
+		type: "GET",
+		dataType: 'json',
+		headers: ajax_headers,
+
+		success: function(response){
+			var boards_div = $('#boards_x_log_request');
+			boards_div.find('[name=request_text]').text("Request ID: "+log_request);
+
+			parsed_response = customize_log_boards_table(fields_to_parse, response.message, "modal-board-info");
+			create_table_from_json("show_logs_boards_table", parsed_response, fields_to_show);
+		},
+		error: function(response){
+			verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+		}
+	});
+}
+
+
+function customize_log_boards_table(fields_to_parse, response_message, reveal_id){
+	//console.log("customize_log_boards_table");
+
+	parsed_response = parse_json_fields(fields_to_parse, response_message, false).sort(SortByTimestamp);
+
+	for(var i=0; i<parsed_response.length; i++){
+		for(var j=0; j<boards_list.length; j++){
+			if(boards_list[j].board_id == parsed_response[i].board_id){
+				parsed_response[i].board_id = '<a data-reveal-id="'+reveal_id+'" id="'+parsed_response[i].board_id+'" onclick=populate_board_info("'+parsed_response[i].board_id+'")>'+boards_list[j].label+'</a>';
+
+				parsed_response[i].result = '<a id="'+parsed_response[i].result+'" data-label="'+boards_list[j].label+'" data-result="'+parsed_response[i].result+'" data-message="'+parsed_response[i].message+'" onclick=populate_log_message(this)>'+parsed_response[i].result+'</a>';
+				break;
+			}
+		}
+	}
+	return parsed_response;
+}
+
+
+function populate_log_message(a){
+
+	$('#project_logs').hide();
+	$("#boards_x_log_request").hide();
+	$("#board_log_message").show();
+	$("#selected_board_log").hide();
+
+	//$("#modal-show-plugin-logs").addClass("small");
+
+	var label = a.getAttribute("data-label");
+	var result = a.getAttribute("data-result");
+	var message = a.getAttribute("data-message");
+
+	var message_div = $('#board_log_message');
+	message_div.find('[name=message_log_text]').text("Message for board "+label);
+	message_div.find('[id=board_log_result]').text("Result: "+result);
+
+	restyled_message = add_newlines_to_message(message, ', ');
+	message_div.find('[id=board_message]').html(restyled_message);
+}
+
+
+function return_log_boards(a){
+	var request_id = $('input[id="logs_request_id"]');
+	document.getElementById('loading_bar').style.visibility='hidden';
+
+	populate_project_logs(request_id[0].value, true);
+}
+
 
 
 $("select[class^='plugin_']").on('change', function(){
@@ -357,7 +491,8 @@ $('[data-reveal-id="modal-inject-plugin"]').on('click',
 
 $('select[id="startstop_pluginlist"]').on('click', function(){
         var selected_plugin_class = $('select[id="startstop_pluginlist"] :selected').attr("class");
-console.log(selected_plugin_class);
+	//console.log(selected_plugin_class);
+
 	if(selected_plugin_class == "sync"){
 		$("#plugin_call-output").show();
 		$("#plugin_call-output").empty();
@@ -437,6 +572,7 @@ $('[data-reveal-id="modal-call-plugin"]').on('click',
 
 $('[data-reveal-id="modal-remove-plugins"]').on('click',
 	function(){
+	
 		$('#plugins_remove-output').empty();
 		$('#plugins_remove_table_section').hide();
 		update_boardsv2('remove_plugins_boardlist', 'C');
@@ -454,14 +590,15 @@ $('[data-reveal-id="modal-board-plugins"]').on('click',
 
 $('[id="remove_plugins_boardlist"]').on('change',
 	function(){
-
 		var board_id = $( "#remove_plugins_boardlist option:selected" ).val();
 
 		if(board_id == '--'){
+			$("#modal-remove-plugins").addClass("small");
 			$('#plugins_remove_table_section').hide();
 			document.getElementById("plugins_remove-output").innerHTML ='';
 		}
 		else{
+			$("#modal-remove-plugins").removeClass("small");
 			$('#plugins_remove_table_section').show();
 			$.ajax({
 				url: s4t_api_url+"/boards/"+board_id+"/plugins",
@@ -474,7 +611,7 @@ $('[id="remove_plugins_boardlist"]').on('change',
 						$("#plugins_remove_table").html('<tr><td style="text-align:center">No plugins</td></tr>');
 					}
 					else{
-						var fields_to_show = ["name", "id", "category", "state"];
+						var fields_to_show = ["name", "version", "id", "category", "state"];
 						parsed_response = parse_json_fields(fields_to_show, response.message, false);
 						create_table_from_json("plugins_remove_table", parsed_response, fields_to_show, "remove");
 					}
@@ -493,11 +630,13 @@ $('[id="plugins_boardlist"]').on('change',
 	function(){
 		var show_board_plugins = document.getElementById("plugins_boardlist").value;
 		if(show_board_plugins == "--"){
+			$("#modal-board-plugins").addClass("small");
 			alert("Select a board!");
 			$("#show_boardplugins_section").hide();
 			document.getElementById('loading_bar').style.visibility='hidden';
 		}
 		else{
+			$("#modal-board-plugins").removeClass("small");
 			$("#show_boardplugins_section").show();
 
 			$.ajax({
@@ -512,7 +651,7 @@ $('[id="plugins_boardlist"]').on('change',
 						$("#show_boardplugins_table").html('<tr><td style="text-align:center">No plugins</td></tr>');
 					}
 					else{
-						var fields_to_show = ["name", "id", "category", "state"];
+						var fields_to_show = ["name", "version", "id", "category", "state"];
 						parsed_response = parse_json_fields(fields_to_show, response.message, false);
 						create_table_from_json("show_boardplugins_table", parsed_response, fields_to_show);
 					}
@@ -811,8 +950,8 @@ $('#update_plugin').click(function(){
 });
 
 
-document.getElementById('userfile').addEventListener('change', readFile, false);
-document.getElementById('userfile').element_id = "create_plugin_code";
+document.getElementById('plugin_userfile').addEventListener('change', readFile, false);
+document.getElementById('plugin_userfile').element_id = "create_plugin_code";
 
 
 $('#inject_plugin').click(function(){
@@ -1270,6 +1409,100 @@ $('#remove_plugin').click(function(){
 		}
 	}
 });
+
+
+
+$('#logs_plugin').click(function(){
+	var rows = document.getElementById("rows_number").value;
+
+	if ($('#logs_pluginlist option:selected').length == 0) {alert('Select a Plugin'); document.getElementById('loading_bar').style.visibility='hidden';}
+	else if(rows == undefined || rows == 0) {alert('Insert the number of rows to retrieve!'); document.getElementById('loading_bar').style.visibility='hidden';}
+	else {
+		var plugin_id = document.getElementById("logs_pluginlist").value;
+		var plugin_name = $('#logs_pluginlist option:selected')[0].innerHTML;
+
+		//Per project request
+		if ($('#logs_project').is(':checked')){
+
+			var project_id = getCookie("selected_prj");
+
+			$.ajax({
+				url: s4t_api_url+"/projects/"+project_id+"/plugins/"+plugin_id+"/logs?rows="+rows,
+				type: "GET",
+				dataType: 'json',
+				headers: ajax_headers,
+
+				success: function(response){
+					document.getElementById('loading_bar').style.visibility='hidden';
+
+					var request_id = response.req_id;
+					document.getElementById("logs_request_id").value = request_id;
+					document.getElementById("logs_rows").value = rows;
+
+					populate_project_logs(request_id);
+					refresh_lists();
+				},
+				error: function(response){
+					document.getElementById('loading_bar').style.visibility='hidden';
+					verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+				}
+			});
+		}
+		//Per list of boards call
+		else{
+			var list = document.getElementById("logs_boardlist");
+			var selected_list = [];
+			var selected_label = [];
+			for(var i=0; i< list.length; i++){
+				if (list.options[i].selected){
+					selected_list.push(list[i].value);
+					selected_label.push(list[i].text);
+				}
+			}
+
+			if(selected_list.length == 0){ alert("Select a board!"); document.getElementById('loading_bar').style.visibility='hidden'; }
+			else{
+				for(var i=0; i< selected_list.length; i++){
+					//---------------------------------------------------------------------------------
+					(function(i){
+						setTimeout(function(){
+							//---------------------------------------------------------------------------------
+							var board_id = selected_list[i];
+							var label = selected_label[i];
+
+							$.ajax({
+								url: s4t_api_url+"/boards/"+board_id+"/plugins/"+plugin_id+"/logs?rows="+rows,
+								type: 'GET',
+								dataType: 'json',
+								headers: ajax_headers,
+
+								success: function(response){
+									if(i==selected_list.length-1){
+										document.getElementById('loading_bar').style.visibility='hidden';
+console.log(response);
+										show_selected_board_log(label, response);
+										refresh_lists();
+									}
+									//document.getElementById("logs-output").innerHTML += label+': '+JSON.stringify(response.message)+'<br />';
+								},
+								error: function(response){
+									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+									if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+
+									//document.getElementById("logs-output").innerHTML += label+': '+JSON.stringify(response.responseJSON.message)+'<br />';
+									//refresh_lists();
+								}
+							});
+							//---------------------------------------------------------------------------------
+						},delay*i);
+					})(i);
+					//---------------------------------------------------------------------------------
+				}
+			}
+		}
+	}
+});
+
 
 
 

@@ -43,7 +43,7 @@ limitations under the License.
 			</div>
 
 
-			<div class="row" style="">
+			<div class="row">
 				<div class="large-6 columns" style="text-align:left; padding-left: 0px">
 					<div style="width: auto; margin-top: 0px; text-align:center; vertical-align: top; display: inline-block;">
 						Select All
@@ -60,16 +60,28 @@ limitations under the License.
 		</div>
 		<div id="boards_x_request">
 			<h3>Request</h3>
+			<!--
 			<h5 name="request_text" align="center"></h5>
 			<h5 name="subject_text" align="center"></h5></br>
+			-->
+			<div style="text-align:center;">
+				<div style="width: 70%; text-align:center; display: inline-block;">
+					<h5 name="request_text" align="left"></h5>
+					<h5 name="subject_text" align="left"></h5>
+				</div>
+				<div style="width: 25%; text-align:center; display: inline-block;">
+					<button class="custom_button" onclick="return_request_boards()">Refresh</button>
+				</div>
+			</div>
+
 			<table id="show_request_boards_table" style="width: 100%"></table>
 			<button class="custom_button" onclick="reload_project_requests()">Previous</button>
 		</div>
 		<div id="board_message">
 			<h3 name="message_text"></h3>
 			<div id="board_request_result"></div>
-			<textarea id="board_request_message" rows="3" cols="50"></textarea>
-			<button class="custom_button" onclick="return_request_boards(this)">Previous</button>
+			<textarea id="board_request_message" rows="3" cols="50" readonly></textarea>
+			<button class="custom_button" onclick="return_request_boards()">Previous</button>
 		</div>
 	</section>
 	<div class="project_requests">

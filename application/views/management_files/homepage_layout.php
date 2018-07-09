@@ -16,6 +16,56 @@ limitations under the License.
 
 <div id="loading_bar"></div>
 
+
+<div id="modal-show-info" class="reveal-modal small" data-reveal>
+	<section>
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+		<h3 style="text-align: center">Software Components</h3>
+		<table style="width: 100%">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Version</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Codeigniter</td>
+					<td>3.1.2</td>
+				</tr>
+				<tr>
+					<td>Dashboard</td>
+					<td><?= $this -> config -> item('dash_version')?></td>
+				</tr>
+				<tr>
+					<td>Iotronic</td>
+					<td><?= $this -> config -> item('iotronic_version')?></td>
+				</tr>
+				<tr>
+					<td>Lighting-rod</td>
+					<td><?= $this -> config -> item('lr_version')?></td>
+				</tr>
+				<tr>
+					<td>WSTUN</td>
+					<td><?= $this -> config -> item('wstun_version')?></td>
+				</tr>
+			</tbody>
+		</table>
+		<h3 style="text-align: center">Credits</h3>
+		<div style="vertical-align:middle; text-align:center">
+			<img src="<?= $this -> config -> site_url() ?>assets/images/smartme.png" width="7%" height="7%">SmartMe.IO S.r.l.
+		</div><br />
+		<img src="<?= $this -> config -> site_url() ?>assets/images/foundation_svgs/fi-marker.svg" width="5%" height="5%">Dip. di Ingegneria, C/da di Dio 1, S.Agata - 98166 Messina, Italy<br />
+		<img src="<?= $this -> config -> site_url() ?>assets/images/foundation_svgs/fi-telephone.svg" width="5%" height="5%">(+39) 090-397-7337<br />
+		<img src="<?= $this -> config -> site_url() ?>assets/images/foundation_svgs/fi-mail.svg" width="5%" height="5%">info@smartme.io<br />
+		<br />
+		<div style="vertical-align:middle; text-align:center">
+			Copyright © 2018
+		</div>
+	</section>
+</div>
+
+
 <div class="off-canvas-wrap" data-offcanvas>
 	<div class="inner-wrap">
 		<nav class="tab-bar">
@@ -94,6 +144,7 @@ limitations under the License.
 				<li><label>Support</label></li>
 				<li><a target="_blank" href="http://stack4things.unime.it/">Stack4Things</a></li>
 				<li><a target="_blank" href="<?= $this -> config -> item('swagger_url')?>">API</a></li>
+				<li><a data-reveal-id="modal-show-info">Info & Credits</a></li>
 			</ul>
 		</aside>
 
@@ -166,6 +217,7 @@ limitations under the License.
 											<li><a data-reveal-id="modal-remove-plugins">Remove from board</a></li>
 											<li><a data-reveal-id="modal-remove-plugin">Remove from boards</a></li>
 											<li><a data-reveal-id="modal-show-plugins">Show</a></li>
+											<li><a data-reveal-id="modal-show-plugin-logs">Show Logs</a></li>
 											<li><a data-reveal-id="modal-create-plugin">Create</a></li>
 											<li><a data-reveal-id="modal-destroy-plugin">Destroy</a></li>
 										</ul>

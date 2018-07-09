@@ -611,7 +611,7 @@ limitations under the License.
 			</div>
 
 			<label>Parameters</label>
-			<textarea id="board_parameters" placeholder="Insert here the parameters (json format)" name="text" rows="3"></textarea>
+			<textarea id="board_parameters" placeholder="Insert here the parameters" name="text" rows="3"></textarea>
 		</div>
 		<div class="row">
 			<div class="large-12 columns">

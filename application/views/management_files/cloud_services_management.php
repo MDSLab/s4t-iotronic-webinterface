@@ -37,10 +37,7 @@ limitations under the License.
 			<input id="register_port" type="number" placeholder="Port Number" name="port" value="" onkeypress="return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57"/>
 
 			<label>Protocol</label>
-			<select id="register_protocol">
-				<option value="TCP">TCP</option>
-				<option value="UDP">UDP</option>
-			</select>
+			<select id="register_protocol"></select>
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
@@ -71,10 +68,7 @@ limitations under the License.
 			<input id="update_port" type="number" placeholder="Port Number" name="port" value="" onkeypress="return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57"/>
 
 			<label>Protocol</label>
-			<select id="update_protocol">
-				<option value="TCP">TCP</option>
-				<option value="UDP">UDP</option>
-			</select>
+			<select id="update_protocol"></select>
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
@@ -165,7 +159,7 @@ limitations under the License.
 </div>
 
 
-<div id="modal-board-services" class="reveal-modal" data-reveal>
+<div id="modal-board-services" class="reveal-modal small" data-reveal>
 	<section>
 		<h3>Show services on Board</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>

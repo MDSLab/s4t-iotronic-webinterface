@@ -105,10 +105,17 @@ function populate_request_info(a, flag){
 	$(".project_requests").hide();
 
 	var id = null;
-	if(flag)	id = a;
-	else		id = a.getAttribute("id");
+	var subject = null;
 
-	var subject = a.getAttribute("value");
+	if(flag){
+		id = a;
+		subject = document.getElementById('subject').value;
+	}
+	else{
+		id = a.getAttribute("id");
+		subject = a.getAttribute("value");
+	}
+
 	document.getElementById('request_id').value=id;
 	document.getElementById('subject').value=subject;
 
@@ -175,7 +182,7 @@ function populate_request_message(a){
 }
 
 
-function return_request_boards(a){
+function return_request_boards(){
 	var request_id = $('input[id="request_id"]');
 	document.getElementById('loading_bar').style.visibility='hidden';
 

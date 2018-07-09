@@ -146,9 +146,22 @@ function getCookie(cname) {
 	*/
 }
 
+
+function add_newlines_to_message(message, tobereplaced){
+	var message_array = message.split(tobereplaced);
+	//console.log(message_array);
+	var restyled_message = '';
+	for(var i=0; i<message_array.length; i++){
+		restyled_message += message_array[i] + '&#13;';
+	}
+	return restyled_message;
+}
+
+
 function round(value, decimals) {
 	return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
 }
+
 
 function loading(){
 	var loader_pathfile = site_url+"uploads/ajax-loader.gif";
@@ -352,8 +365,8 @@ function readFile(evt) {
 		r.onload = function(e) {
 			var contents = e.target.result;
 			//alert('contents: '+contents);
-			//document.getElementById("create_driver_code").innerHTML = contents;
-			document.getElementById(evt.target.element_id).innerHTML = contents;
+			//document.getElementById(evt.target.element_id).innerHTML = contents;
+			$('#'+evt.target.element_id).val(contents);
 		}
 		r.readAsText(f);
 	}
@@ -527,6 +540,9 @@ function update_boardsv2(select_id, status, flag){
 function create_table_from_json(table_id, obj, array, checkbox_name){
 	var result = "";
 
+	//Check which column to order
+	var column_to_order = 0;
+
 	//Clean the table if not already empty
 	if($('#'+table_id).html() != "") $('#'+table_id).DataTable().destroy();
 
@@ -562,9 +578,12 @@ function create_table_from_json(table_id, obj, array, checkbox_name){
 		//TO
 		if(checkbox_name) ths = "<th></th>";
 
-
 		for(i=0;i<headers.length;i++){
 			ths += "<th>"+headers[i]+"</th>";
+
+			//For order purposes
+			if(headers[i] == "timestamp")
+				column_to_order = i;
 		}
 		var thead = ths_start + ths + ths_end;
 
@@ -611,8 +630,15 @@ function create_table_from_json(table_id, obj, array, checkbox_name){
 	var div_id = $('#'+table_id).closest("div")[0].id;
 	$('#'+div_id).css('margin-bottom', '20px');
 
-	//To correcty render the DataTable
-	$('#'+table_id).DataTable();	//WORKING !!!
+	//To correcty render the DataTable (ordered or not)
+	if(column_to_order == 0)
+		$('#'+table_id).DataTable();	//WORKING without ordering!!!
+	else{
+		if(checkbox_name)
+			column_to_order += 1;
+
+		$('#'+table_id).DataTable({"order": [[ column_to_order, "desc" ]]});	//WORKING with timestamp ordering !!!
+	}
 
 	//TESTING...
 	/*
@@ -813,13 +839,14 @@ $(document).ready(function() {
 			var id = this.getAttribute("id");
 			var reveal_modal_id = this.closest(".reveal-modal").getAttribute("id");
 
-			//Clean output fieldset
+			//Clean output fieldset (if the fieldset exists)
 			var p_id = $('#'+reveal_modal_id).find("p");
-			p_id[0].innerHTML = "";
+			if(p_id[0] != undefined)
+				p_id[0].innerHTML = "";
 	
 			var array = id.split("_");
 			var section = array[0];
-	
+
 			if ($('#'+id).is(':checked')){
 				//console.log("CHECKED");
 
@@ -843,7 +870,8 @@ $(document).ready(function() {
 				else
 					$('#'+section+'_boardlist_bundle').show();
 
-				$("#"+reveal_modal_id).removeClass("small");
+				//Commented to remove the problem of resize of modals once the checkbox changes status
+				//$("#"+reveal_modal_id).removeClass("small");
 			}
 		}
 	);

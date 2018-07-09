@@ -63,8 +63,6 @@ $('[data-reveal-id="modal-register-new-board"]').on('click',
 		$("#board_create_net_enabled").val("false");
 		$("#board_create_notify_enabled").val("false");
 
-		$('#board_create_endpoints_section').hide();
-
 		var array_promise = [];
 
 		array_promise.push(new Promise(function(resolve){
@@ -326,8 +324,8 @@ $('#create-board').click(function(){
 	var project = select_project.options[select_project.selectedIndex].value;
 	var user = select_user.options[select_user.selectedIndex].value;
 
-	data.manufacturer = select_layout.options[select_layout.selectedIndex].title;
-	data.model = select_layout.options[select_layout.selectedIndex].text;
+	//data.manufacturer = select_layout.options[select_layout.selectedIndex].title;
+	//data.model = select_layout.options[select_layout.selectedIndex].text;
 
 
 	if(layout == "--")		{ alert("Select a Layout!");			document.getElementById('loading_bar').style.visibility='hidden';}
@@ -385,6 +383,7 @@ $('#create-board').click(function(){
 		}
 
 		document.getElementById("board_create-output").innerHTML ='';
+
 
 		$.ajax({
 			url: s4t_api_url+"/boards",
@@ -686,12 +685,16 @@ $('#action-board').click(function(){
 
 	if(action == "--"){ document.getElementById('loading_bar').style.visibility='hidden'; alert("Select an action!"); }
 	else if(!$('#action_project').is(':checked') && $('#action_boardlist option:selected').length == 0) {alert('Select a Board'); document.getElementById('loading_bar').style.visibility='hidden';}
+	else if(action != "hostname" && parameters == "") { document.getElementById('loading_bar').style.visibility='hidden'; alert("With reboot and restart_lr commands you have to add the time in parameters!"); }
 
 	else{
 		data = {};
 		data.action = action;
-		data.parameters = parameters;
 
+		if(action == "hostname")
+			data.parameters = parameters;
+		else
+			data.parameters = {"time": parameters};
 
 		if ($('#action_project').is(':checked')){
 			var project_id = getCookie("selected_prj");
@@ -847,7 +850,6 @@ function populate_board_info(board_id){
 			headers: ajax_headers,
 
 			success: function(response){
-
 				info = response.message.info;
 
 				$('#info-label').html('<b>Label: </b>'+info.label);

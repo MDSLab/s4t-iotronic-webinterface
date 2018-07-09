@@ -23,6 +23,85 @@ limitations under the License.
 </div>
 
 
+<div id="modal-show-plugin-logs" class="reveal-modal small" data-reveal>
+	<section>
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+
+		<input type="hidden" id="logs_request_id" value="">
+		<input type="hidden" id="logs_rows" value="">
+
+		<div id="project_logs">
+			<h3>Plugin Logs</h3>
+			<div class="row">
+				<div style="text-align:center;">
+					<div style="width: 80%; text-align:center; display: inline-block;">
+						<label>Plugin Name</label>
+						<select id="logs_pluginlist"></select>
+					</div>
+					<div style="width: 15%; text-align:center; display: inline-block;">
+						<label>Rows</label>
+						<input id="rows_number" type="number" placeholder="" name="rows" min="1" value="10" onkeypress="return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57"/>
+					</div>
+				</div>
+
+				<div id="logs_boards_section">
+					<div style="text-align:center;">
+						<div style="width: 49%; margin-top: 5px; text-align:center; vertical-align: top; display: inline-block;">
+							<label>Enable / Disable per project logs</label>
+						</div>
+						<div class="switch round small" style="margin-bottom: 0px; width: 15%; text-align:center; display: inline-block;">
+							<input id="logs_project" class="flag_project" type="checkbox" />
+							<label for="logs_project"></label>
+						</div>
+					</div>
+
+					<div id="logs_boardlist_bundle">
+						<label>Board List</label>
+						<select id="logs_boardlist" multiple="multiple" class="select_one" size="<?=$selectbox_size?>"></select>
+					</div>
+				</div>
+
+				<div class="large-12 columns">
+					<button id="logs_plugin" class="custom_button">Get</button>
+				</div>
+			</div>
+		</div>
+
+		<div id="boards_x_log_request">
+			<h3>Log Request</h3>
+
+			<div style="text-align:center;">
+				<div style="width: 70%; text-align:center; display: inline-block;">
+					<h5 name="request_text" align="center"></h5></br>
+				</div>
+				<div style="width: 25%; text-align:center; display: inline-block;">
+					<button class="custom_button" onclick="populate_project_logs()">Refresh</button>
+				</div>
+			</div>
+
+			<table id="show_logs_boards_table" class="display" cellspacing="0" style="width: 100%"></table>
+			<button class="custom_button" onclick="load_project_logs()">Previous</button>
+		</div>
+
+		<div id="board_log_message">
+			<h3 name="message_log_text"></h3>
+			<div id="board_log_result"></div>
+			<textarea id="board_message" rows="10" cols="50" readonly></textarea>
+			<button class="custom_button" onclick="return_log_boards(this)">Previous</button>
+		</div>
+
+		<div id="selected_board_log">
+			<h3 name="selected_message_log_text"></h3>
+			<div id="selected_board_log_result"></div>
+			<textarea id="selected_board_message" rows="10" cols="50" readonly></textarea>
+			<button class="custom_button" onclick="load_project_logs(this)">Previous</button>
+		</div>
+
+	</section>
+</div>
+
+
+
 <div id="modal-modify-plugin" class="reveal-modal small" data-reveal>
 	<section>
 		<h3 name="info_text"></h3>
@@ -114,7 +193,7 @@ limitations under the License.
 			<textarea id="create_plugin_parameters" placeholder="Insert here the parameters (json format)" name="text" rows="5"></textarea>
 
 			<label>Code</label>
-			<input type="file" name="userfile" id="userfile" size="20" />
+			<input type="file" name="plugin_userfile" id="plugin_userfile" size="20" />
 			<textarea id="create_plugin_code" placeholder="Insert here the code" name="text" rows="15"></textarea>
 		</div>
 		<div class="row">
@@ -485,7 +564,7 @@ limitations under the License.
 </div>
 -->
 
-<div id="modal-remove-plugins" class="reveal-modal" data-reveal>
+<div id="modal-remove-plugins" class="reveal-modal small" data-reveal>
 	<section>
 		<h3>Remove Plugins</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
@@ -581,7 +660,7 @@ limitations under the License.
 
 
 
-<div id="modal-board-plugins" class="reveal-modal" data-reveal>
+<div id="modal-board-plugins" class="reveal-modal small" data-reveal>
 	<section>
 		<h3>Show Plugins on Board</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
