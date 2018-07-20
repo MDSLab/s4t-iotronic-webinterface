@@ -386,7 +386,6 @@ input[type='checkbox']:checked:after {
         vertical-align: text-bottom;
 }
 
-
 /* TESTING */
 /*
 table.dataTable tr th.select-checkbox.selected::after {
@@ -396,6 +395,11 @@ table.dataTable tr th.select-checkbox.selected::after {
     text-align: center;
     text-shadow: rgb(176, 190, 217) 1px 1px, rgb(176, 190, 217) -1px -1px, rgb(176, 190, 217) 1px -1px, rgb(176, 190, 217) -1px 1px;
 }
+
+.dataTable tr td {
+	height: 31px;
+}
+
 */
 
 /* WORKING???? */

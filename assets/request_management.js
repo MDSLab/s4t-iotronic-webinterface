@@ -154,7 +154,19 @@ function customize_request_boards_table(fields_to_parse, response_message, revea
 			if(boards_list[j].board_id == parsed_response[i].board_id){
 				parsed_response[i].board_id = '<a data-reveal-id="'+reveal_id+'" id="'+parsed_response[i].board_id+'" onclick=populate_board_info("'+parsed_response[i].board_id+'")>'+boards_list[j].label+'</a>';
 
-				parsed_response[i].result = '<a id="'+parsed_response[i].result+'" data-label="'+boards_list[j].label+'" data-result="'+parsed_response[i].result+'" data-message="'+parsed_response[i].message+'" onclick=populate_request_message(this)>'+parsed_response[i].result+'</a>';
+
+				//We need to discriminate if the "message" is just text or it is JSON
+				parsed_response[i].message = parsed_response[i].message.slice(1,-1);
+				var message_string = "";
+				try{
+					var x = JSON.parse(parsed_response[i].message);
+					message_string = encodeURIComponent(JSON.stringify(x, null, "\t"));
+				}
+				catch(e){
+					message_string = encodeURIComponent(parsed_response[i].message);
+				}
+
+				parsed_response[i].result = '<a id="'+parsed_response[i].result+'" data-label="'+boards_list[j].label+'" data-result="'+parsed_response[i].result+'" data-message="'+message_string+'" onclick=populate_request_message(this)>'+parsed_response[i].result+'</a>';
 				break;
 			}
 		}
@@ -174,6 +186,9 @@ function populate_request_message(a){
 	var label = a.getAttribute("data-label");
 	var result = a.getAttribute("data-result");
 	var message = a.getAttribute("data-message");
+
+	//To decode the "data-message" attribute
+	message = decodeURIComponent(message);
 
 	var message_div = $('#board_message');
 	message_div.find('[name=message_text]').text("Message for board "+label);
@@ -195,6 +210,28 @@ $('#remove_requests').click(function(){
 	document.getElementById("request_delete-output").innerHTML ='';
 
 	if ($('#deleterequest_project').is(':checked')){
+
+		var project_id = getCookie("selected_prj");
+		$.ajax({
+			url: s4t_api_url+"/projects/"+project_id+"/requests",
+			type: "DELETE",
+			dataType: 'json',
+			headers: ajax_headers,
+
+			success: function(response){
+				populate_project_requests();
+				refresh_lists();
+				document.getElementById('loading_bar').style.visibility='hidden';
+				document.getElementById("request_delete-output").innerHTML = "All requests were deleted";
+			},
+			error: function(response){
+				document.getElementById('loading_bar').style.visibility='hidden';
+				verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+			}
+		});
+
+		//OLD version of delete action per request (single request) per time
+		/*
 		for(var i=0; i< requests_list.length; i++){
 			//---------------------------------------------------------------------------------
 			(function(i){
@@ -230,6 +267,7 @@ $('#remove_requests').click(function(){
 			})(i);
 			//---------------------------------------------------------------------------------
 		}
+		*/
 	}
 	else{
 		return_array = get_selected_rows_from_table("show_requests_table", "remove");

@@ -24,6 +24,7 @@ limitations under the License.
 	drivers_flag = "<?= $this -> config -> item('load_driver_management')?>";
 	vfs_flag = "<?= $this -> config -> item('load_vfs_management')?>";
 
+	security_method = "<?= $this -> config -> item('security')?>";
 
 	delay = "<?= $this -> config -> item('polling_delay')?>";
 	string_or_json = "<?= $this -> config -> item('show_string_or_json_lists')?>";
@@ -44,6 +45,7 @@ limitations under the License.
 	};
 	*/	
 	var boards_list = "";
+	var default_boardlist_columns = ["label", "board_id"];
 </script>
 
 

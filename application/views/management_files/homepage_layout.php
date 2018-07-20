@@ -34,6 +34,10 @@ limitations under the License.
 					<td>3.1.2</td>
 				</tr>
 				<tr>
+					<td>Foundation</td>
+					<td>5.5.3</td>
+				</tr>
+				<tr>
 					<td>Dashboard</td>
 					<td><?= $this -> config -> item('dash_version')?></td>
 				</tr>
@@ -94,6 +98,7 @@ limitations under the License.
 						<li><a data-reveal-id="modal-update-board">Update</a></li>
 						<li><a data-reveal-id="modal-unregister-board">Unregister</a></li>
 						<li><a data-reveal-id="modal-action-board">Action</a></li>
+						<li><a data-reveal-id="modal-update-pkg-board">Package Manager</a></li>
 					</ul>
 				</li>
 				<li class="has-submenu"><a href="#">Users</a>

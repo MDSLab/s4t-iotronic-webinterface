@@ -81,10 +81,15 @@ function show_selected_board_log(label, response){
 $('[data-reveal-id="modal-show-plugin-logs"]').on('click',
 	function() {
 
-		update_boardsv2('logs_boardlist', 'C', true);
 		$("#logs_project").prop("checked", false);
 		$("#logs_boardlist_bundle").show();
-		update_boardsv2('logs_boardlist', 'C', true);
+
+		//OLD: select approach
+		//update_boardsv2('logs_boardlist', 'C', true);
+
+		//NEW: table approach
+		refresh_tableboards("logs_tableboards", "remove", "C", default_boardlist_columns);
+
 		load_project_logs();
 	}
 );
@@ -365,7 +370,7 @@ function refresh_cloud_pluginsv2(select_id, plugins_list, name){
 }
 
 
-function getall_cloud_plugins(select_id){
+function getall_cloud_plugins(select_id, released){
 	$('#'+select_id).empty();
 
 	var array = select_id.split("_");
@@ -385,7 +390,16 @@ function getall_cloud_plugins(select_id){
 				//console.log(global_plugins_list);
 
 				for(i=0; i<response.message.length; i++)
-					$('#'+select_id).append('<option value="'+response.message[i].id+'" class="'+response.message[i].category+'">'+response.message[i].name+' [V: '+response.message[i].version+']</option>');
+{
+					//Show only the released plugins
+					if(released){
+						if(response.message[i].tag_id == 1)
+							$('#'+select_id).append('<option value="'+response.message[i].id+'" class="'+response.message[i].category+'">'+response.message[i].name+' [V: '+response.message[i].version+']</option>');
+					}
+					//Show all the plugins (released and not)
+					else
+						$('#'+select_id).append('<option value="'+response.message[i].id+'" class="'+response.message[i].category+'">'+response.message[i].name+' [V: '+response.message[i].version+']</option>');
+				}
 
 				refresh_plugins_unique_names(section+"_name", global_plugins_list);
 			}
@@ -445,6 +459,7 @@ function clean_plugin_fields(form_name, flag_output){
 
 $('[data-reveal-id="modal-create-plugin"]').on('click',
 	function() {
+		$('#plugin_userfile').val('');
 		clean_plugin_fields("create_plugin", true);
 	}
 );
@@ -480,9 +495,14 @@ $('[data-reveal-id="modal-inject-plugin"]').on('click',
 		$('#inject_category').val("--");
 		$('#inject_name').val("--");
 
-		getall_cloud_plugins('inject_pluginlist');
+		getall_cloud_plugins('inject_pluginlist', true);
 
-		update_boardsv2('inject_boardlist', 'C', true);
+		//OLD: select approach
+		//update_boardsv2('inject_boardlist', 'C', true);
+
+		//NEW: table approach
+		refresh_tableboards("inject_tableboards", "remove", "C", default_boardlist_columns);
+
 		$("#inject_autostart").val("false");
 		$("#inject_force").val("false");
 	}
@@ -530,7 +550,12 @@ $('[data-reveal-id="modal-startstop-plugin"]').on('click',
 
 		getall_cloud_plugins('startstop_pluginlist');
 
-		update_boardsv2('startstop_boardlist', 'C', true);
+		//OLD: select approach
+		//update_boardsv2('startstop_boardlist', 'C', true);
+
+		//NEW: table approach
+		refresh_tableboards("startstop_tableboards", "remove", "C", default_boardlist_columns);
+
 		document.getElementById("startstop_plugin_parameters").value = '';
 	}
 );
@@ -554,7 +579,11 @@ $('[data-reveal-id="modal-remove-plugin"]').on('click',
 
 		getall_cloud_plugins('removeplugin_pluginlist');
 
-		update_boardsv2('removeplugin_boardlist', 'C', true);
+		//OLD: select approach
+		//update_boardsv2('removeplugin_boardlist', 'C', true);
+
+		//NEW: table approach
+		refresh_tableboards("removeplugin_tableboards", "remove", "C", default_boardlist_columns);
 	}
 );
 
@@ -572,7 +601,7 @@ $('[data-reveal-id="modal-call-plugin"]').on('click',
 
 $('[data-reveal-id="modal-remove-plugins"]').on('click',
 	function(){
-	
+		$("#modal-remove-plugins").addClass("small");	
 		$('#plugins_remove-output').empty();
 		$('#plugins_remove_table_section').hide();
 		update_boardsv2('remove_plugins_boardlist', 'C');
@@ -582,6 +611,7 @@ $('[data-reveal-id="modal-remove-plugins"]').on('click',
 
 $('[data-reveal-id="modal-board-plugins"]').on('click',
 	function(){
+		$("#modal-board-plugins").addClass("small");
 		$('#show_boardplugins_section').hide();
 		update_boardsv2('plugins_boardlist');
 	}
@@ -957,8 +987,14 @@ document.getElementById('plugin_userfile').element_id = "create_plugin_code";
 $('#inject_plugin').click(function(){
 	document.getElementById("plugin_inject-output").innerHTML ='';
 
+	//NEW: table approach
+	if ($('#inject_pluginlist option:selected').length == 0) {alert('Select a Plugin'); document.getElementById('loading_bar').style.visibility='hidden';}
+
+	//OLD: select approach
+	/*
 	if (!$('#inject_project').is(':checked') && $('#inject_boardlist option:selected').length == 0) {alert('Select a Board'); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if ($('#inject_pluginlist option:selected').length == 0) {alert('Select a Plugin'); document.getElementById('loading_bar').style.visibility='hidden';}
+	*/
 	else {
 		var plugin_id = document.getElementById("inject_pluginlist").value;
 		var plugin_name = $('#inject_pluginlist option:selected')[0].innerHTML;
@@ -983,7 +1019,15 @@ $('#inject_plugin').click(function(){
 			
 				success: function(response){
 					document.getElementById('loading_bar').style.visibility='hidden';
-					document.getElementById("plugin_inject-output").innerHTML = JSON.stringify(response.message);
+
+					//Old output without link to request_id
+					//document.getElementById("plugin_inject-output").innerHTML = JSON.stringify(response.message);
+
+					//New output with link to request_id
+					var subject = "/projects/"+project_id+"/plugins/"+plugin_id;
+					document.getElementById("plugin_inject-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
+
+
 					refresh_lists();
 				},
 				error: function(response){
@@ -995,6 +1039,56 @@ $('#inject_plugin').click(function(){
 		}
 		else{
 
+			//NEW: table approach
+			return_array = get_selected_rows_from_table("inject_tableboards", "remove");
+
+			headers = return_array[0];
+			variables = return_array[1];
+
+			if(variables.length == 0){
+				alert('No board(s) selected!');
+				document.getElementById('loading_bar').style.visibility='hidden';
+			}
+			else{
+				for(var i=0; i< variables.length; i++){
+					//---------------------------------------------------------------------------------
+					(function(i){
+						setTimeout(function(){
+							//---------------------------------------------------------------------------------
+							var board_id = variables[i][1];
+							var board_name = variables[i][0];
+
+							$.ajax({
+								url: s4t_api_url+"/boards/"+board_id+"/plugins",
+								type: 'PUT',
+								dataType: 'json',
+								headers: ajax_headers,
+								data: JSON.stringify(data),
+
+								success: function(response){
+									if(i==variables.length-1) {
+										refresh_tableboards("inject_tableboards", "remove", "C", default_boardlist_columns);
+										refresh_lists();
+										document.getElementById('loading_bar').style.visibility='hidden';
+									}
+									document.getElementById("plugin_inject-output").innerHTML += board_name+ ' with '+ plugin_name+': '+JSON.stringify(response.message) +'<br />';
+								},
+								error: function(response){
+									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+									document.getElementById("plugin_inject-output").innerHTML += board_name+ ' with '+plugin_name+': '+JSON.stringify(response.responseJSON.message) +'<br />';
+								}
+							});
+							//---------------------------------------------------------------------------------
+						},delay*i);
+					})(i);
+					//---------------------------------------------------------------------------------
+				}
+			}
+
+
+			//OLD: select approach
+			/*
 			//document.getElementById('loading_bar').style.visibility='visible';
 			var list = document.getElementById("inject_boardlist");
 			var selected_list = [];
@@ -1043,24 +1137,27 @@ $('#inject_plugin').click(function(){
 				})(i);
 				//---------------------------------------------------------------------------------
 			}
+			*/
 		}
 	}
 });
 
 
 $('.startstop_plugin').click(function(){
-	//var plugin_id = document.getElementById("startstop_pluginlist").value;
-	//var plugin_name = $('#startstop_pluginlist option:selected')[0].innerHTML;
-
-	//var plugin_name = document.getElementById("startstop_pluginlist").value;
 	var plugin_parameters = document.getElementById("startstop_plugin_parameters").value;
 	var start_stop_flag = this.id;
 
 	document.getElementById("plugin_startstop-output").innerHTML ='';
 
+	//NEW: table approach
+	if ($('#startstop_pluginlist option:selected').length == 0) {alert('Select a Plugin'); document.getElementById('loading_bar').style.visibility='hidden';}
+
+	//OLD: select approach
+	/*
 	if (!$('#startstop_project').is(':checked') && $('#startstop_boardlist option:selected').length == 0) { alert('Select a Board');document.getElementById('loading_bar').style.visibility='hidden';}
 	else if ($('#startstop_pluginlist option:selected').length == 0) {alert('Select a Plugin'); document.getElementById('loading_bar').style.visibility='hidden';}
 	//else if(start_stop_flag == "start" && plugin_parameters == "") {alert("On start, please add parameters (in json format)!"); document.getElementById('loading_bar').style.visibility='hidden';}
+	*/
 	else {
 
 		var plugin_id = document.getElementById("startstop_pluginlist").value;
@@ -1091,7 +1188,13 @@ $('.startstop_plugin').click(function(){
 			
 				success: function(response){
 					document.getElementById('loading_bar').style.visibility='hidden';
-					document.getElementById("plugin_startstop-output").innerHTML = JSON.stringify(response.message);
+
+					//document.getElementById("plugin_startstop-output").innerHTML = JSON.stringify(response.message);
+
+					//New output with link to request_id
+					var subject = "/projects/"+project_id+"/plugins/"+plugin_id;
+					document.getElementById("plugin_startstop-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
+
 					refresh_lists();
 				},
 				error: function(response){
@@ -1102,6 +1205,69 @@ $('.startstop_plugin').click(function(){
 			});
 		}
 		else{
+
+			//NEW: table approach
+			return_array = get_selected_rows_from_table("startstop_tableboards", "remove");
+
+			headers = return_array[0];
+			variables = return_array[1];
+
+			if(variables.length == 0){
+				alert('No board(s) selected!');
+				document.getElementById('loading_bar').style.visibility='hidden';
+			}
+			else{
+				for(var i=0; i< variables.length; i++){
+					//---------------------------------------------------------------------------------
+					(function(i){
+						setTimeout(function(){
+							//---------------------------------------------------------------------------------
+							var board_id = variables[i][1];
+							var board_name = variables[i][0];
+
+							data = {};
+							if(start_stop_flag == "start"){
+								data.parameters = plugin_parameters;
+								data.operation = "run";
+							}
+							else if(start_stop_flag == "stop"){
+								data.operation = "kill";
+							}
+							else if(start_stop_flag == "restart"){
+								data.operation = "restart";
+							}
+
+							$.ajax({
+								url: s4t_api_url+"/boards/"+board_id+"/plugins/"+plugin_id,
+								type: 'POST',
+								dataType: 'json',
+								headers: ajax_headers,
+								data: JSON.stringify(data),
+
+								success: function(response){
+									if(i==variables.length-1) {
+										refresh_tableboards("startstop_tableboards", "remove", "C", default_boardlist_columns);
+										refresh_lists();
+										document.getElementById('loading_bar').style.visibility='hidden';
+									}
+									document.getElementById("plugin_startstop-output").innerHTML += board_name + ": "+ JSON.stringify(response.message)+"<br />";
+								},
+								error: function(response){
+									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+									document.getElementById("plugin_startstop-output").innerHTML += JSON.stringify(response.responseJSON.message)+"<br />";
+								}
+							});
+							//---------------------------------------------------------------------------------
+						},delay*i);
+					})(i);
+					//---------------------------------------------------------------------------------
+				}
+			}
+
+
+			//OLD: select approach
+			/*
 			//document.getElementById('loading_bar').style.visibility='visible';
 			var list = document.getElementById("startstop_boardlist");
 
@@ -1163,6 +1329,7 @@ $('.startstop_plugin').click(function(){
 				})(i);
 				//---------------------------------------------------------------------------------
 			}
+			*/
 		}
 	}
 });
@@ -1173,9 +1340,15 @@ $('#call_plugin').click(function(){
 
 	var plugin_parameters = document.getElementById("startstop_plugin_parameters").value;
 
+	//NEW: table approach
+	if ($('#startstop_pluginlist option:selected').length == 0) {alert('Select a Plugin'); document.getElementById('loading_bar').style.visibility='hidden';}
+
+	//OLD: select approach
+	/*
 	if (!$('#startstop_project').is(':checked') && $('#startstop_boardlist option:selected').length == 0) { alert('Select a Board'); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if ($('#startstop_pluginlist option:selected').length == 0) {alert('Select a Plugin'); document.getElementById('loading_bar').style.visibility='hidden';}
 	//else if(plugin_parameters == "") {alert("On start, please add the parameters needed!"); document.getElementById('loading_bar').style.visibility='hidden';}
+	*/
 	else {
 
 		var plugin_id = document.getElementById("startstop_pluginlist").value;
@@ -1198,7 +1371,14 @@ $('#call_plugin').click(function(){
 
 				success: function(response){
 					document.getElementById('loading_bar').style.visibility='hidden';
-					document.getElementById("plugin_startstop-output").innerHTML = JSON.stringify(response.message);
+
+					//Old output without link to request_id
+					//document.getElementById("plugin_startstop-output").innerHTML = JSON.stringify(response.message);
+
+					//New output with link to request_id
+					var subject = "/projects/"+project_id+"/plugins/"+plugin_id;
+					document.getElementById("plugin_startstop-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
+
 					refresh_lists();
 				},
 				error: function(response){
@@ -1210,6 +1390,61 @@ $('#call_plugin').click(function(){
 		}
 
 		else{
+
+			//NEW: table approach
+			return_array = get_selected_rows_from_table("startstop_tableboards", "remove");
+
+			headers = return_array[0];
+			variables = return_array[1];
+
+			if(variables.length == 0){
+				alert('No board(s) selected!');
+				document.getElementById('loading_bar').style.visibility='hidden';
+			}
+			else{
+				for(var i=0; i< variables.length; i++){
+					//---------------------------------------------------------------------------------
+					(function(i){
+						setTimeout(function(){
+							//---------------------------------------------------------------------------------
+							var board_id = variables[i][1];
+							var board_name = variables[i][0];
+
+							data = {};
+							data.operation = "call";
+							data.parameters = plugin_parameters;
+
+							$.ajax({
+								url: s4t_api_url+"/boards/"+board_id+"/plugins/"+plugin_id,
+								type: 'POST',
+								dataType: 'json',
+								headers: ajax_headers,
+								data: JSON.stringify(data),
+
+								success: function(response){
+									if(i==variables.length-1) {
+										refresh_tableboards("startstop_tableboards", "remove", "C", default_boardlist_columns);
+										refresh_lists();
+										document.getElementById('loading_bar').style.visibility='hidden';
+									}
+									document.getElementById("plugin_call-output").innerHTML += board_name + ": "+ JSON.stringify(response.message)+"<br />";
+								},
+								error: function(response){
+									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+									document.getElementById("plugin_call-output").innerHTML += JSON.stringify(response.responseJSON.message)+"<br />";
+								}
+							});
+							//---------------------------------------------------------------------------------
+						},delay*i);
+					})(i);
+					//---------------------------------------------------------------------------------
+				}
+			}
+
+
+			//OLD: select approach
+			/*
 			//document.getElementById('loading_bar').style.visibility='visible';
 			//var list = document.getElementById("call_boardlist");
 			var list = document.getElementById("startstop_boardlist");
@@ -1263,6 +1498,7 @@ $('#call_plugin').click(function(){
 				})(i);
 				//---------------------------------------------------------------------------------
 			}
+			*/
 		}
 	}
 });
@@ -1290,7 +1526,7 @@ $('#remove_plugins').click(function(){
 				(function(i){
 					setTimeout(function(){
 						//---------------------------------------------------------------------------------
-						var plugin_id = variables[i][1];
+						var plugin_id = variables[i][2];
 						//var plugin_name = variables[i][1];
 
 						$.ajax({
@@ -1329,9 +1565,14 @@ $('#remove_plugin').click(function(){
 
 	document.getElementById("plugin_remove-output").innerHTML ='';
 
+	//NEW: table approach
+	if ($('#removeplugin_pluginlist option:selected').length == 0) {alert('Select a Plugin'); document.getElementById('loading_bar').style.visibility='hidden';}
+
+	//OLD: select approach
+	/*
 	if (!$('#removeplugin_project').is(':checked') && $('#removeplugin_boardlist option:selected').length == 0) { alert('Select a Board');document.getElementById('loading_bar').style.visibility='hidden';}
 	else if ($('#removeplugin_pluginlist option:selected').length == 0) {alert('Select a Plugin'); document.getElementById('loading_bar').style.visibility='hidden';}
-
+	*/
 	else {
 
 		var plugin_id = document.getElementById("removeplugin_pluginlist").value;
@@ -1348,7 +1589,14 @@ $('#remove_plugin').click(function(){
 
 				success: function(response){
 					document.getElementById('loading_bar').style.visibility='hidden';
-					document.getElementById("plugin_remove-output").innerHTML = JSON.stringify(response.message);
+
+					//Old output without link to request_id
+					//document.getElementById("plugin_remove-output").innerHTML = JSON.stringify(response.message);
+
+					//New output with link to request_id
+					var subject = "/projects/"+project_id+"/plugins/"+plugin_id;
+					document.getElementById("plugin_remove-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
+
 					refresh_lists();
 				},
 				error: function(response){
@@ -1359,6 +1607,56 @@ $('#remove_plugin').click(function(){
 			});
 		}
 		else{
+
+			//NEW: table approach
+			return_array = get_selected_rows_from_table("removeplugin_tableboards", "remove");
+
+			headers = return_array[0];
+			variables = return_array[1];
+
+			if(variables.length == 0){
+				alert('No board(s) selected!');
+				document.getElementById('loading_bar').style.visibility='hidden';
+			}
+			else{
+				for(var i=0; i< variables.length; i++){
+					//---------------------------------------------------------------------------------
+					(function(i){
+						setTimeout(function(){
+							//---------------------------------------------------------------------------------
+							var board_id = variables[i][1];
+							var board_name = variables[i][0];
+
+							$.ajax({
+								url: s4t_api_url+"/boards/"+board_id+"/plugins/"+plugin_id,
+								type: 'DELETE',
+								dataType: 'json',
+								headers: ajax_headers,
+
+								success: function(response){
+									if(i==variables.length-1) {
+										refresh_tableboards("removeplugin_tableboards", "remove", "C", default_boardlist_columns);
+										refresh_lists();
+										document.getElementById('loading_bar').style.visibility='hidden';
+									}
+									document.getElementById("plugin_remove-output").innerHTML += board_name +': '+JSON.stringify(response.message) +'<br />';
+								},
+								error: function(response){
+									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+									document.getElementById("plugin_remove-output").innerHTML += board_name +': '+JSON.stringify(response.responseJSON.message) +'<br />';
+								}
+							});
+							//---------------------------------------------------------------------------------
+						},delay*i);
+					})(i);
+					//---------------------------------------------------------------------------------
+				}
+			}
+
+
+			//OLD: select approach
+			/*
 			//document.getElementById('loading_bar').style.visibility='visible';
 			var list = document.getElementById("removeplugin_boardlist");
 
@@ -1406,6 +1704,7 @@ $('#remove_plugin').click(function(){
 				})(i);
 				//---------------------------------------------------------------------------------
 			}
+			*/
 		}
 	}
 });
@@ -1450,6 +1749,58 @@ $('#logs_plugin').click(function(){
 		}
 		//Per list of boards call
 		else{
+			//SISTEMARE...selezione "singola" !!!!
+			//NEW: table approach
+			return_array = get_selected_rows_from_table("logs_tableboards", "remove");
+
+			headers = return_array[0];
+			variables = return_array[1];
+
+			if(variables.length == 0){
+				alert('No board(s) selected!');
+				document.getElementById('loading_bar').style.visibility='hidden';
+			}
+			else if(variables.length > 1){
+				alert('It is NOT possible to see the logs of more than one board per time!');
+				document.getElementById('loading_bar').style.visibility='hidden';
+			}
+			else{
+				for(var i=0; i< variables.length; i++){
+					//---------------------------------------------------------------------------------
+					(function(i){
+						setTimeout(function(){
+							//---------------------------------------------------------------------------------
+							var board_id = variables[i][1];
+							var board_name = variables[i][0];
+
+							$.ajax({
+								url: s4t_api_url+"/boards/"+board_id+"/plugins/"+plugin_id+"/logs?rows="+rows,
+								type: 'GET',
+								dataType: 'json',
+								headers: ajax_headers,
+
+								success: function(response){
+									if(i==variables.length-1) {
+										show_selected_board_log(board_name, response);
+										refresh_lists();
+										document.getElementById('loading_bar').style.visibility='hidden';
+									}
+								},
+								error: function(response){
+									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+								}
+							});
+							//---------------------------------------------------------------------------------
+						},delay*i);
+					})(i);
+					//---------------------------------------------------------------------------------
+				}
+			}
+
+
+			//OLD: select approach
+			/*
 			var list = document.getElementById("logs_boardlist");
 			var selected_list = [];
 			var selected_label = [];
@@ -1499,6 +1850,7 @@ console.log(response);
 					//---------------------------------------------------------------------------------
 				}
 			}
+			*/
 		}
 	}
 });

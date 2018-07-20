@@ -124,8 +124,10 @@ limitations under the License.
 				</div>
 			</div>
 			<div id="servicestatus_boardlist_bundle">
-				<label>Board List</label>
-				<select id="servicestatus_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+				<label>Boards List</label>
+				<table id="servicestatus_tableboards" style="width: 100%"></table>
+
+				<!--<select id="servicestatus_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>-->
 			</div>
 		</div>
 		<div class="row">
@@ -164,7 +166,7 @@ limitations under the License.
 		<h3>Show services on Board</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<div class="row">
-			<label>Board List</label>
+			<label>Boards List</label>
 			<select id="services_boardlist"></select>
 
 			<div id="show_boardservices_section">

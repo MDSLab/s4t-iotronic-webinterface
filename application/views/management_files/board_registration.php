@@ -54,6 +54,7 @@ limitations under the License.
 							<div id="info-label"></div>
 							<div id="info-uuid"></div>
 							<div id="info-description"></div>
+							<div id="info-lr_version"></div>
 							<div id="info-user"></div>
 							<div id="info-project"></div>
 							<div id="info-model"></div>
@@ -295,6 +296,23 @@ limitations under the License.
 			<label>Label</label>
 			<input id="board_create_label" type="text" placeholder="Label" value="" />
 
+			<? if ($this -> config -> item('security') == 'certificate'): ?>
+			<label>Public Key Certificate</label>
+			<input type="file" name="board_create_certfile" id="board_create_certfile" size="20" />
+			<textarea id="board_create_certificate" placeholder="Insert here the certificate" name="text" rows="3" style="display:none;" readonly></textarea>
+
+			<? elseif ($this -> config -> item('security') == 'password'): ?>
+			<label>Password (between 4 and 60 digits)</label>
+			<div class="large-12 columns" style="text-align:left; padding-left: 0px; padding-right: 0px; vertical-align: middle;">
+				<div style="width: 75%; margin-top: 0px; text-align:center; vertical-align: middle; display: inline-block;">
+					<input id="board_create_password" type="password" placeholder="Password" value="" />
+				</div>
+				<div style="width: 23%; height: auto; margin-top: 5px; text-align:center; vertical-align: top; display: inline-block;">
+					<input id="board_create_password_visibility" type="checkbox" onclick='show_password("board_create_password")' /><label>Show</label>
+				</div>
+			</div>
+			<? endif ?>
+
 			<label>Description</label>
 			<textarea id="board_create_description" placeholder="Description" name="text" rows="2"></textarea>
 
@@ -398,7 +416,7 @@ limitations under the License.
 
 <div id="modal-configure-board" class="reveal-modal small" data-reveal>
 	<section>
-		<h3>Board(s) Configuration</h3>
+		<h3>Board Configuration</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<div class="row">
 
@@ -413,7 +431,8 @@ limitations under the License.
 			</div>
 			<div id="configure_boardlist_bundle">
 				<label>Boards List</label>
-				<select id="configure_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+				<table id="configure_tableboards" style="width: 100%"></table>
+				<!--<select id="configure_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>-->
 			</div>
 		</div>
 		<div class="row">
@@ -449,6 +468,24 @@ limitations under the License.
 
 				<label>Label</label>
 				<input id="board_update_label" type="text" placeholder="Label" value="" />
+
+				<? if ($this -> config -> item('security') == 'certificate'): ?>
+				<label>Public Key Certificate</label>
+				<input type="file" name="board_update_certfile" id="board_update_certfile" size="20" />
+				<textarea id="board_update_certificate" placeholder="Insert here the certificate" name="text" rows="3" style="display:none;" readonly></textarea>
+				
+				<? elseif ($this -> config -> item('security') == 'password'): ?>
+				<label>Password (between 4 and 60 digits)</label>
+				<div class="large-12 columns" style="text-align:left; padding-left: 0px; padding-right: 0px; vertical-align: middle;">
+					<div style="width: 75%; margin-top: 0px; text-align:center; vertical-align: middle; display: inline-block;">
+						<input id="board_update_password" type="password" placeholder="Leave empty to not change it" value="" />
+					</div>
+					<div style="width: 23%; height: auto; margin-top: 5px; text-align:center; vertical-align: top; display: inline-block;">
+						<input id="board_update_password_visibility" type="checkbox" onclick='show_password("board_update_password")' /><label>Show</label>
+					</div>
+				</div>
+				<? endif ?>
+
 
 				<label>Description</label>
 				<textarea id="board_update_description" placeholder="Description" name="text" rows="2"></textarea>
@@ -553,7 +590,7 @@ limitations under the License.
 
 <div id="modal-unregister-board" class="reveal-modal" data-reveal>
 	<section>
-		<h3>Unregister Board(s)</h3>
+		<h3>Unregister Board</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 
 		<div style="text-align:center;">
@@ -588,7 +625,7 @@ limitations under the License.
 
 <div id="modal-action-board" class="reveal-modal small" data-reveal>
 	<section>
-		<h3>Board(s) Action</h3>
+		<h3>Board Action</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<div class="row">
 
@@ -606,8 +643,8 @@ limitations under the License.
 			</div>
 			<div id="action_boardlist_bundle">
 				<label>Boards List</label>
-				<select id="action_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
-
+				<table id="boardaction_tableboards" style="width: 100%"></table>
+				<!--<select id="action_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>-->
 			</div>
 
 			<label>Parameters</label>
@@ -624,5 +661,60 @@ limitations under the License.
 	<fieldset>
 		<legend>Output</legend>
 		<p id="board_action-output" />
+	</fieldset>
+</div>
+
+
+<div id="modal-update-pkg-board" class="reveal-modal small" data-reveal>
+	<section>
+		<h3>Package Management</h3>
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+		<div class="row">
+
+			<div style="text-align:center;">
+				<div style="width: 49%; margin-top: 5px; text-align:center; vertical-align: top; display: inline-block;">
+					<label>Enable / Disable per project action</label>
+				</div>
+				<div class="switch round small" style="margin-bottom: 0px; width: 15%; text-align:center; display: inline-block;">
+					<input id="pkg_project" class="flag_project" type="checkbox" />
+					<label for="pkg_project"></label>
+				</div>
+			</div>
+			<div id="pkg_boardlist_bundle">
+				<label>Boards List</label>
+				<table id="pkg_tableboards" style="width: 100%"></table>
+				<!--<select id="pkg_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>-->
+			</div>
+
+			<div class="large-12 columns" style="text-align:left; padding-left: 0px; padding-right: 0px; vertical-align: middle;">
+				<div style="width: 49%; margin-top: 0px; text-align:center; vertical-align: middle; display: inline-block;">
+					<label>Package Manager</label>
+					<select id="pkg_manager"></select>
+				</div>
+				<div style="width: 49%; margin-top: 0px; text-align:center; vertical-align: middle; display: inline-block;">
+					<label>Command</label>
+					<select id="pkg_command"></select>
+				</div>
+			</div>
+
+			<label>Parameters [OPTIONAL]</label>
+			<input id="pkg_parameters" type="text" placeholder="Insert the parameters/flags" name="name" value="" />
+
+			<label>List of packages</label>
+			<input id="pkg_packages" type="text" placeholder="Insert here the packages" name="name" value="" />
+			<!--<textarea id="pkg_packages" placeholder="Insert here the packages" name="text" rows="3"></textarea>-->
+			
+		</div>
+		<div class="row">
+			<div class="large-12 columns">
+				<button id="pkg-man-board" class="custom_button">
+					Execute
+				</button>
+			</div>
+		</div>
+	</section>
+	<fieldset>
+		<legend>Output</legend>
+		<p id="board_pkg-management-output" />
 	</fieldset>
 </div>

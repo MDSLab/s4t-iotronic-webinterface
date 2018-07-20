@@ -17,7 +17,7 @@
 $('[data-reveal-id="modal-show-layouts"]').on('click',
 	function() {
 
-		var fields_to_show = ["id_layout", "manufacturer", "model", "layout", "image"];
+		var fields_to_show = ["id_layout", "manufacturer", "model", "layout", "image", "distro"];
 
 		$.ajax({
 			url: s4t_api_url+"/layouts",
@@ -37,11 +37,55 @@ $('[data-reveal-id="modal-show-layouts"]').on('click',
 );
 
 
+function get_layouts_list(select_id){
+	$('#'+select_id).empty();
+
+	var layouts_array = ["server", "arduino_yun", "raspberry_pi", "artik"];
+	layouts_array = layouts_array.sort();
+
+	$('#'+select_id).append('<option value="--">--</option>');
+	for(var i=0; i<layouts_array.length; i++){
+		$('#'+select_id).append('<option value="'+layouts_array[i]+'">'+layouts_array[i]+'</option>');
+	}
+}
+
+
+function get_images_list(select_id){
+	$('#'+select_id).empty();
+
+	var images_array = ["Linino", "Ubuntu", "LEDE", "Raspbian", "Armbian"];
+	images_array = images_array.sort();
+
+	$('#'+select_id).append('<option value="--">--</option>');
+	for(var i=0; i<images_array.length; i++){
+		$('#'+select_id).append('<option value="'+images_array[i]+'">'+images_array[i]+'</option>');
+	}
+}
+
+
+function get_distros_list(select_id){
+	$('#'+select_id).empty();
+
+	var distros_array = ["debian", "openwrt"];
+	distros_array = distros_array.sort();
+
+	$('#'+select_id).append('<option value="--">--</option>');
+	for(var i=0; i<distros_array.length; i++){
+		$('#'+select_id).append('<option value="'+distros_array[i]+'">'+distros_array[i]+'</option>');
+	}
+}
+
+
 function clean_layout_fields(form_name, flag_output){
 	document.getElementById(form_name+"_model").value = '';
 	document.getElementById(form_name+"_layout").value = '';
 	document.getElementById(form_name+"_manufacturer").value = '';
 	document.getElementById(form_name+"_image").value = '';
+	document.getElementById(form_name+"_distro").value = '';
+
+	$("#"+form_name+"_layout").val("--");
+	$("#"+form_name+"_image").val("--");
+	$("#"+form_name+"_distro").val("--");
 
 	if(flag_output)
 		document.getElementById(form_name+"-output").innerHTML ='';
@@ -51,6 +95,9 @@ function clean_layout_fields(form_name, flag_output){
 
 $('[data-reveal-id="modal-create-layout"]').on('click',
 	function() {
+		get_layouts_list("layout_create_layout");
+		get_images_list("layout_create_image");
+		get_distros_list("layout_create_distro");
 		clean_layout_fields("layout_create", true);
 	}
 );
@@ -58,6 +105,9 @@ $('[data-reveal-id="modal-create-layout"]').on('click',
 
 $('[data-reveal-id="modal-update-layout"]').on('click',
 	function(){
+		get_layouts_list("layout_update_layout");
+		get_images_list("layout_update_image");
+		get_distros_list("layout_update_distro");
 		clean_layout_fields("layout_update", true);
 		update_layouts("update_layoutlist", "layout_update-output");
 	}
@@ -89,9 +139,12 @@ $('[id="update_layoutlist"]').on('change',
 
 				success: function(response){
 					document.getElementById("layout_update_model").value = response.message.model;
-					document.getElementById("layout_update_layout").value = response.message.layout;
+					//document.getElementById("layout_update_layout").value = response.message.layout;
+					$("#layout_update_layout").val(response.message.layout);
 					document.getElementById("layout_update_manufacturer").value = response.message.manufacturer;
-					document.getElementById("layout_update_image").value = response.message.image;
+					//document.getElementById("layout_update_image").value = response.message.image;
+					$("#layout_update_image").val(response.message.image);
+					$("#layout_update_distro").val(response.message.distro);
 				},
 				error: function(response){
 					verify_token_expired(response.responseJSON.message, response.responseJSON.result);
@@ -151,15 +204,20 @@ $('#create-layout').click(function(){
 	var model = document.getElementById("layout_create_model").value;
 	var layout = document.getElementById("layout_create_layout").value;
 	var manufacturer = document.getElementById("layout_create_manufacturer").value;
+	var image = document.getElementById("layout_create_image").value;
+	var distro = document.getElementById("layout_create_distro").value;
 
 	if(model == "") {alert('Insert a model!');document.getElementById('loading_bar').style.visibility='hidden';}
-	else if(layout == "") {alert('Insert a layout!');document.getElementById('loading_bar').style.visibility='hidden';}
+	else if(layout == "--") {alert('Insert a layout!');document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(manufacturer == "") {alert('Insert a manufacturer!');document.getElementById('loading_bar').style.visibility='hidden';}
+	else if(image == "--") {alert('Insert an image!');document.getElementById('loading_bar').style.visibility='hidden';}
+	else if(distro == "--") {alert('Insert a distribution!');document.getElementById('loading_bar').style.visibility='hidden';}
 	else{
 		data.model = model;
 		data.layout = layout;
 		data.manufacturer = manufacturer;
-		data.image = document.getElementById("layout_create_image").value;
+		data.image = image;
+		data.distro = distro;
 
 		$.ajax({
 			url: s4t_api_url+"/layouts",
@@ -193,16 +251,22 @@ $('#update-layout').click(function(){
 	var model = document.getElementById("layout_update_model").value;
 	var layout = document.getElementById("layout_update_layout").value;
 	var manufacturer = document.getElementById("layout_update_manufacturer").value;
+	var image = document.getElementById("layout_update_image").value;
+	var distro = document.getElementById("layout_update_distro").value;
+
 
 	if(layout_id == "--"){alert('Select a Layout'); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(model == "") {alert('Insert a model!');document.getElementById('loading_bar').style.visibility='hidden';}
-	else if(layout == "") {alert('Insert a layout!');document.getElementById('loading_bar').style.visibility='hidden';}
+	else if(layout == "--") {alert('Insert a layout!');document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(manufacturer == "") {alert('Insert a manufacturer!');document.getElementById('loading_bar').style.visibility='hidden';}
+	else if(image == "--") {alert('Insert an image!');document.getElementById('loading_bar').style.visibility='hidden';}
+	else if(distro == "--") {alert('Insert a distribution!');document.getElementById('loading_bar').style.visibility='hidden';}
 	else{
 		data.model = model;
 		data.layout = layout;
 		data.manufacturer = manufacturer;
-		data.image = document.getElementById("layout_update_image").value;
+		data.image = image;
+		data.distro = distro;
 
 		document.getElementById("layout_update-output").innerHTML ='';
 

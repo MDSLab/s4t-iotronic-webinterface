@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+if(security_method == "certificate"){
+	document.getElementById('board_create_certfile').addEventListener('change', readFile, false);
+	document.getElementById('board_create_certfile').element_id = "board_create_certificate";
+
+	document.getElementById('board_update_certfile').addEventListener('change', readFile, false);
+	document.getElementById('board_update_certfile').element_id = "board_update_certificate";
+}
+
 
 $('[data-reveal-id="modal-show-boards"]').on('click',
 	function() {
@@ -63,6 +71,18 @@ $('[data-reveal-id="modal-register-new-board"]').on('click',
 		$("#board_create_net_enabled").val("false");
 		$("#board_create_notify_enabled").val("false");
 
+
+		//Security fields cleaning
+		if(security_method == "certificate"){
+			$('#board_create_certfile').val('');
+			document.getElementById('board_create_certificate').value = "";
+		}
+		else if(security_method == "password"){
+			document.getElementById('board_create_password').value = "";
+			document.getElementById('board_create_password').type = "password";
+			document.getElementById("board_create_password_visibility").checked = false;
+		}
+
 		var array_promise = [];
 
 		array_promise.push(new Promise(function(resolve){
@@ -95,7 +115,11 @@ $('[data-reveal-id="modal-configure-board"]').on('click',
 		$('#configure_project').prop('checked', false);
 		$('#configure_boardlist_bundle').show();
 
-		update_boardsv2('configure_boardlist', 'C', true);
+		//OLD: select approach
+		//update_boardsv2('configure_boardlist', 'C', true);
+
+		//NEW: table approach
+		refresh_tableboards("configure_tableboards", "remove", "C", default_boardlist_columns);
 	}
 );
 
@@ -114,7 +138,11 @@ $('[data-reveal-id="modal-action-board"]').on('click',
 
 		actions_array = ["hostname", "reboot", "restart_lr"];
 
-		update_boardsv2('action_boardlist', 'C', true);
+		//OLD: select approach
+		//update_boardsv2('action_boardlist', 'C', true);
+
+		//NEW: table approach
+		refresh_tableboards("boardaction_tableboards", "remove", "C", default_boardlist_columns);
 
 		$('#board_actionlist').append('<option title="--" value="--" data-unit="">--</option>');
 		for(i=0;i<actions_array.length;i++)
@@ -133,6 +161,7 @@ $('#board_generate_uuid').click(function(){
 //----------------------------------------------------------------------------------------
 $('[data-reveal-id="modal-update-board"]').on('click',
 	function(){
+		document.getElementById("board_update-output").innerHTML ='';
 		$('#board_update_data_section').hide();
 		update_boardsv2('update_boardlist');
 	}
@@ -140,11 +169,12 @@ $('[data-reveal-id="modal-update-board"]').on('click',
 
 $('[data-reveal-id="modal-unregister-board"]').on('click',
 	function(){
+		$("#modal-unregister-board").removeClass("small");
 		$('#deleteboard_project').prop('checked', false);
 		$('#deleteboard_boardlist_bundle').show();
 
 		document.getElementById("board_delete-output").innerHTML ='';
-		refresh_tableboards("delete_tableboards", "remove");
+		refresh_tableboards("delete_tableboards", "remove", null, null);
 	}
 );
 
@@ -224,6 +254,17 @@ $('[id="update_boardlist"]').on('change',
 
 						document.getElementById("board_update_label").value = info.label;
 						document.getElementById("board_update_description").value = info.description;
+
+						//Security fields cleaning
+						if(security_method == "certificate"){
+							$('#board_update_certfile').val('');
+							document.getElementById('board_update_certificate').value = "";
+						}
+						else if(security_method == "password"){
+							document.getElementById('board_update_password').value = "";
+							document.getElementById('board_update_password').type = "password";
+							document.getElementById("board_update_password_visibility").checked = false;
+						}
 					
 						document.getElementById("board_update_latitude").value = info.coordinates.latitude;
 						document.getElementById("board_update_longitude").value = info.coordinates.longitude;
@@ -263,6 +304,7 @@ $('[id="update_boardlist"]').on('change',
 
 						//Just in case the calls were too slow and the following fields were not updated correctly
 						if( $("#board_update_layout").val() == "--" || $("#board_update_project").val() == "--" || $("#board_update_user").val() == "--"){
+							alert("There was an error with the server. Please verify Project/Layout/User selections!");
 							console.log("INCOMPLETE....reselecting");
 							$("#board_update_layout").val(info.layout_id);
 							$("#board_update_project option[title='"+info.project+"']").prop('selected', true);
@@ -327,6 +369,15 @@ $('#create-board').click(function(){
 	//data.manufacturer = select_layout.options[select_layout.selectedIndex].title;
 	//data.model = select_layout.options[select_layout.selectedIndex].text;
 
+	//Security
+	if(security_method == "certificate" || security_method == "password"){
+		var password = "";
+		var pubkey = "";
+
+		if(security_method == "certificate") pubkey = document.getElementById("board_create_certificate").value;
+		else if(security_method == "password") password = document.getElementById("board_create_password").value;
+	}
+
 
 	if(layout == "--")		{ alert("Select a Layout!");			document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(project == "--")	{ alert("Select a Project!");			document.getElementById('loading_bar').style.visibility='hidden';}
@@ -338,6 +389,19 @@ $('#create-board').click(function(){
 	else if(longitude == "")	{ alert("Insert longitude!");			document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(altitude == "")		{ alert("Insert latitude!");			document.getElementById('loading_bar').style.visibility='hidden';}
 
+	//Security fields checks
+	else if( security_method == "certificate" && (pubkey == undefined || pubkey == "") ){
+		alert("Insert valid public key!");
+		document.getElementById('loading_bar').style.visibility='hidden';
+	}
+	else if(security_method == "password" && (password == undefined || password == "") ){
+		alert("Insert password!");
+		document.getElementById('loading_bar').style.visibility='hidden';
+	}
+	else if(security_method == "password" && (password.length<4 || password.length>60) ){
+		alert("Password must be between 4 and 60 digits!");
+		document.getElementById('loading_bar').style.visibility='hidden';
+	}
 	else{
 		data.layout_id = layout;
 		data.project_id = project;
@@ -349,6 +413,12 @@ $('#create-board').click(function(){
 		data.latitude = latitude;
 		data.longitude = longitude;
 		data.altitude = altitude;
+
+		//Security fields
+		if(security_method == "certificate" || security_method == "password"){
+			data.pubkey = pubkey;
+			data.password = password;
+		}
 
 		var extra = document.getElementById("board_create_extra").value;
 		if(extra == "") extra = "{}";
@@ -384,7 +454,6 @@ $('#create-board').click(function(){
 
 		document.getElementById("board_create-output").innerHTML ='';
 
-
 		$.ajax({
 			url: s4t_api_url+"/boards",
 			type: 'POST',
@@ -396,6 +465,8 @@ $('#create-board').click(function(){
 				//console.log(response);
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("board_create-output").innerHTML = JSON.stringify(response.message);
+				if(security_method == "password")
+					document.getElementById("board_create-output").innerHTML += "<br /> The password is: "+response.password;
 				//update_boardsv2('create_boardlist');
 				refresh_lists();
 			},
@@ -456,6 +527,15 @@ $('#update-board').click(function(){
 	var project = select_project.options[select_project.selectedIndex].value;
 	var user = select_user.options[select_user.selectedIndex].value;
 
+	//Security
+	if(security_method == "certificate" || security_method == "password"){
+		var password = "";
+		var pubkey = "";
+	
+		if(security_method == "certificate") pubkey = document.getElementById("board_update_certificate").value;
+		else if(security_method == "password") password = document.getElementById("board_update_password").value;
+	}
+
 
 	if(layout == "--")		{alert("Select a Layout!");			document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(project == "--")	{alert("Select a Project!");			document.getElementById('loading_bar').style.visibility='hidden';}
@@ -466,6 +546,15 @@ $('#update-board').click(function(){
 	else if(longitude == "")	{alert("Insert longitude!");			document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(altitude == "")		{alert("Insert latitude!");			document.getElementById('loading_bar').style.visibility='hidden';}
 
+	//Security fields checks
+	else if( security_method == "certificate" && (pubkey == undefined || pubkey == "") ){
+		alert("Insert valid public key!");
+		document.getElementById('loading_bar').style.visibility='hidden';
+	}
+	else if(security_method == "password" && password.length != 0 && (password.length<4 || password.length>60) ){
+		alert("Password must be between 4 and 60 digits!");
+		document.getElementById('loading_bar').style.visibility='hidden';
+	}
 
 	else{
 		board_id = document.getElementById("update_boardlist").value;
@@ -478,6 +567,12 @@ $('#update-board').click(function(){
 		data.latitude = latitude;
 		data.longitude = longitude;
 		data.altitude = altitude;
+
+		//Security fields
+		if(security_method == "certificate" || security_method == "password"){
+			data.pubkey = pubkey;
+			data.password = password;
+		}
 
 		var extra = document.getElementById("board_update_extra").value;
 		if(extra == "") extra = "{}";
@@ -539,7 +634,7 @@ $('#delete_board').click(function(){
 			headers: ajax_headers,
 
 			success: function(response){
-				refresh_tableboards("delete_tableboards", "remove");
+				refresh_tableboards("delete_tableboards", "remove", null, null);
 				refresh_lists();
 				document.getElementById('loading_bar').style.visibility='hidden';
 				document.getElementById("board_delete-output").innerHTML += JSON.stringify(response.message)+"<br />";
@@ -578,7 +673,7 @@ $('#delete_board').click(function(){
 
 							success: function(response){
 								if(i==variables.length-1) {
-									refresh_tableboards("delete_tableboards", "remove");
+									refresh_tableboards("delete_tableboards", "remove", null, null);
 									refresh_lists();
 									document.getElementById('loading_bar').style.visibility='hidden';
 								}
@@ -603,9 +698,15 @@ $('#delete_board').click(function(){
 $('#configure-board').click(function(){
 	document.getElementById("board_configure-output").innerHTML ='';
 
+	//NEW: table approach
+	document.getElementById('loading_bar').style.visibility='hidden';
+
+	//OLD: select approach
+	/*
 	if(!$('#configure_project').is(':checked') && $('#configure_boardlist option:selected').length == 0) {alert('Select a Board'); document.getElementById('loading_bar').style.visibility='hidden';}
 
 	else{
+	*/
 		data = {};
 
 		if ($('#configure_project').is(':checked')){
@@ -620,7 +721,14 @@ $('#configure-board').click(function(){
 
 				success: function(response){
 					document.getElementById('loading_bar').style.visibility='hidden';
-					document.getElementById("board_configure-output").innerHTML = JSON.stringify(response.message);
+
+					//Old output without link to request_id
+					//document.getElementById("board_configure-output").innerHTML = JSON.stringify(response.message);
+
+					//New output with link to request_id
+					var subject = "/projects/"+project_id+"/boards/conf";
+					document.getElementById("board_configure-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
+
 					refresh_lists();
 				},
 				error: function(response){
@@ -631,6 +739,57 @@ $('#configure-board').click(function(){
 			});
 		}
 		else{
+
+			//NEW: table approach
+			return_array = get_selected_rows_from_table("configure_tableboards", "remove");
+
+			headers = return_array[0];
+			variables = return_array[1];
+
+			if(variables.length == 0){
+				alert('No board(s) selected!');
+				document.getElementById('loading_bar').style.visibility='hidden';
+			}
+			else{
+				for(var i=0; i< variables.length; i++){
+					//---------------------------------------------------------------------------------
+					(function(i){
+						setTimeout(function(){
+							//---------------------------------------------------------------------------------
+							var board_id = variables[i][1];
+							var board_name = variables[i][0];
+
+							$.ajax({
+								url: s4t_api_url+"/boards/"+board_id+"/conf",
+								type: 'PUT',
+								dataType: 'json',
+								headers: ajax_headers,
+								data: JSON.stringify(data),
+
+								success: function(response){
+									if(i==variables.length-1) {
+										refresh_tableboards("configure_tableboards", "remove", "C", default_boardlist_columns);
+										refresh_lists();
+										document.getElementById('loading_bar').style.visibility='hidden';
+									}
+									document.getElementById("board_configure-output").innerHTML = board_name +": " + JSON.stringify(response.message);
+								},
+								error: function(response){
+									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+									document.getElementById("board_configure-output").innerHTML = board_name +": " + JSON.stringify(response.responseJSON.message);
+								}
+							});
+							//---------------------------------------------------------------------------------
+						},delay*i);
+					})(i);
+					//---------------------------------------------------------------------------------
+				}
+			}
+
+
+			//OLD: select approach
+			/*
 			//document.getElementById('loading_bar').style.visibility='visible';
 			var list = document.getElementById("configure_boardlist");
 			var selected_list = [];
@@ -672,8 +831,9 @@ $('#configure-board').click(function(){
 				})(i);
 				//---------------------------------------------------------------------------------
 			}
+			*/
 		}
-	}
+	//}//OLD: select approach
 });
 
 
@@ -684,8 +844,11 @@ $('#action-board').click(function(){
 	var parameters = document.getElementById("board_parameters").value;
 
 	if(action == "--"){ document.getElementById('loading_bar').style.visibility='hidden'; alert("Select an action!"); }
-	else if(!$('#action_project').is(':checked') && $('#action_boardlist option:selected').length == 0) {alert('Select a Board'); document.getElementById('loading_bar').style.visibility='hidden';}
-	else if(action != "hostname" && parameters == "") { document.getElementById('loading_bar').style.visibility='hidden'; alert("With reboot and restart_lr commands you have to add the time in parameters!"); }
+
+	//OLD: select approach
+	//else if(!$('#action_project').is(':checked') && $('#action_boardlist option:selected').length == 0) {alert('Select a Board'); document.getElementById('loading_bar').style.visibility='hidden';}
+
+	else if(action != "hostname" && parameters == "") { document.getElementById('loading_bar').style.visibility='hidden'; alert("With reboot and restart_lr commands you have to add the time in seconds parameters!"); }
 
 	else{
 		data = {};
@@ -708,7 +871,15 @@ $('#action-board').click(function(){
 			
 				success: function(response){
 					document.getElementById('loading_bar').style.visibility='hidden';
-					document.getElementById("board_action-output").innerHTML = JSON.stringify(response.message);
+
+					//Old output without link to request_id
+					//document.getElementById("board_action-output").innerHTML = JSON.stringify(response.message);
+
+					//New output with link to request_id
+					var subject = "/projects/"+project_id+"/boards/action "+action;
+					document.getElementById("board_action-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
+
+
 					if(action == "reboot" || action == "restart_lr")
 						update_boardsv2('action_boardlist', 'C', true);
 			
@@ -724,6 +895,63 @@ $('#action-board').click(function(){
 			});
 		}
 		else{
+
+
+			//NEW: table approach
+			return_array = get_selected_rows_from_table("boardaction_tableboards", "remove");
+
+			headers = return_array[0];
+			variables = return_array[1];
+
+			if(variables.length == 0){
+				alert('No board(s) selected!');
+				document.getElementById('loading_bar').style.visibility='hidden';
+			}
+			else{
+				for(var i=0; i< variables.length; i++){
+					//---------------------------------------------------------------------------------
+					(function(i){
+						setTimeout(function(){
+							//---------------------------------------------------------------------------------
+							var board_id = variables[i][1];
+							var board_name = variables[i][0];
+
+							$.ajax({
+								url: s4t_api_url+"/boards/"+board_id+"/action",
+								type: 'POST',
+								dataType: 'json',
+								headers: ajax_headers,
+								data: JSON.stringify(data),
+
+								success: function(response){
+									if(i==variables.length-1) {
+
+										$('#board_actionlist').val("--");
+										$('#board_parameters').val("");
+										if(action == "reboot" || action == "restart_lr")
+											refresh_tableboards("boardaction_tableboards", "remove", "C", default_boardlist_columns);
+
+										refresh_lists();
+										document.getElementById('loading_bar').style.visibility='hidden';
+									}
+									document.getElementById("board_action-output").innerHTML = board_name +": " + JSON.stringify(response.message);
+								},
+								error: function(response){
+									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+									document.getElementById("board_action-output").innerHTML = board_name +": " + JSON.stringify(response.responseJSON.message);
+								}
+							});
+							//---------------------------------------------------------------------------------
+						},delay*i);
+					})(i);
+					//---------------------------------------------------------------------------------
+				}
+			}
+
+
+			//OLD: select approach
+			/*
 			//document.getElementById('loading_bar').style.visibility='visible';
 			var list = document.getElementById("action_boardlist");
 			var selected_list = [];
@@ -770,28 +998,45 @@ $('#action-board').click(function(){
 				})(i);
 				//---------------------------------------------------------------------------------
 			}
+			*/
 		}
 	}
 });
 
 
-function refresh_tableboards(table_id, action) {
-	//$('#' + select_id).empty();
-	
+function refresh_tableboards(table_id, action, board_status, columns) {
+	//$('# + select_id).empty();	
+	var project_id = getCookie("selected_prj");
+
 	$.ajax({
-		url: s4t_api_url + "/boards/",
+		//url: s4t_api_url + "/boards/",
+		url: s4t_api_url + "/boards?project="+project_id,
 		type: 'GET',
 		dataType: 'json',
 		headers: ajax_headers,
 
 		success: function (response) {
-			//In board registration only the delete function uses this approach. That is different to other tables (plugins, drivers, networks, etc.)
-			//----------------------------------------------------------------------------
-			var fields_to_show = ["label", "board_id", "status"];
-			parsed_response = parse_json_fields(fields_to_show, response.message, false);
-			parsed_response = parsed_response.sort(SortByLabel);
-			//----------------------------------------------------------------------------
+			//var fields_to_show = ["label", "board_id", "status"];
+			var fields_to_show = [];
+			if(columns)
+				fields_to_show = columns;
+			else
+				fields_to_show = ["label", "board_id", "status"];
 
+
+			if(board_status != null && board_status != undefined){
+				var filtered_boards = [];
+				for(var i=0; i<response.message.length; i++){
+					if( (board_status && response.message[i].status == board_status) || !board_status)
+						filtered_boards.push(response.message[i]);
+				}
+				parsed_response = parse_json_fields(fields_to_show, filtered_boards, false);
+			}
+			else
+				parsed_response = parse_json_fields(fields_to_show, response.message, false);
+
+
+			parsed_response = parsed_response.sort(SortByLabel);
 			create_table_from_json(table_id, parsed_response, fields_to_show, action);
 		},
 		error: function (response) {
@@ -855,6 +1100,7 @@ function populate_board_info(board_id){
 				$('#info-label').html('<b>Label: </b>'+info.label);
 				$('#info-uuid').html('<b>UUID: </b>'+info.board_id);
 				$('#info-description').html('<b>Description: </b>'+info.description);
+				$('#info-lr_version').html('<b>LR version: </b>'+info.lr_version);
 
 				$('#info-user').html('<b>User: </b>'+info.user);
 				$('#info-project').html('<b>Project: </b>'+info.project);
@@ -984,3 +1230,195 @@ function populate_board_info(board_id){
 	//}
 }
 
+
+
+$('[data-reveal-id="modal-update-pkg-board"]').on('click',
+	function(){
+
+		document.getElementById("board_pkg-management-output").innerHTML = '';
+
+		$('#pkg_project').prop('checked', false);
+		$('#pkg_boardlist_bundle').show();
+
+		$('#pkg_manager').empty();
+		$('#pkg_command').empty();
+		$('#pkg_parameters').val("");
+		$('#pkg_packages').val("");
+
+		var array_managers = ["opkg", "apt", "pip"];
+		var array_commands = ["install", "update", "remove", "upgrade"];
+
+		array_managers = array_managers.sort();
+		array_commands = array_commands.sort();
+
+		for(var i=0; i<array_managers.length; i++)
+			$('#pkg_manager').append('<option value="'+array_managers[i]+'">'+array_managers[i]+'</option>');
+
+		for(var j=0; j<array_commands.length; j++)
+			$('#pkg_command').append('<option value="'+array_commands[j]+'">'+array_commands[j]+'</option>');
+
+		//OLD: select approach
+		//update_boardsv2('pkg_boardlist', 'C', true);
+
+		//NEW: table approach
+		refresh_tableboards("pkg_tableboards", "remove", "C", default_boardlist_columns);
+	}
+);
+
+
+$('#pkg-man-board').click(function(){
+
+	document.getElementById("board_pkg-management-output").innerHTML = '';
+
+	var manager = document.getElementById("pkg_manager").value;
+	var command = document.getElementById("pkg_command").value;
+	var parameters = document.getElementById("pkg_parameters").value;
+	var packages = document.getElementById("pkg_packages").value;
+
+	//console.log(manager+" "+command+" "+parameters+" "+packages);
+
+	if(packages == undefined || packages == ""){
+		alert("Insert packages to install!");
+		document.getElementById('loading_bar').style.visibility='hidden';
+	}
+	else{
+		data = {};
+		data.pkg_mng = manager;
+		data.pkg_mng_cmd = command;
+		data.pkg_opts = parameters;
+		data.pkg_name = packages;
+
+		if ($('#pkg_project').is(':checked')){
+			var project_id = getCookie("selected_prj");
+
+			$.ajax({
+				url: s4t_api_url+"/projects/"+project_id+"/boards/package",
+				type: "POST",
+				dataType: 'json',
+				headers: ajax_headers,
+				data: JSON.stringify(data),
+			
+				success: function(response){
+					document.getElementById('loading_bar').style.visibility='hidden';
+
+					//Old output without link to request_id
+					//document.getElementById("board_pkg-management-output").innerHTML = JSON.stringify(response.message);
+					//New output with link to request_id
+					var subject = "/projects/"+project_id+"/boards/package "+packages;
+					document.getElementById("board_pkg-management-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
+
+					refresh_lists();
+				},
+				error: function(response){
+					document.getElementById('loading_bar').style.visibility='hidden';
+					verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+					document.getElementById("board_pkg-management-output").innerHTML = JSON.stringify(response.responseJSON.message);
+				}
+			});
+		}
+		else{
+			data.long_running = true;
+
+
+			//NEW: table approach
+			return_array = get_selected_rows_from_table("pkg_tableboards", "remove");
+
+			headers = return_array[0];
+			variables = return_array[1];
+
+			if(variables.length == 0){
+				alert('No board(s) selected!');
+				document.getElementById('loading_bar').style.visibility='hidden';
+			}
+			else{
+				for(var i=0; i< variables.length; i++){
+					//---------------------------------------------------------------------------------
+					(function(i){
+						setTimeout(function(){
+							//---------------------------------------------------------------------------------
+							var board_id = variables[i][1];
+							var board_name = variables[i][0];
+
+							$.ajax({
+								url: s4t_api_url+"/boards/"+board_id+"/package",
+								type: 'POST',
+								dataType: 'json',
+								headers: ajax_headers,
+								data: JSON.stringify(data),
+
+								success: function(response){
+									if(i==variables.length-1) {
+										refresh_tableboards("pkg_tableboards", "remove", "C", default_boardlist_columns);
+										refresh_lists();
+										document.getElementById('loading_bar').style.visibility='hidden';
+									}
+									document.getElementById("board_pkg-management-output").innerHTML += JSON.stringify(response.message)+'<br />';
+								},
+								error: function(response){
+									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+									document.getElementById("board_pkg-management-output").innerHTML += JSON.stringify(response.responseJSON.message)+'<br />';
+								}
+							});
+							//---------------------------------------------------------------------------------
+						},delay*i);
+					})(i);
+					//---------------------------------------------------------------------------------
+				}
+			}
+
+
+			//OLD: select approach
+			/*
+			var list = document.getElementById("pkg_boardlist");
+			var selected_list = [];
+			var selected_label = [];
+			for(var i=0; i< list.length; i++){
+				if (list.options[i].selected){
+					selected_list.push(list[i].value);
+					selected_label.push(list[i].text);
+				}
+			}
+			
+			if(selected_list.length == 0){ alert("Select a board!"); document.getElementById('loading_bar').style.visibility='hidden'; }
+			else{
+				for(var i=0; i< selected_list.length; i++){
+					//---------------------------------------------------------------------------------
+					(function(i){
+						setTimeout(function(){
+							//---------------------------------------------------------------------------------
+							var board_id = selected_list[i];
+							var label = selected_label[i];
+				
+							$.ajax({
+								url: s4t_api_url+"/boards/"+board_id+"/package",
+								type: 'POST',
+								dataType: 'json',
+								headers: ajax_headers,
+								data: JSON.stringify(data),
+				
+								success: function(response){
+									if(i==selected_list.length-1){
+										document.getElementById('loading_bar').style.visibility='hidden';
+										refresh_lists();
+									}
+									document.getElementById("board_pkg-management-output").innerHTML += label+': '+JSON.stringify(response.message)+'<br />';
+								},
+								error: function(response){
+									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+									if(i==selected_list.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+				
+									document.getElementById("board_pkg-management-output").innerHTML += label+': '+JSON.stringify(response.responseJSON.message)+'<br />';
+									//refresh_lists();
+								}
+							});
+							//---------------------------------------------------------------------------------
+						},delay*i);
+					})(i);
+					//---------------------------------------------------------------------------------
+				}
+			}
+			*/
+		}
+	}
+});

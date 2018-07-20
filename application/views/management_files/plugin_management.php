@@ -56,8 +56,9 @@ limitations under the License.
 					</div>
 
 					<div id="logs_boardlist_bundle">
-						<label>Board List</label>
-						<select id="logs_boardlist" multiple="multiple" class="select_one" size="<?=$selectbox_size?>"></select>
+						<label>Boards List</label>
+						<table id="logs_tableboards" style="width: 100%"></table>
+						<!--<select id="logs_boardlist" multiple="multiple" class="select_one" size="<?=$selectbox_size?>"></select>-->
 					</div>
 				</div>
 
@@ -301,14 +302,6 @@ limitations under the License.
 		<h3>Change Tag to Plugin</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<table id="changetag_tableplugins" style="width: 100%"></table>
-
-		<div class="row">
-			<div class="large-12 columns">
-				<button id="chagetag_plugin" class="custom_button">
-					Remove
-				</button>
-			</div>
-		</div>
 	</section>
 	<fieldset>
 		<legend>Output</legend>
@@ -386,7 +379,8 @@ limitations under the License.
 
 			<div id="inject_boardlist_bundle">
 				<label>Boards List</label>
-				<select id="inject_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+				<table id="inject_tableboards" style="width: 100%"></table>
+				<!--<select id="inject_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>-->
 			</div>
 
 			<div style="text-align:center;">
@@ -469,7 +463,9 @@ limitations under the License.
 
 			<div id="startstop_boardlist_bundle">
 				<label>Boards List</label>
-				<select id="startstop_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+				<table id="startstop_tableboards" style="width: 100%"></table>
+
+				<!-- <select id="startstop_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>-->
 			</div>
 
 			<label>Parameters [OPTIONAL]</label>
@@ -641,7 +637,8 @@ limitations under the License.
 
 			<div id="removeplugin_boardlist_bundle">
 				<label>Boards List</label>
-				<select id="removeplugin_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+				<table id="removeplugin_tableboards" style="width: 100%"></table>
+				<!--<select id="removeplugin_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>-->
 			</div>
 			<div class="row">
 				<div class="large-12 columns">
@@ -665,7 +662,7 @@ limitations under the License.
 		<h3>Show Plugins on Board</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<div class="row">
-			<label>Board List</label>
+			<label>Boards List</label>
 			<select id="plugins_boardlist"></select>
 
 			<div id="show_boardplugins_section">

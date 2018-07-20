@@ -34,18 +34,21 @@ limitations under the License.
 			<label>Model</label>
 			<input id="layout_create_model" type="text" placeholder="Model" value="" />
 
-			<label>Layout</label>
-			<input id="layout_create_layout" type="text" placeholder="Layout" value="" />
+			<label>Iotronic Layout</label>
+			<select id="layout_create_layout"></select>
 
 			<label>Manufacturer</label>
 			<input id="layout_create_manufacturer" type="text" placeholder="Manufacturer" value="" />
 
 			<label>Image</label>
-			<input id="layout_create_image" type="text" placeholder="Image" value="" />
+			<select id="layout_create_image"></select>
+
+			<label>Distribution</label>
+			<select id="layout_create_distro"></select>
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="create-layout" class="custom_button">Register</button>
+				<button id="create-layout" class="custom_button">Create</button>
 			</div>
 		</div>
 	</section>
@@ -70,14 +73,17 @@ limitations under the License.
 			<label>Model</label>
 			<input id="layout_update_model" type="text" placeholder="Model" value="" />
 
-			<label>Layout</label>
-			<input id="layout_update_layout" type="text" placeholder="Layout" value="" />
+			<label>Iotronic Layout</label>
+			<select id="layout_update_layout"></select>
 
 			<label>Manufacturer</label>
 			<input id="layout_update_manufacturer" type="text" placeholder="Manufacturer" value="" />
 
 			<label>Image</label>
-			<input id="layout_update_image" type="text" placeholder="Image" value="" />
+			<select id="layout_update_image"></select>
+
+			<label>Distribution</label>
+			<select id="layout_update_distro"></select>
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
@@ -106,7 +112,7 @@ limitations under the License.
 		<div class="row">
 			<div class="large-12 columns">
 				<button id="unregister-layout" class="custom_button">
-					Unregister
+					Delete
 				</button>
 			</div>
 		</div>

@@ -17,7 +17,7 @@ $config['wstun_ip'] = !empty(getenv('WSTUN_IP')) ? getenv('WSTUN_IP') : $default
 
 
 //API
-$config['s4t_api_url'] = 'https://'.$api_address.'/<VERSION>';
+$config['s4t_api_url'] = 'https://'.$api_address.'/v1';
 
 //Swagger
 $config['swagger_url'] = 'https://'.$iotronic_address.'/iotronic-api-docs';
@@ -26,6 +26,10 @@ $config['swagger_url'] = 'https://'.$iotronic_address.'/iotronic-api-docs';
 //Default project and iotronic folder
 $config['default_project'] = 'Admin';
 $config['s4t_iotronic_folder'] = '/var/lib/iotronic/';
+
+
+//Security method (basic, certificate, password)
+$config['security'] = 'password'; 
 
 
 //Commands management
@@ -47,13 +51,14 @@ $config['load_commands'] = (
 );
 //-------------------------------------------------------------------------
 
+
 //EXTRAS
 //-------------------------------------------------------------------------
 $config['polling_delay'] = 2000;
 $config['selectbox_size'] = 9;
 $config['show_string_or_json_lists'] = TRUE;
 
-$config['dash_version'] = '2.2.0-1';
+$config['dash_version'] = '2.2.0-2';
 $config['iotronic_version'] = '2.2.0-1';
 $config['lr_version'] = '2.2.0-1';
 $config['wstun_version'] = '1.0.6';

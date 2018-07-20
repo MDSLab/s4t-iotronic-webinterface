@@ -146,6 +146,11 @@ function getCookie(cname) {
 	*/
 }
 
+// (useless ??)
+function eraseCookie(name) {
+	document.cookie = name + '=; Max-Age=0';
+}
+
 
 function add_newlines_to_message(message, tobereplaced){
 	var message_array = message.split(tobereplaced);
@@ -248,6 +253,10 @@ String.prototype.ucfirst = function(){
 
 function login(){
 
+	//Clear cookies (useless ??)
+	eraseCookie("token");
+	eraseCookie("default_project");
+
 	var username = document.getElementById("username").value;
 	var password = document.getElementById("password").value;
 
@@ -265,9 +274,9 @@ function login(){
 
 				expiring_date = new Date();
 				expiring_date.setMinutes(expiring_date.getMinutes() + parseInt(minutes));
-	
-				document.cookie = "token="+response.message.token+"; expires="+expiring_date;
-				document.cookie = "default_project="+default_project;
+
+				document.cookie = "token="+response.message.token+"; expires="+expiring_date+"; path=/iotronic/Admin";
+				document.cookie = "default_project="+default_project+"; path=/iotronic/Admin";
 
 				window.location.href = site_url+"Admin/web_ui";
 			},
@@ -295,6 +304,11 @@ function login(){
 
 
 function logout(){
+
+	//Clear cookies (useless ??)
+	eraseCookie("token");
+	eraseCookie("default_project");
+
 	$.ajax({
 		url: site_url+'Login/logout',
 		type: 'GET',
@@ -374,6 +388,15 @@ function readFile(evt) {
 }
 
 
+function show_password(input_id){
+	var x = document.getElementById(input_id);
+	if (x.type === "password") {
+		x.type = "text";
+	} else {
+		x.type = "password";
+	}
+}
+
 
 function get_boardname_from_uuid(uuid){
 	board_name = "";
@@ -385,8 +408,6 @@ function get_boardname_from_uuid(uuid){
 	}
 	return board_name;
 }
-
-
 
 
 function refresh_lists(){
@@ -720,7 +741,22 @@ function get_selected_rows_from_table(table_id, checkboxes_id_like){
 		//console.log(table[0].rows[0].cells[i].innerText);
 		thead_fields.push(table[0].rows[0].cells[i].innerText);
 	}
-	
+
+
+	//NEW approach with rows selection on multiple table pages
+	var oTable = $('#'+table_id).dataTable();
+	var body_fields = [];
+	$("input:checked", oTable.fnGetNodes()).each(function(){
+		var row_fields = [];
+		var tr = $(this).closest("tr");
+		for(j=1;j<tr[0].cells.length;j++){
+			row_fields.push(tr[0].cells[j].innerText);
+		}
+		body_fields.push(row_fields);
+	});
+
+	//OLD approach with rows selection on current table page
+	/*
 	var body_fields = [];
 	
 	for(i=0;i<checkboxes.length;i++){
@@ -738,6 +774,7 @@ function get_selected_rows_from_table(table_id, checkboxes_id_like){
 			body_fields.push(row_fields);
 		}
 	}
+	*/
 
 	var return_array = [];
 	return_array.push(thead_fields);
@@ -865,8 +902,14 @@ $(document).ready(function() {
 			else{
 				//console.log("NOT CHECKED");
 
-				if(section == 'deleterequest')
+				if(section == 'deleterequest'){
 					$('#'+section+'_requestlist_bundle').show();
+					$("#"+reveal_modal_id).removeClass("small");
+				}
+				else if(section == 'deleteboard'){
+					$('#'+section+'_boardlist_bundle').show();
+					$("#"+reveal_modal_id).removeClass("small");
+				}
 				else
 					$('#'+section+'_boardlist_bundle').show();
 

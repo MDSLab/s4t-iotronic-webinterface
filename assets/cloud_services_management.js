@@ -43,6 +43,7 @@ function get_protocols_list(select_id){
 	var protocols_array = ["HTTP", "HTTPS", "MQTT", "SSH"];
 	protocols_array = protocols_array.sort();
 
+	$('#'+select_id).append('<option value="--">--</option>');
 	for(var i=0; i<protocols_array.length; i++){
 		$('#'+select_id).append('<option value="'+protocols_array[i]+'">'+protocols_array[i]+'</option>');
 	}
@@ -63,7 +64,7 @@ function compose_service_shortcut(protocol, port){
 function clean_service_fields(form_name, flag_output){
 	document.getElementById(form_name+"_service_name").value = '';
 	document.getElementById(form_name+"_port").value = '';
-	$("#"+form_name+"_protocol").val("HTTP");
+	$("#"+form_name+"_protocol").val("--");
 
 	if(flag_output)
 		document.getElementById("service_"+form_name+"-output").innerHTML ='';
@@ -98,9 +99,17 @@ $('[data-reveal-id="modal-delete-service"]').on('click',
 
 $('[data-reveal-id="modal-status-service"]').on('click',
 	function(){
+		$('#servicestatus_project').prop('checked', false);
+		$('#servicestatus_boardlist_bundle').show();
+
 		$('#service_status-output').empty();
-		update_services('status_servicelist'); 
-		update_boardsv2('servicestatus_boardlist', 'C', true);
+		update_services('status_servicelist');
+
+		//OLD: select approach
+		//update_boardsv2('servicestatus_boardlist', 'C', true);
+
+		//NEW: table approach
+		refresh_tableboards("servicestatus_tableboards", "remove", "C", default_boardlist_columns);
 	}
 );
 
@@ -130,7 +139,7 @@ $('[id="update_servicelist"]').on('change',
 		if($('#update_servicelist').find(":selected").data("value") == "--"){
 			document.getElementById("update_service_name").value = "";
 			document.getElementById("update_port").value = "";
-			$("#update_protocol").val("HTTP");
+			$("#update_protocol").val("--");
 		}
 		else{
 			document.getElementById("update_service_name").value = $(this).find(":selected").data("value").service_name;
@@ -149,16 +158,18 @@ $('#register_service').click(function(){
 
 	var service_name = document.getElementById("register_service_name").value;
 	var port = parseInt(document.getElementById("register_port").value);
+	var protocol = document.getElementById("register_protocol").value;
 
 	document.getElementById("service_register-output").innerHTML ='';
 
 	if(service_name == ""){ alert("Insert Service Name!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(port !== port){ alert("Specify a Port number different from zero(s)"); 	document.getElementById('loading_bar').style.visibility='hidden'; }
+	else if(protocol == "--") { alert("Select protocol!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else{
 		data = {};
 		data.service_name = service_name;
 		data.port = port;
-		data.protocol = document.getElementById("register_protocol").value;
+		data.protocol = protocol;
 
 		$.ajax({
 			url: s4t_api_url+"/services",
@@ -198,6 +209,7 @@ $('#update_service').click(function(){
 	if(old_service_name == "--" || old_service_name == undefined){ alert("Select a service"); document.getElementById('loading_bar').style.visibility='hidden'; }
 	else if(service_name == ""){ alert("Insert Service Name!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(port == ""){ alert("Specify a Port number different from zero(s)"); document.getElementById('loading_bar').style.visibility='hidden';	}
+	else if(protocol == "--") { alert("Select protocol!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else{
 		//var old_service_name = $('#update_servicelist').find(":selected").data("value").service_name;
 		data = {};
@@ -228,7 +240,7 @@ $('#update_service').click(function(){
 			function(){
 				document.getElementById("update_service_name").value = "";
 				document.getElementById("update_port").value = "";
-				$("#update_protocol").val("HTTP");
+				$("#update_protocol").val("--");
 			});
 	}
 });
@@ -293,7 +305,14 @@ $('.status_service').click(function(){
 			
 				success: function(response){
 					document.getElementById('loading_bar').style.visibility='hidden';
-					document.getElementById("service_status-output").innerHTML = JSON.stringify(response.message);
+
+					////Old output without link to request_id
+					//document.getElementById("service_status-output").innerHTML = JSON.stringify(response.message);
+
+					//New output with link to request_id
+					var subject = "/projects/"+project_id+"/services/"+service_name+"/action "+data.service_action;
+					document.getElementById("service_status-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
+
 					refresh_lists();
 				},
 				error: function(response){
@@ -304,6 +323,57 @@ $('.status_service').click(function(){
 			});
 		}
 		else{
+
+			//NEW: table approach
+			return_array = get_selected_rows_from_table("servicestatus_tableboards", "remove");
+
+			headers = return_array[0];
+			variables = return_array[1];
+
+			if(variables.length == 0){
+				alert('No board(s) selected!');
+				document.getElementById('loading_bar').style.visibility='hidden';
+			}
+			else{
+				for(var i=0; i< variables.length; i++){
+					//---------------------------------------------------------------------------------
+					(function(i){
+						setTimeout(function(){
+							//---------------------------------------------------------------------------------
+							var board_id = variables[i][1];
+							var board_name = variables[i][0];
+
+							$.ajax({
+								url: s4t_api_url+"/boards/"+board_id+"/services/"+service_name+"/action",
+								type: 'POST',
+								dataType: 'json',
+								headers: ajax_headers,
+								data: JSON.stringify(data),
+
+								success: function(response){
+									if(i==variables.length-1) {
+										refresh_tableboards("servicestatus_tableboards", "remove", "C", default_boardlist_columns);
+										refresh_lists();
+										document.getElementById('loading_bar').style.visibility='hidden';
+									}
+									document.getElementById("service_status-output").innerHTML += board_name + ": "+ JSON.stringify(response.message)+"<br />";
+								},
+								error: function(response){
+									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+									document.getElementById("service_status-output").innerHTML += JSON.stringify(response.responseJSON.message)+"<br />";
+								}
+							});
+							//---------------------------------------------------------------------------------
+						},delay*i);
+					})(i);
+					//---------------------------------------------------------------------------------
+				}
+			}
+
+
+			//OLD: select approach
+			/*
 			var list = document.getElementById("servicestatus_boardlist");
 			var selected_list = [];
 			var selected_label = [];
@@ -352,6 +422,7 @@ $('.status_service').click(function(){
 					//---------------------------------------------------------------------------------
 				}
 			}
+			*/
 		}
 	}
 });

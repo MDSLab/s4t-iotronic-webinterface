@@ -80,7 +80,7 @@ limitations under the License.
 		<div id="board_message">
 			<h3 name="message_text"></h3>
 			<div id="board_request_result"></div>
-			<textarea id="board_request_message" rows="3" cols="50" readonly></textarea>
+			<textarea id="board_request_message" rows="20" cols="50" readonly></textarea>
 			<button class="custom_button" onclick="return_request_boards()">Previous</button>
 		</div>
 	</section>
