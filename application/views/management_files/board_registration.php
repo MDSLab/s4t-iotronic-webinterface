@@ -718,3 +718,72 @@ limitations under the License.
 		<p id="board_pkg-management-output" />
 	</fieldset>
 </div>
+
+
+<div id="modal-updatelr-board" class="reveal-modal small" data-reveal>
+	<section>
+		<h3>Lightning-rod Management</h3>
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+		<div class="row">
+
+			<div style="text-align:center;">
+				<div style="width: 49%; margin-top: 5px; text-align:center; vertical-align: top; display: inline-block;">
+					<label>Enable / Disable per project action</label>
+				</div>
+				<div class="switch round small" style="margin-bottom: 0px; width: 15%; text-align:center; display: inline-block;">
+					<input id="lr_project" class="flag_project" type="checkbox" />
+					<label for="lr_project"></label>
+				</div>
+			</div>
+			<div id="lr_boardlist_bundle">
+				<label>Boards List</label>
+				<table id="lr_tableboards" style="width: 100%"></table>
+			</div>
+		</div>
+
+
+		<div class="row">
+			<div class="large-9 columns" style="padding-left: 0px">
+				<div style="width: auto; text-align:center; display: inline-block;">
+					<label>Version</label>
+				</div>
+				<div style="width: 30%; text-align:center; display: inline-block;">
+					<input id="lr_version" type="text" placeholder="Insert version" name="name" value="" />
+				</div>
+				<div style="width: auto; text-align:center; display: inline-block;">
+					<label>(only if debian)</label>
+				</div>
+			</div>
+		</div>
+
+
+
+		<div class="row">
+			
+			<div class="large-12 columns">
+				<button id="update" class="custom_button lr_change">
+					Update
+				</button>
+			</div>
+			<!--
+			<div class="large-12 columns">
+				<div style="width: 48%; text-align:center; display: inline-block;">
+					<button id="revert" class="custom_button lr_change" style="float: none; display: inline-block;">
+						Revert
+					</button>
+				</div>
+				<div style="width: 48%; text-align:center; display: inline-block;">
+					<button id="update" class="custom_button lr_change" style="float: none; display: inline-block;">
+						Update
+					</button>
+				</div>
+			</div>
+			-->
+		</div>
+	</section>
+	<fieldset>
+		<legend>Output</legend>
+		<p id="board_lr-management-output" />
+	</fieldset>
+</div>
+

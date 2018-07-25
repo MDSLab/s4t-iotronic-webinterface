@@ -83,6 +83,7 @@ $('[data-reveal-id="modal-register-new-board"]').on('click',
 			document.getElementById("board_create_password_visibility").checked = false;
 		}
 
+
 		var array_promise = [];
 
 		array_promise.push(new Promise(function(resolve){
@@ -664,6 +665,7 @@ $('#delete_board').click(function(){
 					setTimeout(function(){
 						//---------------------------------------------------------------------------------
 						var board_id = variables[i][1];
+						var board_name = variables[i][0];
 
 						$.ajax({
 							url: s4t_api_url+"/boards/"+board_id,
@@ -677,12 +679,12 @@ $('#delete_board').click(function(){
 									refresh_lists();
 									document.getElementById('loading_bar').style.visibility='hidden';
 								}
-								document.getElementById("board_delete-output").innerHTML += JSON.stringify(response.message)+"<br />";
+								document.getElementById("board_delete-output").innerHTML += board_name +": "+ JSON.stringify(response.message)+"<br />";
 							},
 							error: function(response){
 								verify_token_expired(response.responseJSON.message, response.responseJSON.result);
 								if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
-								document.getElementById("board_delete-output").innerHTML += JSON.stringify(response.responseJSON.message)+"<br />";
+								document.getElementById("board_delete-output").innerHTML += board_name +": "+JSON.stringify(response.responseJSON.message)+"<br />";
 							}
 						});
 						//---------------------------------------------------------------------------------
@@ -772,12 +774,12 @@ $('#configure-board').click(function(){
 										refresh_lists();
 										document.getElementById('loading_bar').style.visibility='hidden';
 									}
-									document.getElementById("board_configure-output").innerHTML = board_name +": " + JSON.stringify(response.message);
+									document.getElementById("board_configure-output").innerHTML += board_name +": " + JSON.stringify(response.message)+"<br />";
 								},
 								error: function(response){
 									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
 									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
-									document.getElementById("board_configure-output").innerHTML = board_name +": " + JSON.stringify(response.responseJSON.message);
+									document.getElementById("board_configure-output").innerHTML += board_name +": " + JSON.stringify(response.responseJSON.message)+"<br />";
 								}
 							});
 							//---------------------------------------------------------------------------------
@@ -934,12 +936,12 @@ $('#action-board').click(function(){
 										refresh_lists();
 										document.getElementById('loading_bar').style.visibility='hidden';
 									}
-									document.getElementById("board_action-output").innerHTML = board_name +": " + JSON.stringify(response.message);
+									document.getElementById("board_action-output").innerHTML += board_name +": " + JSON.stringify(response.message)+"<br />";
 								},
 								error: function(response){
 									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
 									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
-									document.getElementById("board_action-output").innerHTML = board_name +": " + JSON.stringify(response.responseJSON.message);
+									document.getElementById("board_action-output").innerHTML += board_name +": " + JSON.stringify(response.responseJSON.message)+"<br />";
 								}
 							});
 							//---------------------------------------------------------------------------------
@@ -1097,10 +1099,15 @@ function populate_board_info(board_id){
 			success: function(response){
 				info = response.message.info;
 
+				var label_lr = "";
+				if (info.lr_version != "null" && info.lr_version != undefined)	label_lr = info.lr_version;
+				else label_lr = "Unknown";
+
 				$('#info-label').html('<b>Label: </b>'+info.label);
 				$('#info-uuid').html('<b>UUID: </b>'+info.board_id);
 				$('#info-description').html('<b>Description: </b>'+info.description);
-				$('#info-lr_version').html('<b>LR version: </b>'+info.lr_version);
+				//$('#info-lr_version').html('<b>Lightning-rod version: </b>'+info.lr_version);
+				$('#info-lr_version').html('<b>Lightning-rod version: </b>'+label_lr);
 
 				$('#info-user').html('<b>User: </b>'+info.user);
 				$('#info-project').html('<b>Project: </b>'+info.project);
@@ -1266,6 +1273,22 @@ $('[data-reveal-id="modal-update-pkg-board"]').on('click',
 );
 
 
+$('[data-reveal-id="modal-updatelr-board"]').on('click',
+	function(){
+
+		document.getElementById("board_lr-management-output").innerHTML = '';
+
+		$('#lr_project').prop('checked', false);
+		$('#lr_boardlist_bundle').show();
+
+		$('#lr_version').val("");
+
+		var custom_columns = ["label", "board_id", "distro", "lr_version"];
+		refresh_tableboards("lr_tableboards", "remove", "C", custom_columns);
+	}
+);
+
+
 $('#pkg-man-board').click(function(){
 
 	document.getElementById("board_pkg-management-output").innerHTML = '';
@@ -1352,12 +1375,12 @@ $('#pkg-man-board').click(function(){
 										refresh_lists();
 										document.getElementById('loading_bar').style.visibility='hidden';
 									}
-									document.getElementById("board_pkg-management-output").innerHTML += JSON.stringify(response.message)+'<br />';
+									document.getElementById("board_pkg-management-output").innerHTML += board_name + ": "+JSON.stringify(response.message)+'<br />';
 								},
 								error: function(response){
 									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
 									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
-									document.getElementById("board_pkg-management-output").innerHTML += JSON.stringify(response.responseJSON.message)+'<br />';
+									document.getElementById("board_pkg-management-output").innerHTML += board_name + ": "+JSON.stringify(response.responseJSON.message)+'<br />';
 								}
 							});
 							//---------------------------------------------------------------------------------
@@ -1422,3 +1445,143 @@ $('#pkg-man-board').click(function(){
 		}
 	}
 });
+
+
+$('.lr_change').click(function(){
+
+	document.getElementById("board_lr-management-output").innerHTML = '';
+	var version = document.getElementById("lr_version").value;
+	var operation = this.id;
+	var distro = "";
+
+	data = {};
+	data.lr_version = version;
+	data.operation = operation;
+
+	if ($('#lr_project').is(':checked')){
+
+		distro = verify_boardslist_uniformity(boards_list, "distro");
+
+		if(distro == false){
+			alert("It is not possible to execute the action on boards with different distributions!");
+			document.getElementById('loading_bar').style.visibility='hidden';
+		}
+		else if( (version != undefined && version != "") && distro == "openwrt"){
+			alert("It is not possible to specify a version for openwrt distribution!");
+			$('#lr_version').val("");
+			document.getElementById('loading_bar').style.visibility='hidden';
+		}
+		else if(version == undefined || version == ""){
+			alert("Insert version to install!");
+			document.getElementById('loading_bar').style.visibility='hidden';
+		}
+		else{
+			if(confirm("Are you sure you want to update the version of Lightning-rod?")){
+				data.distro = distro;
+				var project_id = getCookie("selected_prj");
+
+				$.ajax({
+					url: s4t_api_url+"/projects/"+project_id+"/lr",
+					type: "POST",
+					dataType: 'json',
+					headers: ajax_headers,
+					data: JSON.stringify(data),
+
+					success: function(response){
+						document.getElementById('loading_bar').style.visibility='hidden';
+
+						//New output with link to request_id
+						var subject = "batch LR update";
+						document.getElementById("board_lr-management-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
+
+						refresh_lists();
+					},
+					error: function(response){
+						document.getElementById('loading_bar').style.visibility='hidden';
+						verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+						document.getElementById("board_lr-management-output").innerHTML = JSON.stringify(response.responseJSON.message);
+					}
+				});
+			}
+			else
+				document.getElementById('loading_bar').style.visibility='hidden';
+		}
+	}
+	else{
+		//NEW: table approach
+		return_array = get_selected_rows_from_table("lr_tableboards", "remove");
+
+		headers = return_array[0];
+		variables = return_array[1];
+
+		if(variables.length == 0){
+			alert('No board(s) selected!');
+			document.getElementById('loading_bar').style.visibility='hidden';
+		}
+		else{
+			var selected_list = [];
+			for(var i=0; i<variables.length; i++)
+				selected_list.push(variables[i][1]);
+
+			boardinfo_list = get_boardinfo_from_uuid_array(selected_list);
+			distro = verify_boardslist_uniformity(boardinfo_list, "distro");
+
+			if(distro == false){
+				alert("It is not possible to execute the action on boards with different distributions!");
+				document.getElementById('loading_bar').style.visibility='hidden';
+			}
+			else if( (version != undefined && version != "") && distro == "openwrt"){
+				alert("It is not possible to specify a version for openwrt distribution!");
+				$('#lr_version').val("");
+				document.getElementById('loading_bar').style.visibility='hidden';
+			}
+			else{
+				if(confirm("Are you sure you want to update the version of Lightning-rod?")){
+					//data.distro = distro;
+
+					for(var i=0; i< variables.length; i++){
+						//---------------------------------------------------------------------------------
+						(function(i){
+							setTimeout(function(){
+								//---------------------------------------------------------------------------------
+								var board_id = variables[i][1];
+								var board_name = variables[i][0];
+
+								$.ajax({
+									url: s4t_api_url+"/boards/"+board_id+"/lr",
+									type: 'POST',
+									dataType: 'json',
+									headers: ajax_headers,
+									data: JSON.stringify(data),
+
+									success: function(response){
+										if(i==variables.length-1) {
+											var custom_columns = ["label", "board_id", "distro", "lr_version"];
+											refresh_tableboards("lr_tableboards", "remove", "C", custom_columns);
+											refresh_lists();
+											document.getElementById('loading_bar').style.visibility='hidden';
+										}
+										//New output with link to request_id
+										var subject = "LR update";
+										document.getElementById("board_lr-management-output").innerHTML += board_name +' Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
+									},
+									error: function(response){
+										verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+										if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+										document.getElementById("board_lr-management-output").innerHTML += board_name + ": "+ JSON.stringify(response.responseJSON.message)+'<br />';
+									}
+								});
+								//---------------------------------------------------------------------------------
+							},delay*i);
+						})(i);
+						//---------------------------------------------------------------------------------
+					}
+				}
+				else
+					document.getElementById('loading_bar').style.visibility='hidden';
+			}
+		}
+	}
+});
+
+

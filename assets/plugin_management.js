@@ -61,7 +61,6 @@ function show_selected_board_log(label, response){
         $("#board_log_message").hide();
         $("#selected_board_log").show();
 
-
 	var restyled_message = '';
 	if(response.message instanceof Array){
 		for(var i=0; i<response.message.length; i++)
@@ -72,6 +71,8 @@ function show_selected_board_log(label, response){
 
 
 	var message_div = $('#selected_board_log');
+	//message_div.find('[id=selected_board_message]').text("");
+
 	message_div.find('[name=selected_message_log_text]').text("Message for board "+label);
 	message_div.find('[id=selected_board_log_result]').text("Result: "+response.result);
 	message_div.find('[id=selected_board_message]').html(restyled_message);
@@ -805,7 +806,7 @@ $('#destroy_plugin').click(function(){
 			(function(i){
 				setTimeout(function(){
 					//---------------------------------------------------------------------------------
-					//var plugin_name = variables[i][1];
+					var plugin_name = variables[i][1];
 					var plugin_id = variables[i][0];
 	
 					$.ajax({
@@ -822,12 +823,12 @@ $('#destroy_plugin').click(function(){
 								document.getElementById('loading_bar').style.visibility='hidden';
 								refresh_lists();
 							}
-							document.getElementById("plugin_destroy-output").innerHTML += JSON.stringify(response.message)+"<br />";
+							document.getElementById("plugin_destroy-output").innerHTML += plugin_name + ": "+JSON.stringify(response.message)+"<br />";
 						},
 						error: function(response){
 							verify_token_expired(response.responseJSON.message, response.responseJSON.result);
 							if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
-							document.getElementById("plugin_destroy-output").innerHTML += JSON.stringify(response.responseJSON.message)+"<br />";
+							document.getElementById("plugin_destroy-output").innerHTML += plugin_name + ": "+JSON.stringify(response.responseJSON.message)+"<br />";
 						}
 					});
 					//---------------------------------------------------------------------------------
@@ -1255,7 +1256,7 @@ $('.startstop_plugin').click(function(){
 								error: function(response){
 									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
 									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
-									document.getElementById("plugin_startstop-output").innerHTML += JSON.stringify(response.responseJSON.message)+"<br />";
+									document.getElementById("plugin_startstop-output").innerHTML += board_name + ": "+JSON.stringify(response.responseJSON.message)+"<br />";
 								}
 							});
 							//---------------------------------------------------------------------------------
@@ -1527,7 +1528,7 @@ $('#remove_plugins').click(function(){
 					setTimeout(function(){
 						//---------------------------------------------------------------------------------
 						var plugin_id = variables[i][2];
-						//var plugin_name = variables[i][1];
+						var plugin_name = variables[i][0];
 
 						$.ajax({
 							//url: s4t_api_url+"/boards/"+board_id+"/plugins/"+plugin_name,
@@ -1542,12 +1543,12 @@ $('#remove_plugins').click(function(){
 									document.getElementById('loading_bar').style.visibility='hidden';
 									refresh_lists();
 								}
-								document.getElementById("plugins_remove-output").innerHTML += JSON.stringify(response.message)+"<br />";
+								document.getElementById("plugins_remove-output").innerHTML += plugin_name + ": "+JSON.stringify(response.message)+"<br />";
 							},
 							error: function(response){
 								verify_token_expired(response.responseJSON.message, response.responseJSON.result);
 								if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
-								document.getElementById("plugins_remove-output").innerHTML += JSON.stringify(response.responseJSON.message)+"<br />";
+								document.getElementById("plugins_remove-output").innerHTML += plugin_name + ": "+JSON.stringify(response.responseJSON.message)+"<br />";
 							}
 						});
 						//---------------------------------------------------------------------------------
@@ -1749,7 +1750,6 @@ $('#logs_plugin').click(function(){
 		}
 		//Per list of boards call
 		else{
-			//SISTEMARE...selezione "singola" !!!!
 			//NEW: table approach
 			return_array = get_selected_rows_from_table("logs_tableboards", "remove");
 
@@ -1765,37 +1765,32 @@ $('#logs_plugin').click(function(){
 				document.getElementById('loading_bar').style.visibility='hidden';
 			}
 			else{
-				for(var i=0; i< variables.length; i++){
-					//---------------------------------------------------------------------------------
-					(function(i){
-						setTimeout(function(){
-							//---------------------------------------------------------------------------------
-							var board_id = variables[i][1];
-							var board_name = variables[i][0];
+				var board_id = variables[0][1];
+				var board_name = variables[0][0];
 
-							$.ajax({
-								url: s4t_api_url+"/boards/"+board_id+"/plugins/"+plugin_id+"/logs?rows="+rows,
-								type: 'GET',
-								dataType: 'json',
-								headers: ajax_headers,
+				//Added to allow refresh action for the log
+				document.getElementById("logs_board_id").value = board_id;
+				document.getElementById("logs_board_name").value = board_name;
+				document.getElementById("logs_plugin_id").value = plugin_id;
+				document.getElementById("logs_rows_number").value = rows;
 
-								success: function(response){
-									if(i==variables.length-1) {
-										show_selected_board_log(board_name, response);
-										refresh_lists();
-										document.getElementById('loading_bar').style.visibility='hidden';
-									}
-								},
-								error: function(response){
-									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
-								}
-							});
-							//---------------------------------------------------------------------------------
-						},delay*i);
-					})(i);
-					//---------------------------------------------------------------------------------
-				}
+				$.ajax({
+					url: s4t_api_url+"/boards/"+board_id+"/plugins/"+plugin_id+"/logs?rows="+rows,
+					type: 'GET',
+					dataType: 'json',
+					headers: ajax_headers,
+
+					success: function(response){
+						show_selected_board_log(board_name, response);
+						refresh_lists();
+						document.getElementById('loading_bar').style.visibility='hidden';
+					},
+					error: function(response){
+						verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+						document.getElementById('loading_bar').style.visibility='hidden';
+						alert(response.responseJSON.message);
+					}
+				});
 			}
 
 
@@ -1855,6 +1850,37 @@ console.log(response);
 	}
 });
 
+
+
+function refresh_log_message(){
+	var targetModal = $('#modal-show-plugin-logs');
+
+	var board_id = targetModal.find('[id=logs_board_id]').val();
+	var board_name = targetModal.find('[id=logs_board_name]').val();
+	var plugin_id = targetModal.find('[id=logs_plugin_id]').val();
+	var rows = targetModal.find('[id=logs_rows_number]').val();
+
+	targetModal.find('[name=selected_message_log_text]').text("Message for board "+board_name);
+	
+	$.ajax({
+		url: s4t_api_url+"/boards/"+board_id+"/plugins/"+plugin_id+"/logs?rows="+rows,
+		type: 'GET',
+		dataType: 'json',
+		headers: ajax_headers,
+	
+		success: function(response){
+			show_selected_board_log(board_name, response);
+			refresh_lists();
+			document.getElementById('loading_bar').style.visibility='hidden';
+		},
+		error: function(response){
+			verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+			document.getElementById('loading_bar').style.visibility='hidden';
+			alert(response.responseJSON.message);
+		}
+	});
+
+}
 
 
 

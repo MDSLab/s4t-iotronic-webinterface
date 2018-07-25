@@ -361,7 +361,7 @@ $('.status_service').click(function(){
 								error: function(response){
 									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
 									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
-									document.getElementById("service_status-output").innerHTML += JSON.stringify(response.responseJSON.message)+"<br />";
+									document.getElementById("service_status-output").innerHTML += board_name + ": "+JSON.stringify(response.responseJSON.message)+"<br />";
 								}
 							});
 							//---------------------------------------------------------------------------------

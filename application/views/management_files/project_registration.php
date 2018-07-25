@@ -95,7 +95,7 @@ limitations under the License.
 		<div class="row">
 			<div class="large-12 columns">
 				<button id="unregister-project" class="custom_button">
-					Unregister
+					Delete
 				</button>
 			</div>
 		</div>

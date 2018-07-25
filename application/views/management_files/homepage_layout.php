@@ -94,11 +94,12 @@ limitations under the License.
 						<li><label>Boards</label></li>
 						<li><a data-reveal-id="modal-show-boards">List</a></li>
 						<li><a data-reveal-id="modal-register-new-board">Register</a></li>
-						<li><a data-reveal-id="modal-configure-board">Configure</a></li>
-						<li><a data-reveal-id="modal-update-board">Update</a></li>
+						<li><a data-reveal-id="modal-configure-board">Inject configuration</a></li>
+						<li><a data-reveal-id="modal-update-board">Update Info</a></li>
 						<li><a data-reveal-id="modal-unregister-board">Unregister</a></li>
-						<li><a data-reveal-id="modal-action-board">Action</a></li>
+						<li><a data-reveal-id="modal-action-board">Actions on board</a></li>
 						<li><a data-reveal-id="modal-update-pkg-board">Package Manager</a></li>
+						<li><a data-reveal-id="modal-updatelr-board">Update Lightning-rod</a></li>
 					</ul>
 				</li>
 				<li class="has-submenu"><a href="#">Users</a>

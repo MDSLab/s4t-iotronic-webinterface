@@ -92,7 +92,19 @@ limitations under the License.
 		</div>
 
 		<div id="selected_board_log">
-			<h3 name="selected_message_log_text"></h3>
+			<input type="hidden" id="logs_board_id" value="">
+			<input type="hidden" id="logs_board_name" value="">
+			<input type="hidden" id="logs_plugin_id" value="">
+			<input type="hidden" id="logs_rows_number" value="">
+
+			<div style="text-align:left;">
+				<div style="width: 70%; text-align:left; display: inline-block;">
+					<h3 name="selected_message_log_text"></h3>
+				</div>
+				<div style="width: 25%; text-align:center; display: inline-block;">
+					<button class="custom_button" style="margin-bottom: 0px;" onclick="refresh_log_message()">Refresh</button>
+				</div>
+			</div>
 			<div id="selected_board_log_result"></div>
 			<textarea id="selected_board_message" rows="10" cols="50" readonly></textarea>
 			<button class="custom_button" onclick="load_project_logs(this)">Previous</button>

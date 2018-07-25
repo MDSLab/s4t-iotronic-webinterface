@@ -60,6 +60,18 @@ function verify_new_version(new_version, old_version){
 }
 
 
+function verify_boardslist_uniformity(list, field_to_check){
+	var value = list[0][field_to_check];
+
+	for(var i=0; i<list.length; i++){
+		if(list[i].distro != value){
+			value = false;
+			break;
+		}
+	}
+	return value;
+}
+
 $('input[name="email"]').blur(function () {
 	//console.log("BLUR");
 	var email = $(this).val();
@@ -407,6 +419,22 @@ function get_boardname_from_uuid(uuid){
 		}
 	}
 	return board_name;
+}
+
+
+function get_boardinfo_from_uuid_array(uuid_array){
+	var selected_boards = [];
+
+	for(var i=0; i<uuid_array.length; i++){
+		for(var j=0; j<boards_list.length; j++){
+			if(boards_list[j].board_id == uuid_array[i]){
+				selected_boards.push(boards_list[j]);
+				break;
+			}
+		}
+	}
+
+	return selected_boards.reverse();
 }
 
 
@@ -920,3 +948,4 @@ $(document).ready(function() {
 	);
 
 });
+
