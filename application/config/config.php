@@ -58,10 +58,10 @@ $config['polling_delay'] = 2000;
 $config['selectbox_size'] = 9;
 $config['show_string_or_json_lists'] = TRUE;
 
-$config['dash_version'] = '2.2.0-3';
+$config['dash_version'] = '2.2.0-4';
 $config['iotronic_version'] = '2.2.0-1';
 $config['lr_version'] = '2.2.0-1';
-$config['wstun_version'] = '1.0.7';
+$config['wstun_version'] = '1.0.7-1';
 //-------------------------------------------------------------------------
 
 

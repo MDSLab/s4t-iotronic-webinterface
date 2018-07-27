@@ -296,9 +296,18 @@ limitations under the License.
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="tag_plugin" class="custom_button">
-					Update Tag
-				</button>
+				<div style="text-align:center; display: block">
+					<div style="width: 45%; text-align:center; display: inline-block;">
+						<button id="back_plugins" class="custom_button" data-reveal-id="modal-changetag-plugin" style="float: none; display: inline-block;">
+							Previous
+						</button>
+					</div>
+					<div style="width: 45%; text-align:center; display: inline-block;">
+						<button id="tag_plugin" class="custom_button" style="float: none; display: inline-block;">
+							Update Tag
+						</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -315,10 +324,6 @@ limitations under the License.
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<table id="changetag_tableplugins" style="width: 100%"></table>
 	</section>
-	<fieldset>
-		<legend>Output</legend>
-		<p id="plugin_changetag-output" />
-	</fieldset>
 </div>
 
 

@@ -52,7 +52,8 @@ function populate_project_requests() {
 	//$('#show_requests_table').dataTable({"destroy": true});
 
 	var fields_to_parse = ["id_request", "subject", "timestamp", "result"];
-	var fields_to_show = ["id_request", "timestamp", "result"];
+	//var fields_to_show = ["id_request", "timestamp", "result"];
+	fields_to_show = fields_to_parse;
 	var project_id = getCookie("selected_prj");
 
 	$.ajax({
@@ -303,7 +304,10 @@ $('#remove_requests').click(function(){
 							},
 							error: function(response){
 								verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-								if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+								if(i==variables.length-1) {
+									populate_project_requests();
+									document.getElementById('loading_bar').style.visibility='hidden';
+								}
 								document.getElementById("request_delete-output").innerHTML += JSON.stringify(response.responseJSON.message)+"<br />";
 							}
 						});

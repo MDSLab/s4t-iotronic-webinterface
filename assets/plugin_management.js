@@ -122,11 +122,18 @@ function populate_plugin_info(a){
 	var id = a.getAttribute("id");
 	var reveal_id = a.getAttribute("data-reveal-id");
 
+
 	var state = "";
 	//console.log(reveal_id);
 	if(reveal_id.indexOf("read") > -1) state = "Info";
 	else if(reveal_id.indexOf("modify") > -1) state = "Update";
 	else if(reveal_id.indexOf("tag") > -1) state = "Tag";
+
+	//Clean the output fieldset
+	var targetModal = $('#'+reveal_id);
+	var p = targetModal.find('p');
+	if(p != undefined)
+		$('#'+p[0].id).empty();
 
 	$.ajax({
 		url: s4t_api_url+"/plugins/"+id,
@@ -140,9 +147,6 @@ function populate_plugin_info(a){
 
 			//Needed to verify on submit if the new version is "greater" than the actual one
 			actual_version = info.version;
-
-			//var targetModal = $('#modal-modify-plugin');
-			var targetModal = $('#'+reveal_id);
 
 			//targetModal.find('[name=info_text]').text("Update Plugin "+info.name);
 			targetModal.find('[name=info_text]').text(state+" Plugin "+info.name);
@@ -467,10 +471,17 @@ $('[data-reveal-id="modal-create-plugin"]').on('click',
 
 
 $('[data-reveal-id="modal-changetag-plugin"]').on('click',
-    function() {
-        $('#plugin_changetag-output').empty();
-        refresh_tableplugins('changetag_tableplugins', null, null, 'modal-tag-plugin');
-    }
+	function() {
+		//$('#plugin_changetag-output').empty();
+		refresh_tableplugins('changetag_tableplugins', null, null, 'modal-tag-plugin');
+		document.getElementById('loading_bar').style.visibility='hidden';
+	}
+);
+
+$('[data-reveal-id="modal-tag-plugin"]').on('click',
+	function() {
+		$('#plugin_tag-output').empty();
+	}
 );
 
 
@@ -827,7 +838,10 @@ $('#destroy_plugin').click(function(){
 						},
 						error: function(response){
 							verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-							if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+							if(i==variables.length-1) {
+								refresh_tableplugins('destroy_tableplugins', 'destroy', null, 'modal-read-plugin');
+								document.getElementById('loading_bar').style.visibility='hidden';
+							}
 							document.getElementById("plugin_destroy-output").innerHTML += plugin_name + ": "+JSON.stringify(response.responseJSON.message)+"<br />";
 						}
 					});
@@ -1025,7 +1039,8 @@ $('#inject_plugin').click(function(){
 					//document.getElementById("plugin_inject-output").innerHTML = JSON.stringify(response.message);
 
 					//New output with link to request_id
-					var subject = "/projects/"+project_id+"/plugins/"+plugin_id;
+					//var subject = "/projects/"+project_id+"/plugins/"+plugin_id;
+					var subject = response.subject;
 					document.getElementById("plugin_inject-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
 
 
@@ -1076,7 +1091,10 @@ $('#inject_plugin').click(function(){
 								},
 								error: function(response){
 									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+									if(i==variables.length-1) {
+										refresh_tableboards("inject_tableboards", "remove", "C", default_boardlist_columns);
+										document.getElementById('loading_bar').style.visibility='hidden';
+									}
 									document.getElementById("plugin_inject-output").innerHTML += board_name+ ' with '+plugin_name+': '+JSON.stringify(response.responseJSON.message) +'<br />';
 								}
 							});
@@ -1193,7 +1211,8 @@ $('.startstop_plugin').click(function(){
 					//document.getElementById("plugin_startstop-output").innerHTML = JSON.stringify(response.message);
 
 					//New output with link to request_id
-					var subject = "/projects/"+project_id+"/plugins/"+plugin_id;
+					//var subject = "/projects/"+project_id+"/plugins/"+plugin_id;
+					var subject = response.subject;
 					document.getElementById("plugin_startstop-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
 
 					refresh_lists();
@@ -1255,7 +1274,10 @@ $('.startstop_plugin').click(function(){
 								},
 								error: function(response){
 									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+									if(i==variables.length-1) {
+										refresh_tableboards("startstop_tableboards", "remove", "C", default_boardlist_columns);
+										document.getElementById('loading_bar').style.visibility='hidden';
+									}
 									document.getElementById("plugin_startstop-output").innerHTML += board_name + ": "+JSON.stringify(response.responseJSON.message)+"<br />";
 								}
 							});
@@ -1377,15 +1399,16 @@ $('#call_plugin').click(function(){
 					//document.getElementById("plugin_startstop-output").innerHTML = JSON.stringify(response.message);
 
 					//New output with link to request_id
-					var subject = "/projects/"+project_id+"/plugins/"+plugin_id;
-					document.getElementById("plugin_startstop-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
+					//var subject = "/projects/"+project_id+"/plugins/"+plugin_id;
+					var subject = response.subject;
+					document.getElementById("plugin_call-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
 
 					refresh_lists();
 				},
 				error: function(response){
 					document.getElementById('loading_bar').style.visibility='hidden';
 					verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-					document.getElementById("plugin_startstop-output").innerHTML = JSON.stringify(response.responseJSON.message);
+					document.getElementById("plugin_call-output").innerHTML = JSON.stringify(response.responseJSON.message);
 				}
 			});
 		}
@@ -1432,7 +1455,10 @@ $('#call_plugin').click(function(){
 								},
 								error: function(response){
 									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+									if(i==variables.length-1) {
+										refresh_tableboards("startstop_tableboards", "remove", "C", default_boardlist_columns);
+										document.getElementById('loading_bar').style.visibility='hidden';
+									}
 									document.getElementById("plugin_call-output").innerHTML += JSON.stringify(response.responseJSON.message)+"<br />";
 								}
 							});
@@ -1547,7 +1573,10 @@ $('#remove_plugins').click(function(){
 							},
 							error: function(response){
 								verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-								if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+								if(i==variables.length-1) {
+									refresh_tableplugins("plugins_remove_table", "remove", board_id, null);
+									document.getElementById('loading_bar').style.visibility='hidden';
+								}
 								document.getElementById("plugins_remove-output").innerHTML += plugin_name + ": "+JSON.stringify(response.responseJSON.message)+"<br />";
 							}
 						});
@@ -1595,7 +1624,8 @@ $('#remove_plugin').click(function(){
 					//document.getElementById("plugin_remove-output").innerHTML = JSON.stringify(response.message);
 
 					//New output with link to request_id
-					var subject = "/projects/"+project_id+"/plugins/"+plugin_id;
+					//var subject = "/projects/"+project_id+"/plugins/"+plugin_id;
+					var subject = response.subject;
 					document.getElementById("plugin_remove-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
 
 					refresh_lists();
@@ -1644,7 +1674,10 @@ $('#remove_plugin').click(function(){
 								},
 								error: function(response){
 									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+									if(i==variables.length-1) {
+										refresh_tableboards("removeplugin_tableboards", "remove", "C", default_boardlist_columns);
+										document.getElementById('loading_bar').style.visibility='hidden';
+									}
 									document.getElementById("plugin_remove-output").innerHTML += board_name +': '+JSON.stringify(response.responseJSON.message) +'<br />';
 								}
 							});

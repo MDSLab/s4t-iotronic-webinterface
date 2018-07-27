@@ -310,7 +310,8 @@ $('.status_service').click(function(){
 					//document.getElementById("service_status-output").innerHTML = JSON.stringify(response.message);
 
 					//New output with link to request_id
-					var subject = "/projects/"+project_id+"/services/"+service_name+"/action "+data.service_action;
+					//var subject = "/projects/"+project_id+"/services/"+service_name+"/action "+data.service_action;
+					var subject = response.subject;
 					document.getElementById("service_status-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
 
 					refresh_lists();
@@ -360,7 +361,10 @@ $('.status_service').click(function(){
 								},
 								error: function(response){
 									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+									if(i==variables.length-1) {
+										refresh_tableboards("servicestatus_tableboards", "remove", "C", default_boardlist_columns);
+										document.getElementById('loading_bar').style.visibility='hidden';
+									}
 									document.getElementById("service_status-output").innerHTML += board_name + ": "+JSON.stringify(response.responseJSON.message)+"<br />";
 								}
 							});

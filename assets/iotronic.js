@@ -182,7 +182,7 @@ function round(value, decimals) {
 
 function loading(){
 	var loader_pathfile = site_url+"uploads/ajax-loader.gif";
-	//document.getElementById('loading_bar').style.visibility='visible';
+	document.getElementById('loading_bar').style.visibility='visible';
 	document.getElementById('loading_bar').style.width='100%';
 	document.getElementById('loading_bar').style.height='100%';
 	document.getElementById('loading_bar').style.position='fixed';//'absolute';//'fixed';
@@ -680,8 +680,10 @@ function create_table_from_json(table_id, obj, array, checkbox_name){
 	$('#'+div_id).css('margin-bottom', '20px');
 
 	//To correcty render the DataTable (ordered or not)
-	if(column_to_order == 0)
+	if(column_to_order == 0){
 		$('#'+table_id).DataTable();	//WORKING without ordering!!!
+		//$('#'+table_id).DataTable({"lengthMenu": [[1, 5, 10, -1], [1, 5, 10, "All"]]});
+	}
 	else{
 		if(checkbox_name)
 			column_to_order += 1;
@@ -820,13 +822,13 @@ $('[data-reveal-id^="modal"]').on('click',
         }
 );
 
-
+/*
 $(':button').click(function(){
 	last_valid_selection = null;
 	loading();
 	//refresh_lists();
 });
-
+*/
 
 //Start from here to manage the icon-bar menu on the right
 
@@ -877,16 +879,25 @@ $('.side-menu').mouseover(function(){
 
 $(document).ready(function() {
 
+	$(':button').click(function(){
+		last_valid_selection = null;
+		loading();
+		//refresh_lists();
+	});
+
 	//To resolve the problem of "Uncaught TypeError: $(...).DataTable is not a function"
 	$.noConflict();
 
 
+	/*
 	//Mapdiv section
 	height = ( $('#mapdiv').height() - $(".parent-menu").height() ) /2;
 	//console.log(height);
 	$('#pre-menu').css("height", height);
 	//get_projects_list();
-
+	*/
+	//Fixed at middle height of the map
+	$('#pre-menu').css("height", "0");
 
 	// Force the selection of a limited number of options in selects (even if multiple is enabled)
 	last_valid_selection = null;
@@ -948,4 +959,3 @@ $(document).ready(function() {
 	);
 
 });
-

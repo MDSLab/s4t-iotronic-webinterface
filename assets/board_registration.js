@@ -455,6 +455,7 @@ $('#create-board').click(function(){
 
 		document.getElementById("board_create-output").innerHTML ='';
 
+
 		$.ajax({
 			url: s4t_api_url+"/boards",
 			type: 'POST',
@@ -683,7 +684,10 @@ $('#delete_board').click(function(){
 							},
 							error: function(response){
 								verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-								if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+								if(i==variables.length-1) {
+									refresh_tableboards("delete_tableboards", "remove", null, null);
+									document.getElementById('loading_bar').style.visibility='hidden';
+								}
 								document.getElementById("board_delete-output").innerHTML += board_name +": "+JSON.stringify(response.responseJSON.message)+"<br />";
 							}
 						});
@@ -699,9 +703,6 @@ $('#delete_board').click(function(){
 
 $('#configure-board').click(function(){
 	document.getElementById("board_configure-output").innerHTML ='';
-
-	//NEW: table approach
-	document.getElementById('loading_bar').style.visibility='hidden';
 
 	//OLD: select approach
 	/*
@@ -728,8 +729,10 @@ $('#configure-board').click(function(){
 					//document.getElementById("board_configure-output").innerHTML = JSON.stringify(response.message);
 
 					//New output with link to request_id
-					var subject = "/projects/"+project_id+"/boards/conf";
+					//var subject = "/projects/"+project_id+"/boards/conf";
+					var subject = response.subject;
 					document.getElementById("board_configure-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
+					document.getElementById('loading_bar').style.visibility='hidden';
 
 					refresh_lists();
 				},
@@ -770,7 +773,7 @@ $('#configure-board').click(function(){
 
 								success: function(response){
 									if(i==variables.length-1) {
-										refresh_tableboards("configure_tableboards", "remove", "C", default_boardlist_columns);
+										//refresh_tableboards("configure_tableboards", "remove", "C", default_boardlist_columns);
 										refresh_lists();
 										document.getElementById('loading_bar').style.visibility='hidden';
 									}
@@ -778,7 +781,10 @@ $('#configure-board').click(function(){
 								},
 								error: function(response){
 									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+									if(i==variables.length-1) {
+										//refresh_tableboards("configure_tableboards", "remove", "C", default_boardlist_columns);
+										document.getElementById('loading_bar').style.visibility='hidden';
+									}
 									document.getElementById("board_configure-output").innerHTML += board_name +": " + JSON.stringify(response.responseJSON.message)+"<br />";
 								}
 							});
@@ -850,7 +856,7 @@ $('#action-board').click(function(){
 	//OLD: select approach
 	//else if(!$('#action_project').is(':checked') && $('#action_boardlist option:selected').length == 0) {alert('Select a Board'); document.getElementById('loading_bar').style.visibility='hidden';}
 
-	else if(action != "hostname" && parameters == "") { document.getElementById('loading_bar').style.visibility='hidden'; alert("With reboot and restart_lr commands you have to add the time in seconds parameters!"); }
+	//else if(action != "hostname" && parameters == "") { document.getElementById('loading_bar').style.visibility='hidden'; alert("With reboot and restart_lr commands you have to add the time in seconds parameters!"); }
 
 	else{
 		data = {};
@@ -878,12 +884,16 @@ $('#action-board').click(function(){
 					//document.getElementById("board_action-output").innerHTML = JSON.stringify(response.message);
 
 					//New output with link to request_id
-					var subject = "/projects/"+project_id+"/boards/action "+action;
+					//var subject = "/projects/"+project_id+"/boards/action "+action;
+					var subject = response.subject;
 					document.getElementById("board_action-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
 
 
+					//Old version before tables
+					/*
 					if(action == "reboot" || action == "restart_lr")
 						update_boardsv2('action_boardlist', 'C', true);
+					*/
 			
 					refresh_lists();
 					$('#board_actionlist').val("--");
@@ -930,9 +940,11 @@ $('#action-board').click(function(){
 
 										$('#board_actionlist').val("--");
 										$('#board_parameters').val("");
+										//There is no need to reload the table because it will be in a "not yet" updated status
+										/*
 										if(action == "reboot" || action == "restart_lr")
 											refresh_tableboards("boardaction_tableboards", "remove", "C", default_boardlist_columns);
-
+										*/
 										refresh_lists();
 										document.getElementById('loading_bar').style.visibility='hidden';
 									}
@@ -940,7 +952,9 @@ $('#action-board').click(function(){
 								},
 								error: function(response){
 									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+									if(i==variables.length-1) {
+										document.getElementById('loading_bar').style.visibility='hidden';
+									}
 									document.getElementById("board_action-output").innerHTML += board_name +": " + JSON.stringify(response.responseJSON.message)+"<br />";
 								}
 							});
@@ -1327,7 +1341,8 @@ $('#pkg-man-board').click(function(){
 					//Old output without link to request_id
 					//document.getElementById("board_pkg-management-output").innerHTML = JSON.stringify(response.message);
 					//New output with link to request_id
-					var subject = "/projects/"+project_id+"/boards/package "+packages;
+					//var subject = "/projects/"+project_id+"/boards/package "+packages;
+					var subject = response.subject;
 					document.getElementById("board_pkg-management-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
 
 					refresh_lists();
@@ -1375,11 +1390,18 @@ $('#pkg-man-board').click(function(){
 										refresh_lists();
 										document.getElementById('loading_bar').style.visibility='hidden';
 									}
-									document.getElementById("board_pkg-management-output").innerHTML += board_name + ": "+JSON.stringify(response.message)+'<br />';
+									//document.getElementById("board_pkg-management-output").innerHTML += board_name + ": "+JSON.stringify(response.message)+'<br />';
+									//var subject = "/projects/"+project_id+"/boards/package "+packages;
+									var subject = response.subject;
+									document.getElementById("board_pkg-management-output").innerHTML += board_name + ': Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a><br />';
 								},
 								error: function(response){
 									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-									if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+									if(i==variables.length-1) {
+										refresh_tableboards("pkg_tableboards", "remove", "C", default_boardlist_columns);
+										document.getElementById('loading_bar').style.visibility='hidden';
+									}
+									
 									document.getElementById("board_pkg-management-output").innerHTML += board_name + ": "+JSON.stringify(response.responseJSON.message)+'<br />';
 								}
 							});
@@ -1491,7 +1513,8 @@ $('.lr_change').click(function(){
 						document.getElementById('loading_bar').style.visibility='hidden';
 
 						//New output with link to request_id
-						var subject = "batch LR update";
+						//var subject = "batch LR update";
+						var subject = response.subject;
 						document.getElementById("board_lr-management-output").innerHTML = 'Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
 
 						refresh_lists();
@@ -1539,6 +1562,8 @@ $('.lr_change').click(function(){
 				if(confirm("Are you sure you want to update the version of Lightning-rod?")){
 					//data.distro = distro;
 
+					var custom_columns = ["label", "board_id", "distro", "lr_version"];
+
 					for(var i=0; i< variables.length; i++){
 						//---------------------------------------------------------------------------------
 						(function(i){
@@ -1556,18 +1581,21 @@ $('.lr_change').click(function(){
 
 									success: function(response){
 										if(i==variables.length-1) {
-											var custom_columns = ["label", "board_id", "distro", "lr_version"];
 											refresh_tableboards("lr_tableboards", "remove", "C", custom_columns);
 											refresh_lists();
 											document.getElementById('loading_bar').style.visibility='hidden';
 										}
 										//New output with link to request_id
-										var subject = "LR update";
+										//var subject = "LR update";
+										var subject = response.subject;
 										document.getElementById("board_lr-management-output").innerHTML += board_name +' Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
 									},
 									error: function(response){
 										verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-										if(i==variables.length-1) document.getElementById('loading_bar').style.visibility='hidden';
+										if(i==variables.length-1) {
+											refresh_tableboards("lr_tableboards", "remove", "C", custom_columns);
+											document.getElementById('loading_bar').style.visibility='hidden';
+										}
 										document.getElementById("board_lr-management-output").innerHTML += board_name + ": "+ JSON.stringify(response.responseJSON.message)+'<br />';
 									}
 								});
