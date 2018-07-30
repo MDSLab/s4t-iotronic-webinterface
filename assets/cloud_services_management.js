@@ -156,6 +156,8 @@ $('[id="update_servicelist"]').on('change',
 
 $('#register_service').click(function(){
 
+	loading_to_fix(); //TO BE FIXED !!!
+
 	var service_name = document.getElementById("register_service_name").value;
 	var port = parseInt(document.getElementById("register_port").value);
 	var protocol = document.getElementById("register_protocol").value;
@@ -194,6 +196,8 @@ $('#register_service').click(function(){
 
 
 $('#update_service').click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
 
 	var old_service_name = $('#update_servicelist').find(":selected").data("value").service_name;
 
@@ -248,6 +252,8 @@ $('#update_service').click(function(){
 
 $('#delete_service').click(function(){
 
+	loading_to_fix(); //TO BE FIXED !!!
+
 	var service_name = $('#delete_servicelist').find(":selected").data("value").service_name;
 
 	document.getElementById("service_delete-output").innerHTML ='';
@@ -278,6 +284,8 @@ $('#delete_service').click(function(){
 });
 
 $('.status_service').click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
 
 	var service_name = $('#status_servicelist').find(":selected").data("value").service_name;
 	document.getElementById("service_status-output").innerHTML ='';
@@ -434,6 +442,9 @@ $('.status_service').click(function(){
 
 $('[id="services_boardlist"]').on('change',
 	function(){
+
+		loading_to_fix(); //TO BE FIXED !!!
+
 		var show_board_services = document.getElementById("services_boardlist").value;
 		if(show_board_services == "--"){
 			$("#modal-board-services").addClass("small");

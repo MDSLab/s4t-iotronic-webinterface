@@ -146,6 +146,8 @@ function update_users(select_id, output_id, callback){
 
 $('#create-user').click(function(){
 
+	loading_to_fix(); //TO BE FIXED !!!
+
 	data = {};
 
 	var username = document.getElementById("user_create_username").value;
@@ -191,6 +193,8 @@ $('#create-user').click(function(){
 
 
 $('#update-user').click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
 
 	data = {};
 
@@ -249,6 +253,9 @@ $('#update-user').click(function(){
 
 
 $("#unregister-user").click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
+
 	var user_id = document.getElementById("unregister_userlist").value;
 
 	if (user_id == "--") {

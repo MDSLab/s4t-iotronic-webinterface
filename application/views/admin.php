@@ -46,6 +46,21 @@ limitations under the License.
 	*/	
 	var boards_list = "";
 	var default_boardlist_columns = ["label", "board_id"];
+
+
+	//Load endpoints scripts
+	endpoints = JSON.parse('[<?= json_encode($this -> config -> item('endpoints'))?>]');
+	//console.log(endpoints);
+	if(endpoints[0] != null && endpoints[0].length != 0){
+		for(key in endpoints[0]){
+			if(endpoints[0][key]){
+				elem = document.body.appendChild(document.createElement("script"));
+				elem.src = site_url+"assets/endpoints_management/"+key+"/"+key+".js";
+				//console.log(key +":"+endpoints[0][key]);
+				//window[key]();
+			}
+		}
+	}
 </script>
 
 

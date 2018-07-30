@@ -472,6 +472,8 @@ $('[data-reveal-id="modal-create-plugin"]').on('click',
 
 $('[data-reveal-id="modal-changetag-plugin"]').on('click',
 	function() {
+		loading_to_fix(); //TO BE FIXED !!!
+
 		//$('#plugin_changetag-output').empty();
 		refresh_tableplugins('changetag_tableplugins', null, null, 'modal-tag-plugin');
 		document.getElementById('loading_bar').style.visibility='hidden';
@@ -670,6 +672,9 @@ $('[id="remove_plugins_boardlist"]').on('change',
 
 $('[id="plugins_boardlist"]').on('change',
 	function(){
+
+		loading_to_fix(); //TO BE FIXED !!!
+
 		var show_board_plugins = document.getElementById("plugins_boardlist").value;
 		if(show_board_plugins == "--"){
 			$("#modal-board-plugins").addClass("small");
@@ -710,6 +715,8 @@ $('[id="plugins_boardlist"]').on('change',
 
 
 $('#create_plugin').click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
 
 	data ={};
 	//document.getElementById('loading_bar').style.visibility='visible';
@@ -766,6 +773,8 @@ $('#create_plugin').click(function(){
 
 $('#tag_plugin').click(function(){
 
+	loading_to_fix(); //TO BE FIXED !!!
+
 	document.getElementById("plugin_tag-output").innerHTML ='';
 
 	var plugin_id = document.getElementById("tag_plugin_id").value;
@@ -798,6 +807,8 @@ $('#tag_plugin').click(function(){
 
 
 $('#destroy_plugin').click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
 
 	return_array = get_selected_rows_from_table("destroy_tableplugins", "destroy");
 
@@ -855,6 +866,8 @@ $('#destroy_plugin').click(function(){
 
 
 $('#update_plugin').click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
 
 	data ={};
 	//document.getElementById('loading_bar').style.visibility='visible';
@@ -1000,6 +1013,9 @@ document.getElementById('plugin_userfile').element_id = "create_plugin_code";
 
 
 $('#inject_plugin').click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
+
 	document.getElementById("plugin_inject-output").innerHTML ='';
 
 	//NEW: table approach
@@ -1163,6 +1179,9 @@ $('#inject_plugin').click(function(){
 
 
 $('.startstop_plugin').click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
+
 	var plugin_parameters = document.getElementById("startstop_plugin_parameters").value;
 	var start_stop_flag = this.id;
 
@@ -1359,6 +1378,8 @@ $('.startstop_plugin').click(function(){
 
 $('#call_plugin').click(function(){
 
+	loading_to_fix(); //TO BE FIXED !!!
+
 	document.getElementById("plugin_call-output").innerHTML = '';
 
 	var plugin_parameters = document.getElementById("startstop_plugin_parameters").value;
@@ -1533,6 +1554,8 @@ $('#call_plugin').click(function(){
 
 $('#remove_plugins').click(function(){
 
+	loading_to_fix(); //TO BE FIXED !!!
+
 	document.getElementById("plugins_remove-output").innerHTML ='';
 
 	var board_id = document.getElementById("remove_plugins_boardlist").value;
@@ -1592,6 +1615,8 @@ $('#remove_plugins').click(function(){
 
 
 $('#remove_plugin').click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
 
 	document.getElementById("plugin_remove-output").innerHTML ='';
 
@@ -1746,6 +1771,9 @@ $('#remove_plugin').click(function(){
 
 
 $('#logs_plugin').click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
+
 	var rows = document.getElementById("rows_number").value;
 
 	if ($('#logs_pluginlist option:selected').length == 0) {alert('Select a Plugin'); document.getElementById('loading_bar').style.visibility='hidden';}
@@ -1886,6 +1914,9 @@ console.log(response);
 
 
 function refresh_log_message(){
+
+	loading_to_fix(); //TO BE FIXED !!!
+
 	var targetModal = $('#modal-show-plugin-logs');
 
 	var board_id = targetModal.find('[id=logs_board_id]').val();

@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 //Iotronic Endpoints
 $default_api_address = '<IP_OR_HOSTNAME>:<PORT>';
 $default_iotronic_address = '<IP_OR_HOSTNAME>';
-$default_wstun_address = '<IP_OR_HOSTNAME>';
+$default_wstun_address = '<IP_OR_HOSTNAME>:<PORT>';
 
 $api_address = !empty(getenv('API_PUB_IP')) ? getenv('API_PUB_IP') : $default_api_address;
 $iotronic_address = !empty(getenv('IOTRONIC_PUB_IP')) ? getenv('IOTRONIC_PUB_IP') : $default_iotronic_address;
@@ -52,14 +52,21 @@ $config['load_commands'] = (
 //-------------------------------------------------------------------------
 
 
+//ENDPOINTS
+$endpoint['ckan'] = FALSE; //TRUE;
+$endpoint['mysql'] = TRUE;
+$endpoint['mongo'] = TRUE;
+$config['endpoints'] = $endpoint;
+
+
 //EXTRAS
 //-------------------------------------------------------------------------
 $config['polling_delay'] = 2000;
 $config['selectbox_size'] = 9;
 $config['show_string_or_json_lists'] = TRUE;
 
-$config['dash_version'] = '2.2.0-4';
-$config['iotronic_version'] = '2.2.0-1';
+$config['dash_version'] = '2.2.0-5';
+$config['iotronic_version'] = '2.2.0-7';
 $config['lr_version'] = '2.2.0-1';
 $config['wstun_version'] = '1.0.7-1';
 //-------------------------------------------------------------------------

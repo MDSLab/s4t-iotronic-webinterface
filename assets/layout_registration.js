@@ -199,6 +199,8 @@ function update_layouts(select_id, output_id, callback){
 
 $('#create-layout').click(function(){
 
+	loading_to_fix(); //TO BE FIXED !!!
+
 	data = {};
 
 	var model = document.getElementById("layout_create_model").value;
@@ -244,6 +246,8 @@ $('#create-layout').click(function(){
 
 
 $('#update-layout').click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
 
 	data = {};
 
@@ -295,6 +299,8 @@ $('#update-layout').click(function(){
 
 
 $("#unregister-layout").click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
 
 	data = {};
 

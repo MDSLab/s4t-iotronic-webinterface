@@ -83,6 +83,25 @@ $('[data-reveal-id="modal-register-new-board"]').on('click',
 			document.getElementById("board_create_password_visibility").checked = false;
 		}
 
+		//This section was disabled by default but now it starts to be useful in future scenarios
+		//*******************************************************************************************
+		if(endpoints[0] == null || typeof endpoints === "undefined"){
+			$('#board_create_endpoints_section').hide();
+		}
+		else{
+			var flag_endpoints = false;
+			$.each(endpoints[0], function(key, value){
+				//console.log(key+" "+value);
+				if(value == true) flag_endpoints = true;
+			});
+			if(!flag_endpoints)
+				$('#board_create_endpoints_section').hide();
+			else{
+				$('#board_create_endpoints_section').show();
+				endpoints_list(endpoints[0], "board_create_endpoints_section", "board_create_endpoints", "board_create_endpointlist");
+			}
+		}
+		//*******************************************************************************************
 
 		var array_promise = [];
 
@@ -130,7 +149,13 @@ $('[data-reveal-id="modal-action-board"]').on('click',
 
 		//$('#action_boardlist').val("--");
 		$('#board_actionlist').empty();
-		$('#board_parameters').val("");
+
+		$('#action-board-time').val("");
+		$('#action-board_parameters').val("");
+
+		$('#action-board-time_bundle').hide();
+		$('#action-board_parameters_bundle').hide();
+
 		
 		document.getElementById("board_action-output").innerHTML ='';
 
@@ -152,9 +177,31 @@ $('[data-reveal-id="modal-action-board"]').on('click',
 );
 
 
+$('#board_actionlist').on('change', function(){
+	//console.log(this.value);
+
+	$('#action-board-time').val("");
+	$('#action-board_parameters').val("");
+
+	if(this.value == "--" || this.value == "hostname"){
+		$('#action-board-time_bundle').hide();
+		$('#action-board_parameters_bundle').hide();
+	}
+	else if(this.value == "reboot" || this.value == "restart_lr"){
+		$('#action-board-time_bundle').show();
+		$('#action-board_parameters_bundle').hide();
+	}
+	else{
+		$('#action-board-time_bundle').hide();
+		$('#action-board_parameters_bundle').show();
+
+	}
+});
+
+
 $('#board_generate_uuid').click(function(){
-	document.getElementById('loading_bar').style.visibility='hidden';
 	generate_uuid("board_create_uuid");
+	document.getElementById('loading_bar').style.visibility='hidden';
 });
 
 
@@ -327,6 +374,9 @@ $('[id="update_boardlist"]').on('change',
 
 $('#create-board').click(function(){
 
+	loading_to_fix(); //TO BE FIXED !!!
+
+
 	var data = {};
 
 	//document.getElementById('loading_bar').style.visibility='visible';
@@ -395,6 +445,7 @@ $('#create-board').click(function(){
 		alert("Insert valid public key!");
 		document.getElementById('loading_bar').style.visibility='hidden';
 	}
+	/*
 	else if(security_method == "password" && (password == undefined || password == "") ){
 		alert("Insert password!");
 		document.getElementById('loading_bar').style.visibility='hidden';
@@ -403,6 +454,7 @@ $('#create-board').click(function(){
 		alert("Password must be between 4 and 60 digits!");
 		document.getElementById('loading_bar').style.visibility='hidden';
 	}
+	*/
 	else{
 		data.layout_id = layout;
 		data.project_id = project;
@@ -456,6 +508,30 @@ $('#create-board').click(function(){
 		document.getElementById("board_create-output").innerHTML ='';
 
 
+		//This section was disabled by default but now it starts to be useful in future scenarios
+		//*******************************************************************************************
+		if(typeof endpoints !== "undefined"){
+		//if(endpoints[0]){
+			//console.log(data);
+			//console.log(endpoints);
+			//for(key in endpoints[0]) console.log(key +":"+endpoints[0][key]);
+
+			var endpoints_list = document.getElementsByClassName("board_create_endpointlist");
+			var endpoints_promise = [];
+
+			flag = "false";
+			for(i=0; i<endpoints_list.length; i++){
+				if (endpoints_list[i].checked){
+					flag = "true";
+					endpoints_promise.push(new Promise(function(resolve){
+						window[endpoints_list[i].id](data, resolve);
+					}));
+				}
+			}
+			if(flag == "true")
+				Promise.all(endpoints_promise).then(document.getElementById('loading_bar').style.visibility='hidden');
+		}
+		//*******************************************************************************************
 		$.ajax({
 			url: s4t_api_url+"/boards",
 			type: 'POST',
@@ -486,27 +562,29 @@ $('#create-board').click(function(){
 
 $('#update-board').click(function(){
 
+	loading_to_fix(); //TO BE FIXED !!!
+
 	data = {};
 	document.getElementById("board_update-output").innerHTML ='';
 
 	//document.getElementById('loading_bar').style.visibility='visible';
 	/*
-	 var list = document.getElementsByClassName("board_update_sensorlist");
-	 var sensors ="";
-	 var count = 0;
+	var list = document.getElementsByClassName("board_update_sensorlist");
+	var sensors ="";
+	var count = 0;
 
-	 for(i=0; i<list.length; i++){
-	 if (list[i].checked){
-	 if(count==0){
-	 sensors = list[i].id;
-	 count += 1;
-	 }
-	 else
-	 sensors += ","+list[i].id;
-	 }
-	 }
-	 if(sensors=="") sensors = "empty";
-	 */
+	for(i=0; i<list.length; i++){
+		if (list[i].checked){
+			if(count==0){
+				sensors = list[i].id;
+				count += 1;
+			}
+			else
+				sensors += ","+list[i].id;
+		}
+	}
+	if(sensors=="") sensors = "empty";
+	*/
 	data.sensorslist = "empty";
 
 	//console.log(sensors);
@@ -609,6 +687,9 @@ $('#update-board').click(function(){
 				document.getElementById("board_update-output").innerHTML = JSON.stringify(response.message);
 				update_boardsv2('update_boardlist');
 				refresh_lists();
+				//$('#update_boardlist').val(board_id);
+				//$('#update_boardlist option[value="'+board_id+'"]').attr('selected', 'selected');
+				//console.log(board_id);
 			},
 			error: function(response){
 				//console.log('ERROR: '+JSON.stringify(response));
@@ -623,6 +704,8 @@ $('#update-board').click(function(){
 
 
 $('#delete_board').click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
 
 	document.getElementById("board_delete-output").innerHTML ='';
 
@@ -639,12 +722,12 @@ $('#delete_board').click(function(){
 				refresh_tableboards("delete_tableboards", "remove", null, null);
 				refresh_lists();
 				document.getElementById('loading_bar').style.visibility='hidden';
-				document.getElementById("board_delete-output").innerHTML += JSON.stringify(response.message)+"<br />";
+				document.getElementById("board_delete-output").innerHTML = JSON.stringify(response.message)+"<br />";
 			},
 			error: function(response){
 				verify_token_expired(response.responseJSON.message, response.responseJSON.result);
 				document.getElementById('loading_bar').style.visibility='hidden';
-				document.getElementById("board_delete-output").innerHTML += JSON.stringify(response.responseJSON.message)+"<br />";
+				document.getElementById("board_delete-output").innerHTML = JSON.stringify(response.responseJSON.message)+"<br />";
 			}
 		});
 	}
@@ -676,6 +759,7 @@ $('#delete_board').click(function(){
 
 							success: function(response){
 								if(i==variables.length-1) {
+console.log("S");
 									refresh_tableboards("delete_tableboards", "remove", null, null);
 									refresh_lists();
 									document.getElementById('loading_bar').style.visibility='hidden';
@@ -702,6 +786,9 @@ $('#delete_board').click(function(){
 
 
 $('#configure-board').click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
+
 	document.getElementById("board_configure-output").innerHTML ='';
 
 	//OLD: select approach
@@ -846,12 +933,15 @@ $('#configure-board').click(function(){
 
 
 $('#action-board').click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
+
 	document.getElementById("board_action-output").innerHTML ='';
 
 	var action = document.getElementById("board_actionlist").value;
-	var parameters = document.getElementById("board_parameters").value;
+	//var parameters = document.getElementById("#action-board_parameters").value;
 
-	if(action == "--"){ document.getElementById('loading_bar').style.visibility='hidden'; alert("Select an action!"); }
+	if(action == "--"){ alert("Select an action!"); document.getElementById('loading_bar').style.visibility='hidden';  }
 
 	//OLD: select approach
 	//else if(!$('#action_project').is(':checked') && $('#action_boardlist option:selected').length == 0) {alert('Select a Board'); document.getElementById('loading_bar').style.visibility='hidden';}
@@ -859,6 +949,20 @@ $('#action-board').click(function(){
 	//else if(action != "hostname" && parameters == "") { document.getElementById('loading_bar').style.visibility='hidden'; alert("With reboot and restart_lr commands you have to add the time in seconds parameters!"); }
 
 	else{
+
+		data = {};
+		data.action = action;
+
+
+		if(action == "hostname")
+			data.parameters = "";
+
+		else if(action == "reboot" || action == "restart_lr")
+			data.parameters = {"time": document.getElementById("#action-board-time").value};
+		else
+			data.parameters = {"time": document.getElementById("#action-board_parameters").value};
+
+		/*
 		data = {};
 		data.action = action;
 
@@ -866,7 +970,7 @@ $('#action-board').click(function(){
 			data.parameters = parameters;
 		else
 			data.parameters = {"time": parameters};
-
+		*/
 		if ($('#action_project').is(':checked')){
 			var project_id = getCookie("selected_prj");
 
@@ -897,7 +1001,7 @@ $('#action-board').click(function(){
 			
 					refresh_lists();
 					$('#board_actionlist').val("--");
-					$('#board_parameters').val("");
+					$('#action-board_parameters').val("");
 				},
 				error: function(response){
 					document.getElementById('loading_bar').style.visibility='hidden';
@@ -939,7 +1043,7 @@ $('#action-board').click(function(){
 									if(i==variables.length-1) {
 
 										$('#board_actionlist').val("--");
-										$('#board_parameters').val("");
+										$('#action-board_parameters').val("");
 										//There is no need to reload the table because it will be in a "not yet" updated status
 										/*
 										if(action == "reboot" || action == "restart_lr")
@@ -1001,7 +1105,7 @@ $('#action-board').click(function(){
 
 								refresh_lists();
 								$('#board_actionlist').val("--");
-								$('#board_parameters').val("");
+								$('#action-board_parameters').val("");
 							},
 							error: function(response){
 								document.getElementById('loading_bar').style.visibility='hidden';
@@ -1305,6 +1409,8 @@ $('[data-reveal-id="modal-updatelr-board"]').on('click',
 
 $('#pkg-man-board').click(function(){
 
+	loading_to_fix(); //TO BE FIXED !!!
+
 	document.getElementById("board_pkg-management-output").innerHTML = '';
 
 	var manager = document.getElementById("pkg_manager").value;
@@ -1471,6 +1577,8 @@ $('#pkg-man-board').click(function(){
 
 $('.lr_change').click(function(){
 
+	loading_to_fix(); //TO BE FIXED !!!
+
 	document.getElementById("board_lr-management-output").innerHTML = '';
 	var version = document.getElementById("lr_version").value;
 	var operation = this.id;
@@ -1588,7 +1696,7 @@ $('.lr_change').click(function(){
 										//New output with link to request_id
 										//var subject = "LR update";
 										var subject = response.subject;
-										document.getElementById("board_lr-management-output").innerHTML += board_name +' Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a>';
+										document.getElementById("board_lr-management-output").innerHTML += board_name +' Request ID: <a data-reveal-id="modal-show-project-requests" id="'+response.req_id+'" value="'+subject+'" onclick=populate_request_info(this)>'+response.req_id+'</a><br />';
 									},
 									error: function(response){
 										verify_token_expired(response.responseJSON.message, response.responseJSON.result);

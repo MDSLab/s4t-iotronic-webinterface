@@ -397,6 +397,14 @@ limitations under the License.
 				<label>Notify Retry</label>
 				<input id="board_create_notify_retry" type="number" min="1" max="5" step="1" value="3"/>
 			</div>
+
+			<div id="board_create_endpoints_section">
+				<label>Endpoints</label>
+				<fieldset>
+					<center><div id="board_create_endpoints"></div></center>
+				</fieldset>
+
+			</div>
 		</div>
 
 		<div class="row">
@@ -430,9 +438,11 @@ limitations under the License.
 				</div>
 			</div>
 			<div id="configure_boardlist_bundle">
-				<label>Boards List</label>
 				<table id="configure_tableboards" style="width: 100%"></table>
-				<!--<select id="configure_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>-->
+				<!--
+				<label>Boards List</label>
+				<select id="configure_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+				-->
 			</div>
 		</div>
 		<div class="row">
@@ -642,13 +652,34 @@ limitations under the License.
 				</div>
 			</div>
 			<div id="action_boardlist_bundle">
-				<label>Boards List</label>
 				<table id="boardaction_tableboards" style="width: 100%"></table>
-				<!--<select id="action_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>-->
+				<!--
+				<label>Boards List</label>
+				<select id="action_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+				-->
 			</div>
 
-			<label>Parameters</label>
-			<textarea id="board_parameters" placeholder="Insert here the parameters" name="text" rows="3"></textarea>
+		</div>
+		<div class="row">
+
+			<!-- Parameters / times section -->
+			<div id="action-board-time_bundle">
+				<div class="large-9 columns" style="padding-left: 0px">
+					<div style="width: auto; text-align:center; display: inline-block;">
+						<label>Delay Time</label>
+					</div>
+					<div style="width: 30%; text-align:center; display: inline-block;">
+						<input id="action-board-time" type="text" placeholder="" name="time" value="" onkeypress="return (event.charCode == 8 || event.charCode == 0) ? null : ( (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46)"/>
+					</div>
+					<div style="width: auto; text-align:center; display: inline-block;">
+						<label>(in seconds)</label>
+					</div>
+				</div>
+			</div>
+			<div id="action-board_parameters_bundle">
+				<label>Parameters</label>
+				<textarea id="action-board_parameters" placeholder="Insert here the parameters" name="text" rows="3"></textarea>
+			</div>
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
@@ -681,9 +712,11 @@ limitations under the License.
 				</div>
 			</div>
 			<div id="pkg_boardlist_bundle">
-				<label>Boards List</label>
 				<table id="pkg_tableboards" style="width: 100%"></table>
-				<!--<select id="pkg_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>-->
+				<!-- 
+				<label>Boards List</label>
+				<select id="pkg_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+				-->
 			</div>
 
 			<div class="large-12 columns" style="text-align:left; padding-left: 0px; padding-right: 0px; vertical-align: middle;">
@@ -736,7 +769,7 @@ limitations under the License.
 				</div>
 			</div>
 			<div id="lr_boardlist_bundle">
-				<label>Boards List</label>
+				<!--<label>Boards List</label>-->
 				<table id="lr_tableboards" style="width: 100%"></table>
 			</div>
 		</div>

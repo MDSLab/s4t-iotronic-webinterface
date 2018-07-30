@@ -190,6 +190,8 @@ function update_projects(select_id, output_id, callback){
 
 $('#create-project').click(function(){
 
+	loading_to_fix(); //TO BE FIXED !!!
+
 	data = {};
 
 	var name = document.getElementById("project_create_projectname").value;
@@ -226,6 +228,8 @@ $('#create-project').click(function(){
 
 
 $('#update-project').click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
 
 	data = {};
 
@@ -267,6 +271,8 @@ $('#update-project').click(function(){
 
 
 $("#unregister-project").click(function(){
+
+	loading_to_fix(); //TO BE FIXED !!!
 
 	var project_id = document.getElementById("unregister_projectlist").value;
 

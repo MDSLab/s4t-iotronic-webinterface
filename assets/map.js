@@ -18,8 +18,7 @@
 //WORKING VERSION WITH LEAFLET
 // ---------------------------------------------------------------------------------------------------------------------------------------------
 
-//var osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-var osmUrl='http://212.189.207.177/osm_tiles/{z}/{x}/{y}.png';
+var osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 //var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
 //var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});
 var osm = new L.TileLayer(osmUrl, {});
@@ -31,8 +30,7 @@ map.addLayer(osm);
 
 //Copyright
 //L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-//L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-L.tileLayer('http://212.189.207.177/osm_tiles/{z}/{x}/{y}.png', {
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> - by <b>SmartME.io</b>'
 }).addTo(map);
 
@@ -41,8 +39,7 @@ L.tileLayer('http://212.189.207.177/osm_tiles/{z}/{x}/{y}.png', {
 var info_map = L.map('info-map', {scrollWheelZoom:false}).setView([38.20523,15.55972], 12);
 info_map.addLayer(osm);
 //L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-//L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-L.tileLayer('http://212.189.207.177/osm_tiles/{z}/{x}/{y}.png', {
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> - by <b>SmartME.io</b>'
 }).addTo(info_map);
 
@@ -145,8 +142,67 @@ function refresh_map(){
 				'Altitude: <b>'+altitude[sel]+'</b><br /><br />';
 
 
-			global_popup = open_popup + default_popup +"</div>";
-			var popup = L.popup().setLatLng(e.latlng).setContent(global_popup).openOn(map);
+			//This section was disabled by default but now it starts to be useful in future scenarios
+			//*******************************************************************************************
+			if(typeof endpoints === "undefined"){
+				global_popup = open_popup + default_popup +"</div>";
+				var popup = L.popup().setLatLng(e.latlng).setContent(global_popup).openOn(map);
+			}
+			else if(endpoints[0]["ckan"]){
+				var close_popup = '</table></div>';
+
+			        var array_promise = [];
+			        array_promise.push(new Promise(function(resolve){
+		        	        getDatastores(uuids[sel], resolve);
+			        }));
+
+				var timestamp = "";
+				//var ckan_popup_content = "<center><b>CKAN Metrics</b></center>"+
+				var ckan_popup_content = '<center><b>CKAN Metrics</b> <a href="'+ckan_params["metric_base_url"]+uuids[sel]+'" target="_blank">Dataset</a></center>'+
+								'<table class="table_popup">';
+			        Promise.all(array_promise).then(values => {
+					//console.log(values);
+					var global_popup = "";
+					if(values[0] == "ERROR No dataset")
+						global_popup = open_popup + default_popup +"</div>";
+					else{
+
+				                data = values[0];
+
+				                for(i=0;i<data.length;i++){
+
+							if(i==0) ckan_popup_content += '<center><b>'+data[i].timestamp+'</b></center><br />';
+
+                				        if(data[i].metric == "Temperature"){
+		        	        	                ckan_popup_content += '<tr><td><img src="'+site_url+'uploads/thermometer.png">'+"</td><td>Temperature</td><td><b>"+round(data[i].value, 2)+" °C</b></td></tr>";
+                			        	}
+			                	        else if(data[i].metric == "Brightness"){
+        	        		        	        ckan_popup_content += '<tr><td><img src="'+site_url+'uploads/lamp.png">'+"</td><td>Brightness</td><td><b>"+round(data[i].value, 2)+" lux</b></td></tr>";
+				                        }
+        	        			        else if(data[i].metric == "Humidity"){
+			                	                ckan_popup_content += '<tr><td><img src="'+site_url+'uploads/noise.png">'+"</td><td>Noise</td><td><b>"+round(data[i].value, 2)+" amp</b></td></tr>";
+	                			        }
+				                        else if(data[i].metric == "Pressure"){
+        	        			                ckan_popup_content += '<tr><td><img src="'+site_url+'uploads/water.png">'+"</td><td>Humidity</td><td><b>"+round(data[i].value, 2)+" %</b></td></tr>";
+			        	                }
+	                			        else if(data[i].metric == "Gas"){
+			                        	        ckan_popup_content += '<tr><td><img src="'+site_url+'uploads/flame.gif">'+"</td><td>CO</td><td><b>"+round(data[i].value, 2)+" ppm</b></td></tr>";
+				                        }
+        	        			        else if(data[i].metric == "Noise"){
+                	        	        		ckan_popup_content += '<tr><td><img src="'+site_url+'uploads/pressure.png">'+"</td><td>Pressure</td><td><b>"+round(data[i].value, 2)+" hPa</b></td></tr>";
+			        	                }
+		                		}
+						global_popup = open_popup + default_popup + ckan_popup_content + close_popup;
+					}
+					var popup = L.popup().setLatLng(e.latlng).setContent(global_popup).openOn(map);
+				});
+			}
+			else{
+				//Start from here to customize your popup !
+				global_popup = open_popup + default_popup +"</div>";
+				var popup = L.popup().setLatLng(e.latlng).setContent(global_popup).openOn(map);
+			}
+			//*******************************************************************************************
 		});
 
 		markers.addLayer(marker);
@@ -196,8 +252,72 @@ function boardinfo_map(board_status, lat, lng){
 			'Longitude: <b>'+longitude[sel]+'</b><br />' +
 			'Altitude: <b>'+altitude[sel]+'</b><br /><br />';
 
-		global_popup = open_popup + default_popup +"</div>";
-		var boardinfo_popup = L.popup().setLatLng(e.latlng).setContent(global_popup).openOn(info_map);
+
+		//This section was disabled by default but now it starts to be useful in future scenarios
+		//*******************************************************************************************
+		if(typeof endpoints === "undefined"){
+			global_popup = open_popup + default_popup +"</div>";
+			var boardinfo_popup = L.popup().setLatLng(e.latlng).setContent(global_popup).openOn(info_map);
+		}
+		else if(endpoints[0]["ckan"]){
+			var close_popup = '</table></div>';
+
+			var array_promise = [];
+			array_promise.push(new Promise(function(resolve){
+				getDatastores(uuids[sel], resolve);
+			}));
+
+			var timestamp = "";
+			//var ckan_popup_content = "<center><b>CKAN Metrics</b></center>"+
+			var ckan_popup_content = '<center><b>CKAN Metrics</b> <a href="'+ckan_params["metric_base_url"]+uuids[sel]+'" target="_blank">Dataset</a></center>'+
+				'<table class="table_popup">';
+
+			Promise.all(array_promise).then(values => {
+				//console.log(values);
+				var global_popup = "";
+				if(values[0] == "ERROR No dataset")
+					global_popup = open_popup + default_popup +"</div>";
+				else{
+
+					data = values[0];
+
+					for(i=0;i<data.length;i++){
+
+						if(i==0) ckan_popup_content += '<center><b>'+data[i].timestamp+'</b></center><br />';
+	
+						if(data[i].metric == "Temperature"){
+							ckan_popup_content += '<tr><td><img src="'+site_url+'uploads/thermometer.png">'+"</td><td>Temperature</td><td><b>"+round(data[i].value, 2)+" °C</b></td></tr>";
+						}
+						else if(data[i].metric == "Brightness"){
+							ckan_popup_content += '<tr><td><img src="'+site_url+'uploads/lamp.png">'+"</td><td>Brightness</td><td><b>"+round(data[i].value, 2)+" lux</b></td></tr>";
+						}
+						else if(data[i].metric == "Humidity"){
+							ckan_popup_content += '<tr><td><img src="'+site_url+'uploads/noise.png">'+"</td><td>Noise</td><td><b>"+round(data[i].value, 2)+" amp</b></td></tr>";
+						}
+						else if(data[i].metric == "Pressure"){
+							ckan_popup_content += '<tr><td><img src="'+site_url+'uploads/water.png">'+"</td><td>Humidity</td><td><b>"+round(data[i].value, 2)+" %</b></td></tr>";
+						}
+						else if(data[i].metric == "Gas"){
+							ckan_popup_content += '<tr><td><img src="'+site_url+'uploads/flame.gif">'+"</td><td>CO</td><td><b>"+round(data[i].value, 2)+" ppm</b></td></tr>";
+						}
+						else if(data[i].metric == "Noise"){
+							ckan_popup_content += '<tr><td><img src="'+site_url+'uploads/pressure.png">'+"</td><td>Pressure</td><td><b>"+round(data[i].value, 2)+" hPa</b></td></tr>";
+						}
+					}
+					global_popup = open_popup + default_popup + ckan_popup_content + close_popup;
+				}
+				//var popup = L.popup().setLatLng(e.latlng).setContent(global_popup).openOn(map);
+				var boardinfo_popup = L.popup().setLatLng(e.latlng).setContent(global_popup).openOn(info_map);
+			});
+			//var boardinfo_popup = L.popup().setLatLng(e.latlng).setContent(markerOnClick(e)).openOn(info_map);
+			//var boardinfo_popup = L.popup().setLatLng(e.latlng).setContent(markerOnMouseOver(e)).openOn(info_map);
+		}
+		else{
+			//Start from here to customize your popup !
+			global_popup = open_popup + default_popup +"</div>";
+			var boardinfo_popup = L.popup().setLatLng(e.latlng).setContent(global_popup).openOn(info_map);
+		}
+		//*******************************************************************************************
 	});
 	boardinfo_markers.addLayer(boardinfo_marker);
 	info_map.addLayer(boardinfo_markers);
