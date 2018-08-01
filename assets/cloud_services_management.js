@@ -50,17 +50,6 @@ function get_protocols_list(select_id){
 }
 
 
-function compose_service_shortcut(protocol, port){
-	var shortcut = "";
-	
-	if(protocol == "HTTP") shortcut = "http://"+wstun_ip+":"+port;
-	else if(protocol == "MQTT") shortcut = 'mosquitto_sub -t "#" -h '+wstun_ip+' -p '+port;
-	else if(protocol == "SSH") shortcut = "ssh -p "+port+" root@"+wstun_ip;
-
-	return shortcut;
-}
-
-
 function clean_service_fields(form_name, flag_output){
 	document.getElementById(form_name+"_service_name").value = '';
 	document.getElementById(form_name+"_port").value = '';

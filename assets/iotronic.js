@@ -72,6 +72,19 @@ function verify_boardslist_uniformity(list, field_to_check){
 	return value;
 }
 
+
+function compose_service_shortcut(protocol, port){
+	var shortcut = "";
+
+	if(protocol == "HTTP") shortcut = "http://"+wstun_ip+":"+port;
+	else if(protocol == "MQTT") shortcut = 'mosquitto_sub -t "#" -h '+wstun_ip+' -p '+port;
+	else if(protocol == "SSH") shortcut = "ssh -p "+port+" root@"+wstun_ip;
+
+	return shortcut;
+}
+
+
+
 $('input[name="email"]').blur(function () {
 	//console.log("BLUR");
 	var email = $(this).val();

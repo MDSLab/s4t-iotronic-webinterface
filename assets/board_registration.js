@@ -1276,7 +1276,28 @@ function populate_board_info(board_id){
 						$("#info_tableservices").find("thead").remove();
 						$("#info_tableservices").find("tbody").remove();
 
-						create_table_from_json("info_tableservices", services, null);
+						//Without extra data
+						//create_table_from_json("info_tableservices", services, null);
+
+
+						//With extra data
+						//********************************************************************************************
+
+						var fields_to_show = [];
+						var extra_fields = ["shortcut"];
+
+						for(key in services[0]) fields_to_show.push(key);
+
+						for(var i=0; i<extra_fields.length; i++){
+							fields_to_show.push(extra_fields[i]);
+						
+							for(var j=0; j<services.length; j++){
+								var shortcut = compose_service_shortcut(services[j]["protocol"], services[j]["public_port"]);
+								services[j][extra_fields[i]] = shortcut;
+							}
+						}
+						create_table_from_json("info_tableservices", services, fields_to_show);
+						//********************************************************************************************
 					}
 				}
 				else{
