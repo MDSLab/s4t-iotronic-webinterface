@@ -958,9 +958,9 @@ $('#action-board').click(function(){
 			data.parameters = "";
 
 		else if(action == "reboot" || action == "restart_lr")
-			data.parameters = {"time": document.getElementById("#action-board-time").value};
+			data.parameters = {"time": document.getElementById("action-board-time").value};
 		else
-			data.parameters = {"time": document.getElementById("#action-board_parameters").value};
+			data.parameters = {"time": document.getElementById("action-board_parameters").value};
 
 		/*
 		data = {};

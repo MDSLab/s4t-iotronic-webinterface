@@ -54,8 +54,8 @@ $config['load_commands'] = (
 
 //ENDPOINTS
 $endpoint['ckan'] = FALSE; //TRUE;
-$endpoint['mysql'] = TRUE;
-$endpoint['mongo'] = TRUE;
+$endpoint['mysql'] = FALSE;
+$endpoint['mongo'] = FALSE;
 $config['endpoints'] = $endpoint;
 
 
@@ -65,7 +65,7 @@ $config['polling_delay'] = 2000;
 $config['selectbox_size'] = 9;
 $config['show_string_or_json_lists'] = TRUE;
 
-$config['dash_version'] = '2.2.0-6';
+$config['dash_version'] = '2.2.0-7';
 $config['iotronic_version'] = '2.2.0-7';
 $config['lr_version'] = '2.2.0-10';
 $config['wstun_version'] = '1.0.7-1';
