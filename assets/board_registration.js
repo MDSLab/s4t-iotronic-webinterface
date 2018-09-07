@@ -23,6 +23,14 @@ if(security_method == "certificate"){
 }
 
 
+document.getElementById('board_create_extrafile').addEventListener('change', readFile, false);
+document.getElementById('board_create_extrafile').element_id = "board_create_extra";
+
+document.getElementById('board_update_extrafile').addEventListener('change', readFile, false);
+document.getElementById('board_update_extrafile').element_id = "board_update_extra";
+
+
+
 $('[data-reveal-id="modal-show-boards"]').on('click',
 	function() {
 
@@ -51,6 +59,9 @@ $('[data-reveal-id="modal-show-boards"]').on('click',
 
 $('[data-reveal-id="modal-register-new-board"]').on('click',
 	function(){
+
+
+		$('#board_create_extrafile').val('');
 
 		$('#board_create_notify_section').hide();
 		$('#board_create_refresh_coordinates').hide();
@@ -209,6 +220,9 @@ $('#board_generate_uuid').click(function(){
 //----------------------------------------------------------------------------------------
 $('[data-reveal-id="modal-update-board"]').on('click',
 	function(){
+
+		$('#board_update_extrafile').val('');
+
 		document.getElementById("board_update-output").innerHTML ='';
 		$('#board_update_data_section').hide();
 		update_boardsv2('update_boardlist');
@@ -259,6 +273,14 @@ $('[id="board_update_mobile_enabled"]').on('change',
 	}
 );
 //----------------------------------------------------------------------------------------
+
+
+$('[id="pkg_manager"]').on('change',
+	function(){
+		var default_pkg_man = $('#pkg_manager option:selected').val();
+		refresh_filtered_tableboards("pkg_tableboards", "remove", "C", default_boardlist_columns, default_pkg_man);
+	}
+);
 
 
 $('[id="update_boardlist"]').on('change',
@@ -1124,6 +1146,36 @@ $('#action-board').click(function(){
 });
 
 
+
+function refresh_tableboards_services(table_id, columns) {
+
+	fields_to_show = columns;
+	var project_id = getCookie("selected_prj");
+
+	$.ajax({
+		url: s4t_api_url + "/boards?project="+project_id,
+		type: 'GET',
+		dataType: 'json',
+		headers: ajax_headers,
+
+		success: function (response) {
+
+			parsed_response = parse_json_fields(fields_to_show, response.message, false);
+			parsed_response = parsed_response.sort(SortByLabel);
+
+			for (var i=0;i<parsed_response.length;i++){
+				parsed_response[i].label = '<a data-reveal-id="modal-board-services-list" id="'+parsed_response[i].board_id+'" onclick=populate_board_servicesinfo(this)>'+parsed_response[i].label+'</a>';
+			}
+
+			create_table_from_json(table_id, parsed_response, fields_to_show, null);
+		},
+		error: function (response) {
+			verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+		}
+	});
+}
+
+
 function refresh_tableboards(table_id, action, board_status, columns) {
 	//$('# + select_id).empty();	
 	var project_id = getCookie("selected_prj");
@@ -1142,7 +1194,6 @@ function refresh_tableboards(table_id, action, board_status, columns) {
 				fields_to_show = columns;
 			else
 				fields_to_show = ["label", "board_id", "status"];
-
 
 			if(board_status != null && board_status != undefined){
 				var filtered_boards = [];
@@ -1164,6 +1215,78 @@ function refresh_tableboards(table_id, action, board_status, columns) {
 		}
 	});
 }
+
+
+function refresh_filtered_tableboards(table_id, action, board_status, columns, pkg_man) {
+	var project_id = getCookie("selected_prj");
+
+	$.ajax({
+		//url: s4t_api_url + "/boards/",
+		url: s4t_api_url + "/boards?project="+project_id,
+		type: 'GET',
+		dataType: 'json',
+		headers: ajax_headers,
+
+		success: function (response) {
+			//var fields_to_show = ["label", "board_id", "status"];
+			var fields_to_show = [];
+			var filtered_boards = [];
+
+			if(columns)
+				fields_to_show = columns;
+			else
+				fields_to_show = ["label", "board_id", "status"];
+
+			if(board_status != null && board_status != undefined){
+/*
+				if(pkg_man != "apt" && pkg_man != "opkg"){
+					filtered_boards = response.message;
+				}
+				else{
+*/
+					for(var i=0; i<response.message.length; i++) {
+						if ((board_status && response.message[i].status == board_status) || !board_status) {
+							if(pkg_man == "apt" && response.message[i].distro == "debian"){
+								filtered_boards.push(response.message[i]);
+							}
+							else if(pkg_man == "opkg" && response.message[i].distro == "openwrt"){
+								filtered_boards.push(response.message[i]);
+							}
+							else if(pkg_man != "apt" && pkg_man != "opkg"){
+								filtered_boards.push(response.message[i]);
+							}
+						}
+					}
+//				}
+			}
+			else {
+console.log(board_status);
+				if(pkg_man != "apt" && pkg_man != "opkg"){
+					filtered_boards = response.message;
+				}
+				else{
+					for(var i=0; i<response.message.length; i++) {
+						if(pkg_man == "apt" && response.message[i].distro == "debian"){
+							filtered_boards.push(response.message[i]);
+						}
+						else if(pkg_man == "opkg" && response.message[i].distro == "openwrt"){
+							filtered_boards.push(response.message[i]);
+						}
+					}
+				}
+			}
+
+			parsed_response = parse_json_fields(fields_to_show, filtered_boards, false);
+			parsed_response = parsed_response.sort(SortByLabel);
+			create_table_from_json(table_id, parsed_response, fields_to_show, action);
+		},
+		error: function (response) {
+			verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+		}
+	});
+}
+
+
 
 //OLD VERSION (see below...)
 /*
@@ -1227,6 +1350,8 @@ function populate_board_info(board_id){
 				//$('#info-lr_version').html('<b>Lightning-rod version: </b>'+info.lr_version);
 				$('#info-lr_version').html('<b>Lightning-rod version: </b>'+label_lr);
 
+				$('#info_extras_json').text(JSON.stringify(info.extra, undefined, 4));
+
 				$('#info-user').html('<b>User: </b>'+info.user);
 				$('#info-project').html('<b>Project: </b>'+info.project);
 				$('#info-model').html('<b>Model: </b>'+info.model);
@@ -1264,6 +1389,14 @@ function populate_board_info(board_id){
 				if(cloud_services_flag){
 
 					$('[name="services_text"]').text("Exposed on: "+wstun_ip);
+
+					//Get the last table type (if DataTable or not) and clean the table with the correct methodology
+					var check_datatable = $.fn.dataTable.isDataTable("#info_tableservices");
+					if(check_datatable == true)
+						$('#info_tableservices').DataTable().destroy();
+					else
+						$('#info_tableservices').html("");
+
 
 					if(response.message.services.length == 0){
 						$('#info_tableservices').html('<tr><td style="text-align:center">No services</td></tr>');
@@ -1307,6 +1440,14 @@ function populate_board_info(board_id){
 
 				//Plugins
 				if(plugins_flag){
+
+					//Get the last table type (if DataTable or not) and clean the table with the correct methodology
+					var check_datatable = $.fn.dataTable.isDataTable("#info_tableplugins");
+					if(check_datatable == true)
+						$('#info_tableplugins').DataTable().destroy();
+					else
+						$('#info_tableplugins').html("");
+
 					if(response.message.plugins.length == 0){
 						$('#info_tableplugins').html('<tr><td style="text-align:center">No plugins</td></tr>');
 					}
@@ -1328,6 +1469,15 @@ function populate_board_info(board_id){
 
 				//Drivers
 				if(drivers_flag){
+
+					//Get the last table type (if DataTable or not) and clean the table with the correct methodology
+					var check_datatable = $.fn.dataTable.isDataTable("#info_tabledrivers");
+					if(check_datatable == true)
+						$('#info_tabledrivers').DataTable().destroy();
+					else
+						$('#info_tabledrivers').html("");
+
+
 					if(response.message.drivers.length == 0){
 						$('#info_tabledrivers').html('<tr><td style="text-align:center">No drivers</td></tr>');
 					}
@@ -1349,6 +1499,15 @@ function populate_board_info(board_id){
 
 				//Networks
 				if(networks_flag){
+
+					//Get the last table type (if DataTable or not) and clean the table with the correct methodology
+					var check_datatable = $.fn.dataTable.isDataTable("#info_tablenetworks");
+					if(check_datatable == true)
+						$('#info_tablenetworks').DataTable().destroy();
+					else
+						$('#info_tablenetworks').html("");
+
+
 					if(response.message.vnets.length == 0){
 						$('#info_tablenetworks').html('<tr><td style="text-align:center">No networks</td></tr>');
 					}
@@ -1403,11 +1562,18 @@ $('[data-reveal-id="modal-update-pkg-board"]').on('click',
 		for(var j=0; j<array_commands.length; j++)
 			$('#pkg_command').append('<option value="'+array_commands[j]+'">'+array_commands[j]+'</option>');
 
+
 		//OLD: select approach
 		//update_boardsv2('pkg_boardlist', 'C', true);
 
-		//NEW: table approach
-		refresh_tableboards("pkg_tableboards", "remove", "C", default_boardlist_columns);
+		//NEW: table approach without filtering by pkg_man
+		//refresh_tableboards("pkg_tableboards", "remove", "C", default_boardlist_columns);
+
+		//NEW: table approach with filering by pkg_man
+		//var default_pkg_man = $('#pkg_manager option:first-child')[0].value;
+		var default_pkg_man = $('#pkg_manager option:selected').val();
+		refresh_filtered_tableboards("pkg_tableboards", "remove", "C", default_boardlist_columns, default_pkg_man);
+
 	}
 );
 

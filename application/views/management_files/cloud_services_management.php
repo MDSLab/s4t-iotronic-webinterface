@@ -124,10 +124,11 @@ limitations under the License.
 				</div>
 			</div>
 			<div id="servicestatus_boardlist_bundle">
-				<label>Boards List</label>
 				<table id="servicestatus_tableboards" style="width: 100%"></table>
-
-				<!--<select id="servicestatus_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>-->
+				<!--
+				<label>Boards List</label>
+				<select id="servicestatus_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+				-->
 			</div>
 		</div>
 		<div class="row">
@@ -160,7 +161,7 @@ limitations under the License.
 	</fieldset>
 </div>
 
-
+<!--
 <div id="modal-board-services" class="reveal-modal small" data-reveal>
 	<section>
 		<h3>Show services on Board</h3>
@@ -176,5 +177,33 @@ limitations under the License.
 		</div>
 	</section>
 </div>
+-->
 
+<div id="modal-board-services" class="reveal-modal small" data-reveal>
+	<section>
+		<h3>Services on Board</h3>
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+		<div class="row">
+			<table id="show_boardservices_tableboards" style="width: 100%"></table>
+		</div>
+	</section>
+</div>
+
+
+<div id="modal-board-services-list" class="reveal-modal small" data-reveal>
+	<section>
+		<h3 name="info_text"></h3>
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+
+		<div style="margin-bottom: 20px;">
+			<table id="show_services_tableservices" style="width: 100%"></table>
+		</div>
+
+		<div class="row">
+			<div class="large-12 columns">
+				<button data-reveal-id="modal-board-services" class="custom_button">Previous</button>
+			</div>
+		</div>
+	</section>
+</div>
 

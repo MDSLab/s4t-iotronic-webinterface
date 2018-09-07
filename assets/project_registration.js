@@ -42,6 +42,10 @@ function get_projects_list(flag){
 					}
 				}
 			}
+
+			//Adding the ALL option to show all the boards in all the project
+			$("#select_project").append('<option value="all">ALL</option>');
+
 			
 			//console.log(default_prj_id);
 			if(project_id == undefined || flag){

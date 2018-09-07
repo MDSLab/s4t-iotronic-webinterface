@@ -56,9 +56,11 @@ limitations under the License.
 					</div>
 
 					<div id="logs_boardlist_bundle">
-						<label>Boards List</label>
 						<table id="logs_tableboards" style="width: 100%"></table>
-						<!--<select id="logs_boardlist" multiple="multiple" class="select_one" size="<?=$selectbox_size?>"></select>-->
+						<!--
+						<label>Boards List</label>
+						<select id="logs_boardlist" multiple="multiple" class="select_one" size="<?=$selectbox_size?>"></select>
+						-->
 					</div>
 				</div>
 
@@ -145,16 +147,27 @@ limitations under the License.
 			<textarea id="update_plugin_description" placeholder="Insert description" name="description" rows="3"></textarea>
 
 			<label>Plugin Parameters</label>
+			<input type="file" name="update_plugin_paramfile" id="update_plugin_paramfile" size="20" />
 			<textarea id="update_plugin_parameters" placeholder="Insert here the parameters (json format)" name="parameters" rows="5"></textarea>
 
 			<label>Code</label>
+			<input type="file" name="update_plugin_codefile" id="update_plugin_codefile" size="20" />
 			<textarea id="update_plugin_code" placeholder="Insert here the code" name="code" rows="15"></textarea>
 		</div>
 		<div class="row">
 			<div class="large-12 columns">
-				<button id="update_plugin" class="custom_button">
-					Update
-				</button>
+				<div style="text-align:center; display: block">
+					<div style="width: 45%; text-align:center; display: inline-block;">
+						<button id="back_show-plugins" class="custom_button" data-reveal-id="modal-show-plugins" style="float: none; display: inline-block;">
+							Previous
+						</button>
+					</div>
+					<div style="width: 45%; text-align:center; display: inline-block;">
+						<button id="update_plugin" class="custom_button" style="float: none; display: inline-block;">
+							Update
+						</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -203,6 +216,7 @@ limitations under the License.
 			<textarea id="create_plugin_description" placeholder="Insert description" name="text" rows="3"></textarea>
 
 			<label>Plugin Parameters</label>
+			<input type="file" name="plugin_paramfile" id="plugin_paramfile" size="20" />
 			<textarea id="create_plugin_parameters" placeholder="Insert here the parameters (json format)" name="text" rows="5"></textarea>
 
 			<label>Code</label>
@@ -395,9 +409,11 @@ limitations under the License.
 			</div>
 
 			<div id="inject_boardlist_bundle">
-				<label>Boards List</label>
 				<table id="inject_tableboards" style="width: 100%"></table>
-				<!--<select id="inject_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>-->
+				<!--
+				<label>Boards List</label>
+				<select id="inject_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+				-->
 			</div>
 
 			<div style="text-align:center;">
@@ -479,10 +495,11 @@ limitations under the License.
 			</div>
 
 			<div id="startstop_boardlist_bundle">
-				<label>Boards List</label>
 				<table id="startstop_tableboards" style="width: 100%"></table>
-
-				<!-- <select id="startstop_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>-->
+				<!--
+				<label>Boards List</label>
+				<select id="startstop_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+				-->
 			</div>
 
 			<label>Parameters [OPTIONAL]</label>
@@ -653,9 +670,11 @@ limitations under the License.
 			</div>
 
 			<div id="removeplugin_boardlist_bundle">
-				<label>Boards List</label>
 				<table id="removeplugin_tableboards" style="width: 100%"></table>
-				<!--<select id="removeplugin_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>-->
+				<!--
+				<label>Boards List</label>
+				<select id="removeplugin_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
+				-->
 			</div>
 			<div class="row">
 				<div class="large-12 columns">

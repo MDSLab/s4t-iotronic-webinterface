@@ -105,12 +105,20 @@ $('[data-reveal-id="modal-status-service"]').on('click',
 
 $('[data-reveal-id="modal-board-services"]').on('click',
 	function(){
+
 		$("#modal-board-services").addClass("small");
 		var id = this.getAttribute("data-reveal-id");
 		$('#'+id).find('[name=services_text]').text("Exposed on: "+wstun_ip);
 
+		//OLD: select approach
+		/*
 		$('#show_boardservices_section').hide();
 		update_boardsv2('services_boardlist');
+		*/
+
+		//NEW: table approach
+		//refresh_tableboards("show_boardservices_tableboards", null, null, default_boardlist_columns);
+		refresh_tableboards_services("show_boardservices_tableboards", default_boardlist_columns);
 	}
 );
 
@@ -429,6 +437,80 @@ $('.status_service').click(function(){
 });
 
 
+
+
+function populate_board_servicesinfo(a){
+	var board_id = a.getAttribute("id");
+	var reveal_id = a.getAttribute("data-reveal-id");
+
+	var targetModal = $('#'+reveal_id);
+
+	targetModal.find('[name=info_text]').text("Services on board "+a.innerHTML);
+
+	$.ajax({
+		url: s4t_api_url+"/boards/"+board_id+"/services",
+		type: "GET",
+		dataType: 'json',
+		headers: ajax_headers,
+	
+		success: function(response){
+	
+			document.getElementById('loading_bar').style.visibility='hidden';
+
+			//Get the last table type (if DataTable or not) and clean the table with the correct methodology
+			var check_datatable = $.fn.dataTable.isDataTable("#show_services_tableservices");
+			if(check_datatable == true)
+				$('#show_services_tableservices').DataTable().destroy();
+			else
+				$('#show_services_tableservices').html("");
+
+			if(response.message.length ==0){
+				targetModal.addClass("small");
+				$("#show_services_tableservices").html('<tr><td style="text-align:center">No services</td></tr>');
+			}
+			else{
+
+				targetModal.removeClass("small");
+
+				//Without extra data
+				//********************************************************************************************
+				/*
+				 var fields_to_show = ["service_name", "public_port", "local_port", "protocol", "last_update"];
+				 parsed_response = parse_json_fields(fields_to_show, response.message, false);
+				 create_table_from_json("show_boardservices_table", parsed_response, fields_to_show);
+				 */
+				//********************************************************************************************
+	
+	
+				//With extra data
+				//********************************************************************************************
+				var fields_to_show = ["service_name", "public_port", "local_port", "protocol", "last_update"];
+				parsed_response = parse_json_fields(fields_to_show, response.message, false);
+	
+				var extra_fields = ["shortcut"];
+	
+				for(var i=0; i<extra_fields.length; i++){
+					fields_to_show.push(extra_fields[i]);
+	
+					for(var j=0; j<parsed_response.length; j++){
+						var shortcut = compose_service_shortcut(parsed_response[j]["protocol"], parsed_response[j]["public_port"]);
+						parsed_response[j][extra_fields[i]] = shortcut;
+					}
+				}
+				create_table_from_json("show_services_tableservices", parsed_response, fields_to_show);
+				//********************************************************************************************
+			}
+		},
+		error: function(response){
+			document.getElementById('loading_bar').style.visibility='hidden';
+			verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+			console.log(response.responseJSON.message);
+		}
+	});
+}
+
+//TO BE REMOVED / ADAPTED !!!!
+/*
 $('[id="services_boardlist"]').on('change',
 	function(){
 
@@ -445,6 +527,13 @@ $('[id="services_boardlist"]').on('change',
 			$("#modal-board-services").removeClass("small");
 			$("#show_boardservices_section").show();
 
+			//Get the last table type (if DataTable or not) and clean the table with the correct methodology
+			var check_datatable = $.fn.dataTable.isDataTable("#show_boardservices_table");
+			if(check_datatable == true)
+				$('#show_boardservices_table').DataTable().destroy();
+			else
+				$('#show_boardservices_table').html("");
+
 			$.ajax({
 				url: s4t_api_url+"/boards/"+show_board_services+"/services",
 				type: "GET",
@@ -452,6 +541,7 @@ $('[id="services_boardlist"]').on('change',
 				headers: ajax_headers,
 
 				success: function(response){
+
 					document.getElementById('loading_bar').style.visibility='hidden';
 					if(response.message.length ==0){
 						$("#show_boardservices_table").html('<tr><td style="text-align:center">No services</td></tr>');
@@ -459,11 +549,9 @@ $('[id="services_boardlist"]').on('change',
 					else{
 						//Without extra data
 						//********************************************************************************************
-						/*
-						var fields_to_show = ["service_name", "public_port", "local_port", "protocol", "last_update"];
-						parsed_response = parse_json_fields(fields_to_show, response.message, false);
-						create_table_from_json("show_boardservices_table", parsed_response, fields_to_show);
-						*/
+						//var fields_to_show = ["service_name", "public_port", "local_port", "protocol", "last_update"];
+						//parsed_response = parse_json_fields(fields_to_show, response.message, false);
+						//create_table_from_json("show_boardservices_table", parsed_response, fields_to_show);
 						//********************************************************************************************
 
 
@@ -495,6 +583,7 @@ $('[id="services_boardlist"]').on('change',
 		}
 	}
 );
+*/
 
 
 function update_services(select_id){

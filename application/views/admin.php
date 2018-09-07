@@ -32,6 +32,7 @@ limitations under the License.
 	//<?php echo 'var result = "'.$this -> session -> userdata('result').'";'; ?>
 	
 	site_url = "<?= $this -> config -> site_url()?>";
+	map_url = "<?= $this -> config -> item('map_url') ?>";
 	s4t_api_url = "<?= $this -> config -> item('s4t_api_url') ?>";
 	s4t_iotronic_folder = "<?= $this -> config -> item('s4t_iotronic_folder') ?>";
 
@@ -61,6 +62,7 @@ limitations under the License.
 			}
 		}
 	}
+
 </script>
 
 

@@ -41,6 +41,8 @@ limitations under the License.
 					<? if ($this -> config -> item('load_vfs_management')): ?>
 					<li><a href="#" onclick='hideall_except("info-networks")'>Networks</a></li>
 					<? endif ?>
+
+					<li><a href="#" onclick='hideall_except("info-extras")'>Extra Info</a></li>
 				</ul>
 			</div>
 		</td>
@@ -145,6 +147,9 @@ limitations under the License.
 						<h4><b>Networks</b></h4>
 						<table id="info_tablenetworks" style="width: 100%"></table>
 					</div>
+				</div>
+				<div id="info-extras">
+					<textarea id="info_extras_json" placeholder="" name="" rows="20" readonly></textarea>
 				</div>
 			</div>
 		</td>
@@ -365,6 +370,7 @@ limitations under the License.
 
 			<label>Extra user defined data (json)</label>
 			<!--<input id="board_create_extra" type="text" placeholder="Extra" value="" /> -->
+			<input type="file" name="board_create_extrafile" id="board_create_extrafile" size="20" />
 			<textarea id="board_create_extra" placeholder="" name="text" rows="3"></textarea>
 
 			<table class="table_info">
@@ -548,6 +554,7 @@ limitations under the License.
 				</select>
 
 				<label>Extra user defined data (json)</label>
+				<input type="file" name="board_update_extrafile" id="board_update_extrafile" size="20" />
 				<textarea id="board_update_extra" placeholder="" name="text" rows="3"></textarea>
 
 				<table class="table_info">
@@ -701,7 +708,7 @@ limitations under the License.
 		<h3>Package Management</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<div class="row">
-
+			<!--
 			<div style="text-align:center;">
 				<div style="width: 49%; margin-top: 5px; text-align:center; vertical-align: top; display: inline-block;">
 					<label>Enable / Disable per project action</label>
@@ -713,12 +720,8 @@ limitations under the License.
 			</div>
 			<div id="pkg_boardlist_bundle">
 				<table id="pkg_tableboards" style="width: 100%"></table>
-				<!-- 
-				<label>Boards List</label>
-				<select id="pkg_boardlist" multiple="multiple" size="<?=$selectbox_size?>"></select>
-				-->
 			</div>
-
+			-->
 			<div class="large-12 columns" style="text-align:left; padding-left: 0px; padding-right: 0px; vertical-align: middle;">
 				<div style="width: 49%; margin-top: 0px; text-align:center; vertical-align: middle; display: inline-block;">
 					<label>Package Manager</label>
@@ -737,6 +740,18 @@ limitations under the License.
 			<input id="pkg_packages" type="text" placeholder="Insert here the packages" name="name" value="" />
 			<!--<textarea id="pkg_packages" placeholder="Insert here the packages" name="text" rows="3"></textarea>-->
 			
+			<div style="text-align:center;">
+				<div style="width: 49%; margin-top: 5px; text-align:center; vertical-align: top; display: inline-block;">
+					<label>Enable / Disable per project action</label>
+				</div>
+				<div class="switch round small" style="margin-bottom: 0px; width: 15%; text-align:center; display: inline-block;">
+					<input id="pkg_project" class="flag_project" type="checkbox" />
+					<label for="pkg_project"></label>
+				</div>
+			</div>
+			<div id="pkg_boardlist_bundle">
+				<table id="pkg_tableboards" style="width: 100%"></table>
+			</div>
 		</div>
 		<div class="row">
 			<div class="large-12 columns">

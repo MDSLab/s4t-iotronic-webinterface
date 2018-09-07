@@ -76,7 +76,9 @@ function verify_boardslist_uniformity(list, field_to_check){
 function compose_service_shortcut(protocol, port){
 	var shortcut = "";
 
-	if(protocol == "HTTP") shortcut = "http://"+wstun_ip+":"+port;
+	//if(protocol == "HTTP") shortcut = "http://"+wstun_ip+":"+port;
+	if(protocol == "HTTP") shortcut = '<a href="http://'+wstun_ip+':'+port+'" target="_blank">http://'+wstun_ip+':'+port+'</a>';
+	else if(protocol == "HTTPS") shortcut = '<a href="https://'+wstun_ip+':'+port+'" target="_blank">https://'+wstun_ip+':'+port+'</a>';
 	else if(protocol == "MQTT") shortcut = 'mosquitto_sub -t "#" -h '+wstun_ip+' -p '+port;
 	else if(protocol == "SSH") shortcut = "ssh -p "+port+" root@"+wstun_ip;
 
@@ -135,10 +137,6 @@ function SortByType(x,y) {
 
 function SortByVlanName(x,y) {
 	return ((x.vlan_name == y.vlan_name) ? 0 : ((x.vlan_name > y.vlan_name) ? 1 : -1 ));
-}
-
-function SortByUsername(x,y) {
-	return ((x.username == y.username) ? 0 : ((x.username > y.username) ? 1 : -1 ));
 }
 
 function SortByTimestamp(x,y) {
@@ -837,6 +835,15 @@ function get_selected_rows_from_table(table_id, checkboxes_id_like){
 //Refresh boards list on click at any modal and button
 $('[data-reveal-id^="modal"]').on('click',
         function(){
+
+		//Set scrolling capabilities to each modal once it is clicked
+		var reveal_id = this.getAttribute("data-reveal-id");
+		$('#'+reveal_id).css("overflow-y", "scroll");
+		$('#'+reveal_id).css("max-height", "80%");
+		$('#'+reveal_id).css("margin-top", "50px");
+		$('#'+reveal_id).css("margin-bottom", "50px");
+
+
 		last_valid_selection = null;
 		refresh_lists();
         }

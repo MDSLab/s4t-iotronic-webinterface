@@ -29,7 +29,7 @@ $('[data-reveal-id="modal-show-plugins"]').on('click',
 
 			success: function(response){
 				response.message = response.message.sort(SortByName);
-
+console.log(response.message);
 				//var fields_to_show = ["id", "name", "category", "version", "type_id", "tag_id", "updated_at", "created_at"];
 
 				parsed_response = customize_plugin_table(fields_to_show, response.message, "modal-modify-plugin");
@@ -126,7 +126,12 @@ function populate_plugin_info(a){
 	var state = "";
 	//console.log(reveal_id);
 	if(reveal_id.indexOf("read") > -1) state = "Info";
-	else if(reveal_id.indexOf("modify") > -1) state = "Update";
+	else if(reveal_id.indexOf("modify") > -1) {
+		state = "Update";
+
+		$('#update_plugin_codefile').val('');
+		$('#update_plugin_paramfile').val('');
+	}
 	else if(reveal_id.indexOf("tag") > -1) state = "Tag";
 
 	//Clean the output fieldset
@@ -465,10 +470,10 @@ function clean_plugin_fields(form_name, flag_output){
 $('[data-reveal-id="modal-create-plugin"]').on('click',
 	function() {
 		$('#plugin_userfile').val('');
+		$('#plugin_paramfile').val('');
 		clean_plugin_fields("create_plugin", true);
 	}
 );
-
 
 $('[data-reveal-id="modal-changetag-plugin"]').on('click',
 	function() {
@@ -737,13 +742,19 @@ $('#create_plugin').click(function(){
 	else if(plugin_category == ""){ alert("Insert category!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(plugin_type == ""){ alert("Insert type!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(plugin_description == ""){ alert("Insert description!"); document.getElementById('loading_bar').style.visibility='hidden';}
-	else if(plugin_parameters == ""){ alert("Insert parameters (json format)!"); document.getElementById('loading_bar').style.visibility='hidden';}
+	//else if(plugin_parameters == ""){ alert("Insert parameters (json format)!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(plugin_code == ""){ alert("Insert code!"); document.getElementById('loading_bar').style.visibility='hidden';}
 
 	else{
 		data.name = plugin_name;
 		data.category = plugin_category;
-		data.parameters = plugin_parameters;
+
+		//data.parameters = plugin_parameters;
+		if(plugin_parameters == "")
+			data.parameters = "{}";
+		else
+			data.parameters = plugin_parameters;
+
 		data.code = plugin_code;
 		data.version = plugin_version;
 		data.type = plugin_type;
@@ -914,7 +925,7 @@ $('#update_plugin').click(function(){
 	else if(plugin_version == ""){ alert("Insert plugin version!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(array_version.length != 3) { alert("Insert correct version (example: 1.2.3)!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(plugin_description == ""){ alert("Insert description!"); document.getElementById('loading_bar').style.visibility='hidden';}
-	else if(plugin_parameters == ""){ alert("Insert parameters (json format)!"); document.getElementById('loading_bar').style.visibility='hidden';}
+	//else if(plugin_parameters == ""){ alert("Insert parameters (json format)!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(plugin_code == ""){ alert("Insert code!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	//else if(!flag_version) { alert("Insert a version greater than the actual "+plugin_version); document.getElementById('loading_bar').style.visibility='hidden';}
 
@@ -966,14 +977,26 @@ $('#update_plugin').click(function(){
 	if(flag_action){
 		//PATCH
 		if(post_or_patch){
-			data.defaults = plugin_parameters;
+			//data.defaults = plugin_parameters;
+
+			if(plugin_parameters == "")
+				data.defaults = "{}";
+			else
+				data.defaults = plugin_parameters;
+
 			data.tag = 2;
 			type = 'PATCH';
 			url = s4t_api_url+"/plugins/"+plugin_id;
 		}
 		//POST
 		else{
-			data.parameters = plugin_parameters;
+			//data.parameters = plugin_parameters;
+			if(plugin_parameters == "")
+				data.parameters = "{}";
+			else
+				data.parameters = plugin_parameters;
+
+
 			data.category = plugin_category;
 			data.type = plugin_type;
 			type = 'POST';
@@ -1008,8 +1031,20 @@ $('#update_plugin').click(function(){
 });
 
 
+//Create section
 document.getElementById('plugin_userfile').addEventListener('change', readFile, false);
 document.getElementById('plugin_userfile').element_id = "create_plugin_code";
+
+document.getElementById('plugin_paramfile').addEventListener('change', readFile, false);
+document.getElementById('plugin_paramfile').element_id = "create_plugin_parameters";
+
+
+//Update section
+document.getElementById('update_plugin_codefile').addEventListener('change', readFile, false);
+document.getElementById('update_plugin_codefile').element_id = "update_plugin_code";
+
+document.getElementById('update_plugin_paramfile').addEventListener('change', readFile, false);
+document.getElementById('update_plugin_paramfile').element_id = "update_plugin_parameters";
 
 
 $('#inject_plugin').click(function(){
