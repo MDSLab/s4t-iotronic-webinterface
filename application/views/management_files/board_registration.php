@@ -390,17 +390,17 @@ limitations under the License.
 				</tr>
 			</table>
 
-			<label>Notify</label>
+			<label>Enable email notification (connection status)</label>
 			<select id="board_create_notify_enabled">
 				<option value="false">False</option>
 				<option value="true">True</option>
 			</select>
 
 			<div id="board_create_notify_section">
-				<label>Notify Rate (in sec.)</label>
+				<label>Send Rate (in sec.)</label>
 				<input id="board_create_notify_rate" type="number" min="10" max="6000" step="5" value="600"/>
 
-				<label>Notify Retry</label>
+				<label>Send Retry (number of emails</label>
 				<input id="board_create_notify_retry" type="number" min="1" max="5" step="1" value="3"/>
 			</div>
 
@@ -574,17 +574,17 @@ limitations under the License.
 					</tr>
 				</table>
 
-				<label>Notify</label>
+				<label>Enable email notification (connection status)</label>
 				<select id="board_update_notify_enabled">
 					<option value="false">False</option>
 					<option value="true">True</option>
 				</select>
 
 				<div id="board_update_notify_section">
-					<label>Notify Rate (in sec.)</label>
+					<label>Send Rate (in sec.)</label>
 					<input id="board_update_notify_rate" type="number" min="10" max="6000" step="5" value="600"/>
 
-					<label>Notify Retry</label>
+					<label>Send Retry (number of emails)</label>
 					<input id="board_update_notify_retry" type="number" min="1" max="5" step="1" value="3"/>
 				</div>
 			</div>

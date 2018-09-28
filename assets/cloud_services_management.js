@@ -19,22 +19,34 @@ $('[data-reveal-id="modal-show-services"]').on('click',
 
 		var id = this.getAttribute("data-reveal-id");
 		$('#'+id).find('[name=services_text]').text("Exposed on: "+wstun_ip);
-
-		$.ajax({
-			url: s4t_api_url+"/services",
-			type: "GET",
-			dataType: 'json',
-			headers: ajax_headers,
-
-			success: function(response){
-				create_table_from_json("show_services_table", response.message, null);
-			},
-			error: function(response){
-				verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-			}
-		});
+		refresh_tableservices("show_services_table", null);
 	}
 );
+
+
+function refresh_tableservices(table_id, flag_link){
+	$.ajax({
+		url: s4t_api_url+"/services",
+		type: "GET",
+		dataType: 'json',
+		headers: ajax_headers,
+	
+		success: function(response){
+
+			response.message = response.message.sort(SortByName);
+
+			if(flag_link){
+				for(i=0; i<response.message.length; i++){
+					response.message[i].name ='<a data-reveal-id="modal-service-boards-list" id="'+response.message[i].id+'" onclick=populate_serviceboards_info(this)>'+response.message[i].name+'</a>';
+				}
+			}
+			create_table_from_json(table_id, response.message, null);
+		},
+		error: function(response){
+			verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+		}
+	});
+}
 
 
 function get_protocols_list(select_id){
@@ -107,11 +119,11 @@ $('[data-reveal-id="modal-board-services"]').on('click',
 	function(){
 
 		$("#modal-board-services").addClass("small");
-		var id = this.getAttribute("data-reveal-id");
-		$('#'+id).find('[name=services_text]').text("Exposed on: "+wstun_ip);
 
 		//OLD: select approach
 		/*
+		var id = this.getAttribute("data-reveal-id");
+		$('#'+id).find('[name=services_text]').text("Exposed on: "+wstun_ip);
 		$('#show_boardservices_section').hide();
 		update_boardsv2('services_boardlist');
 		*/
@@ -121,6 +133,18 @@ $('[data-reveal-id="modal-board-services"]').on('click',
 		refresh_tableboards_services("show_boardservices_tableboards", default_boardlist_columns);
 	}
 );
+
+
+$('[data-reveal-id="modal-service-boards"]').on('click',
+	function(){
+		var id = this.getAttribute("data-reveal-id");
+		$('#'+id).find('[name=services_text]').text("Exposed on: "+wstun_ip);
+
+		$("#modal-service-boards").addClass("small");
+		refresh_tableservices("show_boardservices_tableservices", true);
+	}
+);
+
 
 
 $('[id="status_servicelist"]').on('change',
@@ -436,6 +460,57 @@ $('.status_service').click(function(){
 	}
 });
 
+
+
+function populate_serviceboards_info(a){
+	var service_id = a.getAttribute("id");
+	var reveal_id = a.getAttribute("data-reveal-id");
+
+	var targetModal = $('#'+reveal_id);
+
+	targetModal.find('[name=info_text]').text("Boards with service "+a.innerHTML);
+
+	var project_id = getCookie("selected_prj");
+
+	var url = "";
+	if(project_id == "all")
+		url = s4t_api_url+"/services/"+service_id+"/boards";
+	else
+		url = s4t_api_url+"/projects/"+project_id+"/services/"+service_id+"/boards";
+
+	$.ajax({
+		url: url,
+		type: "GET",
+		dataType: 'json',
+		headers: ajax_headers,
+
+		success: function(response){
+
+			document.getElementById('loading_bar').style.visibility='hidden';
+
+			//Get the last table type (if DataTable or not) and clean the table with the correct methodology
+			var check_datatable = $.fn.dataTable.isDataTable("#show_services_tableboards");
+			if(check_datatable == true)
+				$('#show_services_tableboards').DataTable().destroy();
+			else
+				$('#show_services_tableboards').html("");
+
+			if(response.message.length ==0){
+				//targetModal.addClass("small");
+				$("#show_services_tableboards").html('<tr><td style="text-align:center">No boards</td></tr>');
+			}
+			else{
+				//targetModal.removeClass("small");
+				create_table_from_json("show_services_tableboards", response.message, default_boardlist_columns);
+			}
+		},
+		error: function(response){
+			document.getElementById('loading_bar').style.visibility='hidden';
+			verify_token_expired(response.responseJSON.message, response.responseJSON.result);
+			console.log(response.responseJSON.message);
+		}
+	});
+}
 
 
 

@@ -567,6 +567,8 @@ $('[data-reveal-id="modal-startstop-plugin"]').on('click',
 		$("#startstop_actions").hide();
 		$("#call_actions").hide();
 
+		$('#startstop_parameters_bundle').hide();
+
 		getall_cloud_plugins('startstop_pluginlist');
 
 		//OLD: select approach
@@ -578,6 +580,20 @@ $('[data-reveal-id="modal-startstop-plugin"]').on('click',
 		document.getElementById("startstop_plugin_parameters").value = '';
 	}
 );
+
+
+$("select[id='startstop_parameters_set']").on('change', function(){
+	var set = $( "#startstop_parameters_set option:selected" ).val();
+
+	$('#startstop_plugin_parameters').val('');
+	if(set == "new"){
+		$('#startstop_parameters_bundle').show();
+		$('#startstop_plugin_paramfile').val('');
+	}
+	else{
+		$('#startstop_parameters_bundle').hide();
+	}
+})
 
 
 $('[data-reveal-id="modal-remove-plugin"]').on('click',
@@ -1047,6 +1063,11 @@ document.getElementById('update_plugin_paramfile').addEventListener('change', re
 document.getElementById('update_plugin_paramfile').element_id = "update_plugin_parameters";
 
 
+//Startstop section
+document.getElementById('startstop_plugin_paramfile').addEventListener('change', readFile, false);
+document.getElementById('startstop_plugin_paramfile').element_id = "startstop_plugin_parameters";
+
+
 $('#inject_plugin').click(function(){
 
 	loading_to_fix(); //TO BE FIXED !!!
@@ -1218,7 +1239,12 @@ $('.startstop_plugin').click(function(){
 	loading_to_fix(); //TO BE FIXED !!!
 
 	var plugin_parameters = document.getElementById("startstop_plugin_parameters").value;
+
+	if(plugin_parameters == "") plugin_parameters = "{}";
+
 	var start_stop_flag = this.id;
+
+	var set = $( "#startstop_parameters_set option:selected" ).val();
 
 	document.getElementById("plugin_startstop-output").innerHTML ='';
 
@@ -1241,6 +1267,9 @@ $('.startstop_plugin').click(function(){
 			var project_id = getCookie("selected_prj");
 
 			data = {};
+
+			data.parameters_set = set;
+
 			if(start_stop_flag == "start"){
 				data.parameters = plugin_parameters;
 				data.operation = "run";
@@ -1300,6 +1329,8 @@ $('.startstop_plugin').click(function(){
 							var board_name = variables[i][0];
 
 							data = {};
+							data.parameters_set = set;
+
 							if(start_stop_flag == "start"){
 								data.parameters = plugin_parameters;
 								data.operation = "run";
@@ -1418,6 +1449,9 @@ $('#call_plugin').click(function(){
 	document.getElementById("plugin_call-output").innerHTML = '';
 
 	var plugin_parameters = document.getElementById("startstop_plugin_parameters").value;
+	//if(plugin_parameters == "") plugin_parameters = "{}";
+
+	var set = $( "#startstop_parameters_set option:selected" ).val();
 
 	//NEW: table approach
 	if ($('#startstop_pluginlist option:selected').length == 0) {alert('Select a Plugin'); document.getElementById('loading_bar').style.visibility='hidden';}
@@ -1439,6 +1473,7 @@ $('#call_plugin').click(function(){
 
 			data = {};
 			data.parameters = plugin_parameters;
+			data.parameters_set = set;
 			data.operation = "call";
 
 			$.ajax({
@@ -1493,6 +1528,7 @@ $('#call_plugin').click(function(){
 							data = {};
 							data.operation = "call";
 							data.parameters = plugin_parameters;
+							data.parameters_set = set;
 
 							$.ajax({
 								url: s4t_api_url+"/boards/"+board_id+"/plugins/"+plugin_id,

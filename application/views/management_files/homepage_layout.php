@@ -207,7 +207,8 @@ limitations under the License.
 											<li><a data-reveal-id="modal-register-service">Register</a></li>
 											<li><a data-reveal-id="modal-update-service">Update</a></li>
 											<li><a data-reveal-id="modal-delete-service">Delete</a></li>
-											<li><a data-reveal-id="modal-board-services">Show board services</a></li>
+											<li><a data-reveal-id="modal-board-services">Services per board</a></li>
+											<li><a data-reveal-id="modal-service-boards">Boards per service</a></li>
 										</ul>
 									</li>
 								<? endif ?>

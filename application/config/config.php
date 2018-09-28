@@ -11,6 +11,7 @@ $default_wstun_address = '<IP_OR_HOSTNAME>';
 //$config['map_url'] = 'http://{s}.tile.osm.org/';
 $config['map_url'] = 'https://{s}.tile.openstreetmap.org/';
 
+
 $api_address = !empty(getenv('API_PUB_IP')) ? getenv('API_PUB_IP') : $default_api_address;
 $iotronic_address = !empty(getenv('IOTRONIC_PUB_IP')) ? getenv('IOTRONIC_PUB_IP') : $default_iotronic_address;
 //The only address which has to be shown in services and board_info
@@ -21,7 +22,7 @@ $config['wstun_ip'] = !empty(getenv('WSTUN_IP')) ? getenv('WSTUN_IP') : $default
 
 
 //API
-$config['s4t_api_url'] = 'https://'.$api_address.'/<VERSION>';
+$config['s4t_api_url'] = 'https://'.$api_address.'/v1';
 
 //Swagger
 $config['swagger_url'] = 'https://'.$iotronic_address.'/iotronic-api-docs';
@@ -69,7 +70,7 @@ $config['polling_delay'] = 2000;
 $config['selectbox_size'] = 9;
 $config['show_string_or_json_lists'] = TRUE;
 
-$config['dash_version'] = '2.3.0-1';
+$config['dash_version'] = '2.3.0-2';
 $config['iotronic_version'] = '2.3.0-1';
 $config['lr_version'] = '2.3.0-1';
 $config['wstun_version'] = '1.0.7-1';

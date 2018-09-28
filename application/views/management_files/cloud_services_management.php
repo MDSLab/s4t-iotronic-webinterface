@@ -161,6 +161,7 @@ limitations under the License.
 	</fieldset>
 </div>
 
+
 <!--
 <div id="modal-board-services" class="reveal-modal small" data-reveal>
 	<section>
@@ -202,6 +203,37 @@ limitations under the License.
 		<div class="row">
 			<div class="large-12 columns">
 				<button data-reveal-id="modal-board-services" class="custom_button">Previous</button>
+			</div>
+		</div>
+	</section>
+</div>
+
+
+
+<div id="modal-service-boards" class="reveal-modal small" data-reveal>
+	<section>
+		<h3>Boards per service</h3>
+		<label name="services_text"></label></br>
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+		<div class="row">
+			<table id="show_boardservices_tableservices" style="width: 100%"></table>
+		</div>
+	</section>
+</div>
+
+
+<div id="modal-service-boards-list" class="reveal-modal small" data-reveal>
+	<section>
+		<h3 name="info_text"></h3>
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+
+		<div style="margin-bottom: 20px;">
+			<table id="show_services_tableboards" style="width: 100%"></table>
+		</div>
+
+		<div class="row">
+			<div class="large-12 columns">
+				<button data-reveal-id="modal-service-boards" class="custom_button">Previous</button>
 			</div>
 		</div>
 	</section>

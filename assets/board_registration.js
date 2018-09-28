@@ -1314,6 +1314,33 @@ function hideall_except(sel_div_id){
 }
 
 
+
+function close_popup(a){
+	var array = $(a).attr('id').split('clsbtn');
+
+	$("#pop-up"+array[1]).hide();
+}
+
+function trigger_hover(a){
+	var array = $(a).attr('id').split('trigger');
+
+	var width = $(this).width() *30/100;
+	var height = $(this).height() *60/100;
+
+	var border = 10;
+	var textarea_w = width - border;
+	var textarea_h = height - 4*border;
+
+	$(".pop-up").hide();
+	$("#pop-up"+array[1]).show();
+	$("#pop-up"+array[1]).css('width', width+'px');
+	$("#pop-up"+array[1]).css('height', height+'px');
+
+	$("#textarea_popup"+array[1]).css('width', textarea_w+'px');
+	$("#textarea_popup"+array[1]).css('height', textarea_h+'px');
+}
+
+
 function populate_board_info(board_id){
 //function populate_board_info(data){
 	//$('#sensors_on_board').empty();
@@ -1458,8 +1485,32 @@ function populate_board_info(board_id){
 						
 						$("#info_tableplugins").find("thead").remove();
 						$("#info_tableplugins").find("tbody").remove();
-						
-						create_table_from_json("info_tableplugins", plugins, null);
+
+
+						for (var i=0; i<plugins.length; i++){
+							plugins[i].name = '<div class="popup_container" id="popup_container'+i+'">'+
+										'<a href="#" class="trigger" id="trigger'+i+'" onclick="trigger_hover(this)">'+plugins[i].name+'</a>'+
+										'<div class="pop-up" id="pop-up'+i+'">'+
+											'<div class="large-12 columns" style="text-align:left; padding-left: 0px; padding-right: 0px; vertical-align: middle;">'+
+												'<div style="width: 90%; margin-top: 0px; text-align:left; vertical-align: middle; display: inline-block;">'+
+													'<label><b>Latest plugin parameters</b></label>'+
+												'</div>'+
+												'<div style="width: 8%; height: auto; margin-top: 0px; text-align:right; vertical-align: middle; display: inline-block;">'+
+													'<a class="clsbtn" id="clsbtn'+i+'" onclick="close_popup(this)"><img class="clsbtn" id="clsbtn'+i+'"src="'+site_url+'assets/images/foundation_svgs/fi-x.svg" height="20" width="20" style="float:right"></a>'+
+												'</div>'+
+											'</div>'+
+											'<textarea class="textarea_popup" id="textarea_popup'+i+'" placeholder="" name="" rows="5" readonly>'+plugins[i].parameters+'</textarea>'+
+										'</div>'+
+									  '</div>';
+						}
+
+
+						//All fields
+						//create_table_from_json("info_tableplugins", plugins, null);
+
+						//Subset of fields
+						var fields_to_show = ["name", "version", "id", "category", "state"];
+						create_table_from_json("info_tableplugins", plugins, fields_to_show);
 					}
 				}
 				else{
@@ -1534,7 +1585,6 @@ function populate_board_info(board_id){
 		});
 	//}
 }
-
 
 
 $('[data-reveal-id="modal-update-pkg-board"]').on('click',

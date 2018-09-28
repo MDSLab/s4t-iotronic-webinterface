@@ -345,7 +345,9 @@ limitations under the License.
 	<section>
 		<h3>Destroy Plugin</h3>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
-		<table id="destroy_tableplugins" style="width: 100%"></table>
+		<div style="margin-bottom: 20px;">
+			<table id="destroy_tableplugins" style="width: 100%"></table>
+		</div>
 
 		<div class="row">
 			<div class="large-12 columns">
@@ -502,8 +504,22 @@ limitations under the License.
 				-->
 			</div>
 
-			<label>Parameters [OPTIONAL]</label>
-			<textarea id="startstop_plugin_parameters" placeholder="Insert here the parameters (in json format)" name="text" rows="10"></textarea>
+
+			<label>Parameters Set</label>
+			<select id="startstop_parameters_set">
+				<option value="default">Default</option>
+				<option value="new">New</option>
+				<option value="latest">Latest</option>
+			</select>
+
+			<div id="startstop_parameters_bundle">
+				<label>Parameters [OPTIONAL]</label>
+				<!--<textarea id="startstop_plugin_parameters" placeholder="Insert here the parameters (in json format)" name="text" rows="10"></textarea>-->
+				<input type="file" name="startstop_plugin_paramfile" id="startstop_plugin_paramfile" size="20" />
+				<textarea id="startstop_plugin_parameters" placeholder="Insert here the parameters" name="code" rows="15"></textarea>
+			</div>
+
+
 		</div>
 		<div class="row">
 			<div class="large-12 columns">

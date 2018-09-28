@@ -208,6 +208,8 @@ function return_request_boards(){
 
 $('#remove_requests').click(function(){
 
+	loading_to_fix(); //TO BE FIXED !!!
+
 	document.getElementById("request_delete-output").innerHTML ='';
 
 	if ($('#deleterequest_project').is(':checked')){
