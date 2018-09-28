@@ -1,7 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-
 //Iotronic Endpoints
 $default_api_address = '<IP_OR_HOSTNAME>:<PORT>';
 $default_iotronic_address = '<IP_OR_HOSTNAME>';
