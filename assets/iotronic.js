@@ -787,7 +787,14 @@ function get_selected_rows_from_table(table_id, checkboxes_id_like){
 	
 	for(i=1;i<table[0].rows[0].cells.length;i++){
 		//console.log(table[0].rows[0].cells[i].innerText);
-		thead_fields.push(table[0].rows[0].cells[i].innerText);
+
+		//BUG FIXING: newer versions of chrome add spaces in some strings
+		//thead_fields.push(table[0].rows[0].cells[i].innerText);
+
+		head = table[0].rows[0].cells[i].innerText;
+		head = head.replace(/\s/g, '');
+		thead_fields.push(head);
+
 	}
 
 
@@ -798,7 +805,13 @@ function get_selected_rows_from_table(table_id, checkboxes_id_like){
 		var row_fields = [];
 		var tr = $(this).closest("tr");
 		for(j=1;j<tr[0].cells.length;j++){
-			row_fields.push(tr[0].cells[j].innerText);
+
+			//BUG FIXING: newer versions of chrome add spaces in some strings
+			//row_fields.push(tr[0].cells[j].innerText);
+
+			cell = tr[0].cells[j].innerText;
+			cell = cell.replace(/\s/g, '');
+			row_fields.push(cell);
 		}
 		body_fields.push(row_fields);
 	});
