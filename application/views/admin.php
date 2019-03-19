@@ -24,8 +24,14 @@ limitations under the License.
 	drivers_flag = "<?= $this -> config -> item('load_driver_management')?>";
 	vfs_flag = "<?= $this -> config -> item('load_vfs_management')?>";
 
-	security_method = "<?= $this -> config -> item('security')?>";
+	//CUSTOMIZED
+	//---------------------------------------------------------------------------------------
+	sensors_flag = "<?= $this -> config -> item('load_sensor_management')?>";
+	wiotp_endpoints = JSON.parse('<?= $GLOBALS['wiotp_endpoints']?>');
+	//console.log(wiotp_endpoints);
+	//---------------------------------------------------------------------------------------
 
+	security_method = "<?= $this -> config -> item('security')?>";
 	delay = "<?= $this -> config -> item('polling_delay')?>";
 	string_or_json = "<?= $this -> config -> item('show_string_or_json_lists')?>";
 
@@ -62,7 +68,6 @@ limitations under the License.
 			}
 		}
 	}
-
 </script>
 
 
@@ -136,6 +141,11 @@ limitations under the License.
 	if ($this -> config -> item('load_vfs_management')):
 		include 'management_files/vfs_management.php'; 
 		echo '<script src="'.$this -> config -> site_url().'assets/vfs_management.js"></script>';
+	endif;
+
+	//CUSTOMIZED
+	if ($this -> config -> item('load_sensor_management')):
+		echo '<script src="'.$this -> config -> site_url().'assets/customer.js"></script>';
 	endif;
 ?>
 <!-- ########################################################## -->

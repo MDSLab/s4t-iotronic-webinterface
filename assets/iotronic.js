@@ -27,6 +27,36 @@ function generate_uuid(input_id){
 	$('#'+input_id).val(id);
 }
 
+function convert_date(date) {
+
+	var date = date; //new Date();
+	var aaaa = date.getFullYear();
+	var gg = date.getDate();
+	var mm = (date.getMonth() + 1);
+
+	if (gg < 10) gg = "0" + gg;
+	if (mm < 10) mm = "0" + mm;
+	var cur_day = aaaa + "-" + mm + "-" + gg;
+
+	var hours = date.getHours()
+	var minutes = date.getMinutes()
+	var seconds = date.getSeconds();
+
+	if (hours < 10) hours = "0" + hours;
+	if (minutes < 10) minutes = "0" + minutes;
+	if (seconds < 10) seconds = "0" + seconds;
+
+	return cur_day + " " + hours + ":" + minutes + ":" + seconds;
+}
+
+function compare_dates(a, b){
+	var a = new Date(a)
+	var b = new Date(b)
+
+	if(a.getTime() > b.getTime()) return false
+	else return true
+}
+
 function verify_new_version(new_version, old_version){
 	var array_old = old_version.split('.');
 	var array_new = new_version.split('.');
@@ -143,6 +173,20 @@ function SortByTimestamp(x,y) {
 	return ((x.timestamp == y.timestamp) ? 0 : ((x.timestamp > y.timestamp) ? 1 : -1 ));
 }
 
+//CUSTOMIZED
+//-------------------------------------------------------------------------------------------
+function SortBySensPos(x,y) {
+	return ((x.sens_pos == y.sens_pos) ? 0 : ((x.sens_pos > y.sens_pos) ? 1 : -1 ));
+
+}
+function SortByLast(x,y) {
+	return ((x.last == y.last) ? 0 : ((x.last < y.last) ? 1 : -1 ));
+}
+function SortByOldest(x,y) {
+	return ((x.last == y.last) ? 0 : ((x.last > y.last) ? 1 : -1 ));
+}
+//-------------------------------------------------------------------------------------------
+
 function getCookie(cname) {
 	var name = cname + "=";
 	var cookies = document.cookie.split(';');
@@ -150,7 +194,7 @@ function getCookie(cname) {
 
 	for(var i=0; i<cookies.length; i++){
 		//remove space at the beginning of the string
-		cookies[i] = cookies[i].replace(/\s/g, '');
+		//cookies[i] = cookies[i].replace(/\s/g, '');  //Commented because the projects_list returned a list removing the spaces in fields! Verify if it creates problems somewhere else
 		var ca = cookies[i].split(name);
 		if(ca.length >1){
 			//console.log(ca);
@@ -460,6 +504,9 @@ function refresh_lists(){
 	var project_id = getCookie("selected_prj");
 	//console.log(project_id);
 
+	//CUSTOMIZED....USELESS????
+	//test_wiotp();
+
 	$.ajax({
 		url: s4t_api_url+"/boards?project="+project_id,
 		type: 'GET',
@@ -478,7 +525,7 @@ function refresh_lists(){
 
 			connected = [];
 			disconnected = [];
-			
+
 			for(i=0;i<boards_list.length; i++){
 				if(boards_list[i].status == "C")
 					connected.push(boards_list[i]);
@@ -491,50 +538,145 @@ function refresh_lists(){
 			connected = connected.sort(SortByLabel);
 			disconnected = disconnected.sort(SortByLabel);
 
+			//CUSTOMIZED
+			//We have to verify that the project is 
+			//---------------------------------------------------------------------------------
+			var project_name = get_project_name_by_uuid(getCookie("selected_prj"));
+			wiotp_projects = Object.keys(wiotp_endpoints);
+			//console.log(project_name +" "+ wiotp_projects);
+
+			if(wiotp_projects.indexOf(project_name) == -1){
+			//---------------------------------------------------------------------------------
+
+			//Previous version
+			
 			document.getElementById("boards_status").innerHTML = '<font size="4"><b>Boards (<img src="'+site_url+'uploads/green-circle.png" width=20 height=20><span> '+connected.length+'</span> / <img src="'+site_url+'uploads/red-circle.png" width=20 height=20><span> '+disconnected.length+'</span>)</b></font><br /><br />';
-			
-			
+
 			for(i=0;i<connected.length;i++){
-				$('#boardlist_status').append('<li>' +
-							//	'<a href="#" onclick=populate_board_info("'+connected[i].board_id+'"); data-reveal-id="modal-plugins_sensors-lists">'+
-								'<a href="#" onclick=populate_board_info("'+connected[i].board_id+'"); data-reveal-id="modal-board-info">'+
-								'<img src="'+site_url+'uploads/green-circle.png" width=20 height=20>'+
-								'<span>'+connected[i].label+'</span>'+
-							       '</li>');
+				$('#boardlist_status').append('<li>'+
+					//      '<a href="#" onclick=populate_board_info("'+connected[i].board_id+'"); data-reveal-id="modal-plugins_sensors-lists">'+
+					'<a href="#" onclick=populate_board_info("'+connected[i].board_id+'"); data-reveal-id="modal-board-info">'+
+					'<img src="'+site_url+'uploads/green-circle.png" width=20 height=20>'+
+					'<span>'+connected[i].label+'</span>'+
+					'</a>'+
+					'</li>');
 			}
+
+
 			for(j=0;j<disconnected.length;j++){
 				$('#boardlist_status').append('<li>'+
-							//	'<a href="#" onclick=populate_board_info("'+disconnected[j].board_id+'"); data-reveal-id="modal-plugins_sensors-lists">'+
-								'<a href="#" onclick=populate_board_info("'+disconnected[j].board_id+'"); data-reveal-id="modal-board-info">'+
-									'<img src="'+site_url+'uploads/red-circle.png" width=20 height=20>'+
-									'<span>'+disconnected[j].label+'</span>'+
-								'</a>'+
-							      '</li>');
+					//      '<a href="#" onclick=populate_board_info("'+disconnected[j].board_id+'"); data-reveal-id="modal-plugins_sensors-lists">'+
+					'<a href="#" onclick=populate_board_info("'+disconnected[j].board_id+'"); data-reveal-id="modal-board-info">'+
+					'<img src="'+site_url+'uploads/red-circle.png" width=20 height=20>'+
+					'<span>'+disconnected[j].label+'</span>'+
+					'</a>'+
+					'</li>');
 			}
-
-
-			/*
-			//OLD VERSION
-
-			boards_list = response.message.sort(SortByLabel);
-
-			for(var i=0; i<boards_list.length; i++){
-
-				if(boards_list[i].status == "C"){
-					$('#boardlist_c').append('<option title="'+boards_list[i].board_id+'" value="'+boards_list[i].board_id+'" data-unit="">'+boards_list[i].label+'</option>');
-					connected_count += 1;
-				}
-				else if(boards_list[i].status == "D"){
-					$('#boardlist_d').append('<option title="'+boards_list[i].board_id+'" value="'+boards_list[i].board_id+'" data-unit="">'+boards_list[i].label+'</option>');
-					disconnected_count += 1;
-				}
-			}
-			document.getElementById("count-connected").innerHTML ='<h4>Connected ( '+connected_count+' )</h4>';
-			document.getElementById("count-disconnected").innerHTML ='<h4>Disconnected ( '+disconnected_count+' )</h4>';
-			*/
 
 			//Refresh markers on the map accordingly to what is retrieved from IoTronic !!!
 			refresh_map();
+			}
+
+
+	
+			//CUSTOMIZED
+			//---------------------------------------------------------------------------------------------------------------
+			else {
+
+			var array_promise = [];
+			var degradated = [];
+
+			for(l=0;l<connected.length;l++){
+				array_promise.push(new Promise(function(resolve){
+					//console.log("BOARD: "+connected[i].board_id);
+					//verify_sensors_status(connected[l].board_id, resolve);
+					verify_sensors_status(connected[l].board_id, connected[l].model, resolve);
+				}));
+			}
+			Promise.all(array_promise).then(function(results){
+				//console.log(results);
+
+				/*
+				for(i=0;i<results.length;i++){
+
+					if(results[i] != "NO WIOTP" && results[i] != "NO ACTION"){
+						for(j=0;j<connected.length;j++){
+							if(connected[j].board_id == results[i]){
+								degradated.push(connected[j]);
+								connected.splice(j, 1);
+								break;
+							}
+						}
+					}
+				}
+				*/
+
+
+				for(i=0;i<results.length;i++){
+					//if(results[i].status != "NO WIOTP" && results[i].status != "NO ACTION"){
+					//if(results[i].status == "CHECKED" || results[i].status == "NO ACTION"){
+						for(j=0;j<connected.length;j++){
+							if(connected[j].board_id == results[i].board_id){
+
+								connected[j].failed = results[i].failed
+								connected[j].all = results[i].all
+
+								//if(results[i].status == "CHECKED"){
+								if(results[i].status == "CHECKED" || results[i].valid == false){
+									degradated.push(connected[j]);
+									connected.splice(j, 1);
+								}
+								break
+							}
+						}
+					//}
+				}
+
+				for(i=0;i<connected.length;i++){
+
+					title = "All: "+connected[i].all+"\n"+"Failed: "+connected[i].failed;
+
+					$('#boardlist_status').append('<li>' +
+									'<a href="#" onclick="populate_board_info(\''+connected[i].board_id+'\', \'true\');" title="'+title+'" data-reveal-id="modal-board-info">'+
+										'<img src="'+site_url+'uploads/green-circle.png" width=20 height=20>'+
+									'</a>'+
+									'<a href="#" onclick="populate_board_info(\''+connected[i].board_id+'\');" title="'+title+'" data-reveal-id="modal-board-info">'+
+									'&nbsp;'+connected[i].label+'</a>'+
+								      '</li>');
+				}
+
+				for(k=0;k<degradated.length;k++){
+
+					title = "All: "+degradated[k].all+"\n"+"Failed: "+degradated[k].failed;
+
+					$('#boardlist_status').append('<li>' +
+									'<a href="#" onclick="populate_board_info(\''+degradated[k].board_id+'\', \'true\');" title="'+title+'" data-reveal-id="modal-board-info">'+
+										'<img src="'+site_url+'uploads/yellow-circle.png" width="20" height="20" />'+
+									'</a>'+
+									'<a href="#" onclick="populate_board_info(\''+degradated[k].board_id+'\')"; title="'+title+'"; data-reveal-id="modal-board-info">'+
+									'&nbsp;'+degradated[k].label+'</a>'+
+								      '</li>');
+
+				}
+
+				for(j=0;j<disconnected.length;j++){
+					$('#boardlist_status').append('<li>'+
+								//	'<a href="#" onclick=populate_board_info("'+disconnected[j].board_id+'"); data-reveal-id="modal-plugins_sensors-lists">'+
+									'<a href="#" onclick=populate_board_info("'+disconnected[j].board_id+'"); data-reveal-id="modal-board-info">'+
+										'<img src="'+site_url+'uploads/red-circle.png" width=20 height=20>'+
+										'<span>'+disconnected[j].label+'</span>'+
+									'</a>'+
+								      '</li>');
+				}
+
+				document.getElementById("boards_status").innerHTML = '<font size="4"><b>Boards (<img src="'+site_url+'uploads/green-circle.png" width=20 height=20><span> '+connected.length+'</span> / <img src="'+site_url+'uploads/yellow-circle.png" width=20 height=20><span> '+degradated.length+'</span> / <img src="'+site_url+'uploads/red-circle.png" width=20 height=20><span> '+disconnected.length+'</span>)</b></font><br /><br />';
+
+				refresh_map();
+
+			}); //close Promise.ALL
+
+			//---------------------------------------------------------------------------------------------------------------
+			} //If-else in function of the presence of the project_name inside the JSON of the WIOTP projects
 		},
 		error: function(response){
 			//verify_token_expired(JSON.stringify(response.responseJSON.message));
@@ -544,6 +686,8 @@ function refresh_lists(){
 }
 
 
+//OLD and not used!!!
+/*
 function sensors_list(select_id, callback){
 	$('#'+select_id).empty();
 	$.ajax({
@@ -567,6 +711,7 @@ function sensors_list(select_id, callback){
 		}
 	});
 }
+*/
 
 
 function update_boardsv2(select_id, status, flag){
@@ -678,6 +823,23 @@ function create_table_from_json(table_id, obj, array, checkbox_name){
 					//Added to remove iotronic from fields to show in tables
 					if(String(content[i][j]).startsWith(String(s4t_iotronic_folder)))
 						content[i][j] = String(content[i][j]).replace(s4t_iotronic_folder, '');
+
+
+					//CUSTOMIZED
+					//substitute the keywords "active" and "failed" with respectively
+					//green and red circles as for devices status on the homepage layout
+					//------------------------------------------------------------------------------
+					//if (content[i][j] == "active")
+					if (content[i][j] == "OK")
+						content[i][j] = '<img src="'+site_url+'uploads/green-circle.png" width=20 height=20>';
+					//NOT USED...
+					//else if (content[i][j] == "degradated")
+					//	content[i][j] = '<img src="'+site_url+'uploads/yellow-circle.png" width=20 height=20>';
+					//else if (content[i][j] == "failed")
+					else if (content[i][j] == "NOK")
+						content[i][j] = '<img src="'+site_url+'uploads/red-circle.png" width=20 height=20>';
+					//------------------------------------------------------------------------------
+						
 
 					tbd += "<td>"+content[i][j]+"</td>";
 				}
@@ -794,7 +956,7 @@ function get_selected_rows_from_table(table_id, checkboxes_id_like){
 		head = table[0].rows[0].cells[i].innerText;
 		head = head.replace(/\s/g, '');
 		thead_fields.push(head);
-
+		
 	}
 
 
@@ -921,7 +1083,6 @@ $('.side-menu').mouseover(function(){
 $(document).ready(function() {
 	//To resolve the problem of "Uncaught TypeError: $(...).DataTable is not a function"
 	$.noConflict();
-
 
 	/*
 	//Mapdiv section

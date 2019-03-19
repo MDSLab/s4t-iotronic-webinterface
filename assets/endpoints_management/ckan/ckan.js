@@ -1,0 +1,1 @@
+/opt/stack4things/iotronic-standalone/ckan.js

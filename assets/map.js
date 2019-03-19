@@ -50,6 +50,9 @@ info_map.getSize = function(){
 
 
 var markers = null;
+var boardinfo_markers = null
+boardinfo_marker = null
+
 var labels = [];
 var uuids = [];
 var latitude = [];
@@ -215,8 +218,14 @@ function boardinfo_map(board_status, lat, lng){
 	info_map.invalidateSize();
 	document.getElementById('info-map').style.display = 'block';
 
-	var boardinfo_markers = L.markerClusterGroup({ disableClusteringAtZoom: 17 });
-	var boardinfo_marker = L.marker([lat, lng]);
+	
+	if(boardinfo_marker != null) info_map.removeLayer(boardinfo_marker);
+	if(boardinfo_markers != null) info_map.removeLayer(boardinfo_markers);
+	boardinfo_markers = L.markerClusterGroup({ disableClusteringAtZoom: 17 });
+	boardinfo_marker = L.marker([lat, lng]);
+	
+	//var boardinfo_markers = L.markerClusterGroup({ disableClusteringAtZoom: 17 });
+	//var boardinfo_marker = L.marker([lat, lng]);
 
 	if(board_status == "C") boardinfo_marker.setIcon(marker_green);
 	else if(board_status == "D") boardinfo_marker.setIcon(marker_red);

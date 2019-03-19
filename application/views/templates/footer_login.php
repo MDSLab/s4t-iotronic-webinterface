@@ -13,11 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
+<!--
 		<div id="footer">
-			<!--Powered by <img src="<?= $this -> config -> site_url() .'uploads/mdslab.png'  ?>" alt="MDSLab Logo" height="40" width="80" />  <br />Visit: <a href="http://smartme.unime.it">SmartME</a> and <a href="http://stack4things.unime.it/">Stack4Things</a>-->
 			Powered by <img src="<?= $this -> config -> site_url() .'uploads/mdslab.png'  ?>" alt="MDSLab Logo" height="40" width="80" />  <br />Visit: <a target="_blank" href="http://stack4things.unime.it/">Stack4Things</a> and <a target="_blank" href="<?= $this -> config -> item('swagger_url')?>">API</a>
+			Powered by <a target="_blank" href="http://stack4things.unime.it/">Stack4Things</a>
 		</div>
-		
+-->		
 		<script src="<?= $this -> config -> site_url() ?>assets/bower_components/foundation/js/vendor/jquery.js"></script>
 		<script src="<?= $this -> config -> site_url() ?>assets/bower_components/foundation/js/foundation.min.js"></script>
 		<script src="<?= $this -> config -> site_url() ?>assets/bower_components/foundation/js/foundation/foundation.reveal.js"></script>

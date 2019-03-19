@@ -56,7 +56,7 @@ function get_projects_list(flag){
 				$("#select_project").val(project_id);
 			}
 
-			//document.cookie = "projects_list="+JSON.stringify(parsed_response);
+			document.cookie = "projects_list="+JSON.stringify(parsed_response);
 			//document.cookie = "bla=ff";
 
 			refresh_lists();
@@ -65,6 +65,19 @@ function get_projects_list(flag){
 			verify_token_expired(response.responseJSON.message, response.responseJSON.result);
 		}
 	});
+}
+
+function get_project_name_by_uuid(project_id){
+	var prj_name = "";
+	projects_list = JSON.parse(getCookie("projects_list"));
+
+	for(i=0;i<projects_list.length;i++){
+		if(projects_list[i].uuid == project_id){
+			prj_name = projects_list[i].name
+			break
+		}
+	}
+	return prj_name;
 }
 
 $('[id="select_project"]').on('change',

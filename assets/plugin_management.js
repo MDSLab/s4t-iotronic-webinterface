@@ -569,7 +569,7 @@ $('[data-reveal-id="modal-startstop-plugin"]').on('click',
 
 		$('#startstop_parameters_bundle').hide();
 
-		getall_cloud_plugins('startstop_pluginlist');
+		getall_cloud_plugins('startstop_pluginlist', true);
 
 		//OLD: select approach
 		//update_boardsv2('startstop_boardlist', 'C', true);
@@ -753,6 +753,7 @@ $('#create_plugin').click(function(){
 	var array_version = plugin_version.split('.');
 
 	if(plugin_name == ""){ alert("Insert plugin name!"); document.getElementById('loading_bar').style.visibility='hidden';}
+	else if(plugin_name.indexOf(" ") != -1){ alert("Insert plugin name without spaces!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(plugin_version == ""){ alert("Insert plugin version!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(array_version.length != 3) { alert("Insert correct version (example: 1.2.3)!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(plugin_category == ""){ alert("Insert category!"); document.getElementById('loading_bar').style.visibility='hidden';}
@@ -938,6 +939,7 @@ $('#update_plugin').click(function(){
 
 
 	if(plugin_name == ""){ alert("Insert plugin name!"); document.getElementById('loading_bar').style.visibility='hidden';}
+	else if(plugin_name.indexOf(" ") != -1){ alert("Insert plugin name without spaces!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(plugin_version == ""){ alert("Insert plugin version!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(array_version.length != 3) { alert("Insert correct version (example: 1.2.3)!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(plugin_description == ""){ alert("Insert description!"); document.getElementById('loading_bar').style.visibility='hidden';}
@@ -1303,7 +1305,8 @@ $('.startstop_plugin').click(function(){
 				error: function(response){
 					document.getElementById('loading_bar').style.visibility='hidden';
 					verify_token_expired(response.responseJSON.message, response.responseJSON.result);
-					document.getElementById("plugin_startstop-output").innerHTML = JSON.stringify(response.responseJSON.message);
+					//document.getElementById("plugin_startstop-output").innerHTML = JSON.stringify(response.responseJSON.message);
+					document.getElementById("plugin_startstop-output").innerHTML = "<pre>"+response.responseJSON.message.replace(/\n/g,'<br />')+'</pre>';
 				}
 			});
 		}
@@ -1355,7 +1358,8 @@ $('.startstop_plugin').click(function(){
 										refresh_lists();
 										document.getElementById('loading_bar').style.visibility='hidden';
 									}
-									document.getElementById("plugin_startstop-output").innerHTML += board_name + ": "+ JSON.stringify(response.message)+"<br />";
+									//document.getElementById("plugin_startstop-output").innerHTML += board_name + ": "+ JSON.stringify(response.message)+"<br />";
+									document.getElementById("plugin_startstop-output").innerHTML += board_name + ": "+'<pre>'+JSON.stringify(response.message,null,"\t")+'</pre><br />';
 								},
 								error: function(response){
 									verify_token_expired(response.responseJSON.message, response.responseJSON.result);
@@ -1363,7 +1367,8 @@ $('.startstop_plugin').click(function(){
 										refresh_tableboards("startstop_tableboards", "remove", "C", default_boardlist_columns);
 										document.getElementById('loading_bar').style.visibility='hidden';
 									}
-									document.getElementById("plugin_startstop-output").innerHTML += board_name + ": "+JSON.stringify(response.responseJSON.message)+"<br />";
+									//document.getElementById("plugin_startstop-output").innerHTML += board_name + ": "+JSON.stringify(response.responseJSON.message)+"<br />";
+									document.getElementById("plugin_startstop-output").innerHTML += board_name + ": <pre>"+response.responseJSON.message.replace(/\n/g,'<br />')+'</pre><br />';
 								}
 							});
 							//---------------------------------------------------------------------------------

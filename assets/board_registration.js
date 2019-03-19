@@ -34,7 +34,8 @@ document.getElementById('board_update_extrafile').element_id = "board_update_ext
 $('[data-reveal-id="modal-show-boards"]').on('click',
 	function() {
 
-		var fields_to_show = ["label", "status", "latest_update", "mobile", "net_enabled", "notify", "board_id"];
+		//var fields_to_show = ["label", "status", "latest_update", "mobile", "net_enabled", "notify", "board_id"];
+		var fields_to_show = ["label", "status", "latest_update", "notify", "board_id"];
 
 		$.ajax({
 			url: s4t_api_url+"/boards",
@@ -64,7 +65,7 @@ $('[data-reveal-id="modal-register-new-board"]').on('click',
 		$('#board_create_extrafile').val('');
 
 		$('#board_create_notify_section').hide();
-		$('#board_create_refresh_coordinates').hide();
+		//$('#board_create_refresh_coordinates').hide();
 
 		document.getElementById("board_create-output").innerHTML = '';
 
@@ -78,9 +79,17 @@ $('[data-reveal-id="modal-register-new-board"]').on('click',
 
 		document.getElementById('board_create_extra').value = "";
 
-		document.getElementById("board_create_mobile_enabled").checked = false;
-		$("#board_create_net_enabled").val("false");
+		//document.getElementById("board_create_mobile_enabled").checked = false;
+		//$("#board_create_net_enabled").val("false");
 		$("#board_create_notify_enabled").val("false");
+
+		//Connectivities
+		var connectivities = ["ethernet", "mobile", "wifi"]
+		var conn_types = ["2", "3", "1"]
+
+		$('#board_create_connectivity').empty();
+		for(i=0;i<connectivities.length;i++)
+			$('#board_create_connectivity').append('<option title="'+connectivities[i]+'" value="'+conn_types[i]+'" data-unit="">'+connectivities[i].ucfirst()+'</option>');
 
 
 		//Security fields cleaning
@@ -257,19 +266,44 @@ $('[id="board_update_notify_enabled"]').on('change',
 );
 
 
-
+/*
 $('[id="board_create_mobile_enabled"]').on('change',
 	function(){
 		if(this.checked){ 	$('#board_create_refresh_coordinates').show(); }
 		else if(!this.checked){ $('#board_create_refresh_coordinates').hide(); }
 	}
 );
-
+*/
 
 $('[id="board_update_mobile_enabled"]').on('change',
 	function(){
 		if(this.checked){       $('#board_update_refresh_coordinates').show(); }
 		else if(!this.checked){ $('#board_update_refresh_coordinates').hide(); }
+	}
+);
+
+
+$('[id="board_create_connectivity"]').on('change',
+	function(){
+		//ethernet = 2, mobile = 3, wifi = 1
+		var conn = $('#board_create_connectivity option:selected').val();
+
+		if(conn == 1 || conn == 2)
+			$('#board_create_conn_metadata').attr('placeholder','MAC');
+		else if(conn == 3)
+			$('#board_create_conn_metadata').attr('placeholder','ICCID');
+	}
+);
+
+$('[id="board_update_connectivity"]').on('change',
+	function(){
+		//ethernet = 2, mobile = 3, wifi = 1
+		var conn = $('#board_update_connectivity option:selected').val();
+
+		if(conn == 1 || conn == 2)
+			$('#board_update_conn_metadata').attr('placeholder','MAC');
+		else if(conn == 3)
+			$('#board_update_conn_metadata').attr('placeholder','ICCID');
 	}
 );
 //----------------------------------------------------------------------------------------
@@ -340,6 +374,26 @@ $('[id="update_boardlist"]').on('change',
 						document.getElementById("board_update_longitude").value = info.coordinates.longitude;
 						document.getElementById("board_update_altitude").value = info.coordinates.altitude;
 
+						//Connectivities
+						var connectivities = ["ethernet", "mobile", "wifi"]
+						var conn_types = ["2", "3", "1"]
+
+						$('#board_update_connectivity').empty();
+						for(i=0;i<connectivities.length;i++)
+							$('#board_update_connectivity').append('<option title="'+connectivities[i]+'" value="'+conn_types[i]+'" data-unit="">'+connectivities[i].ucfirst()+'</option>');
+
+						if(response.message.connectivity.length>0){
+							metadata = JSON.parse(response.message.connectivity[0].metadata)
+							type = Object.keys(metadata)[0]
+							value = metadata[type]
+
+							$("#board_update_connectivity option[value='"+response.message.connectivity[0].conn_id+"']").prop('selected', true);
+							$('#board_update_conn_metadata').attr('placeholder',type);
+							document.getElementById("board_update_conn_metadata").value = value
+						}
+						
+
+						/*
 						if(info.mobile == 1){
 							document.getElementById("board_update_mobile_enabled").checked = true;
 							$('#board_update_refresh_coordinates').show();
@@ -348,7 +402,7 @@ $('[id="update_boardlist"]').on('change',
 							$('#board_update_refresh_coordinates').hide();
 
 						document.getElementById("board_update_refresh_position").value = info.position_refresh_time;
-
+						*/
 
 						document.getElementById("board_update_extra").value = JSON.stringify(info.extra);
 
@@ -501,6 +555,28 @@ $('#create-board').click(function(){
 		data.extra = extra;
 		data.description = description;
 
+
+		//Connectivity
+		selected_conn = $('#board_create_connectivity option:selected').val();
+		conn_metadata = document.getElementById("board_create_conn_metadata").value;
+
+		if(conn_metadata != ""){
+			obj = {}
+			if(selected_conn == 1 || selected_conn == 2)
+				obj = {"MAC": conn_metadata}
+			else if(selected_conn == 3)
+				obj = {"ICCID": conn_metadata}
+		
+			data.connectivity = JSON.stringify([{"type": selected_conn, "main": true, "metadata": obj}])
+		}
+
+		//NEW
+		data.mobile = "false"
+		data.net_enabled = "false"
+		data.position_refresh_time = 10;
+
+		//OLD
+		/*
 		data.mobile = $("#board_create_mobile_enabled").is(":checked").toString();
 
 		if(data.mobile == "true"){
@@ -511,6 +587,8 @@ $('#create-board').click(function(){
 			data.position_refresh_time = 10;
 
 		data.net_enabled = document.getElementById("board_create_net_enabled").value;
+		*/
+
 		
 		data.notify = document.getElementById("board_create_notify_enabled").value;
 
@@ -682,10 +760,32 @@ $('#update-board').click(function(){
 
 		data.description = description;
 
+		//Connectivity
+		selected_conn = $('#board_update_connectivity option:selected').val();
+		conn_metadata = document.getElementById("board_update_conn_metadata").value;
+
+		if(conn_metadata != ""){
+			obj = {}
+			if(selected_conn == 1 || selected_conn == 2)
+				obj = {"MAC": conn_metadata}
+			else if(selected_conn == 3)
+				obj = {"ICCID": conn_metadata}
+		
+			data.connectivity = JSON.stringify([{"type": selected_conn, "main": true, "metadata": obj}])
+		}
+
+		//NEW
+		data.mobile = "false"
+		data.net_enabled = "false"
+		data.position_refresh_time = 10;
+		
+		//OLD
+		/*
 		data.mobile = $("#board_update_mobile_enabled").is(":checked").toString();
 		data.position_refresh_time = document.getElementById("board_update_refresh_position").value;
 
 		data.net_enabled = document.getElementById("board_update_net_enabled").value;
+		*/
 
 		data.notify = document.getElementById("board_update_notify_enabled").value;
 		data.notify_rate = document.getElementById("board_update_notify_rate").value;
@@ -781,7 +881,6 @@ $('#delete_board').click(function(){
 
 							success: function(response){
 								if(i==variables.length-1) {
-console.log("S");
 									refresh_tableboards("delete_tableboards", "remove", null, null);
 									refresh_lists();
 									document.getElementById('loading_bar').style.visibility='hidden';
@@ -1341,11 +1440,26 @@ function trigger_hover(a){
 }
 
 
-function populate_board_info(board_id){
+function populate_board_info(board_id, flag){
 //function populate_board_info(data){
 	//$('#sensors_on_board').empty();
 
-	hideall_except("info-details");
+	$('#info-connectivity-details').empty()
+	$('#sensors_validity').empty();
+
+	//CUSTOMIZED
+	//-------------------------------------------------
+	if(flag){
+		hideall_except("info-sensors");
+	}
+	else{
+		hideall_except("info-details");
+	}
+	//-------------------------------------------------
+	//OLD
+	//hideall_except("info-details");
+
+
 
 	//OLD VERSION
 	/*
@@ -1371,33 +1485,95 @@ function populate_board_info(board_id){
 				if (info.lr_version != "null" && info.lr_version != undefined)	label_lr = info.lr_version;
 				else label_lr = "Unknown";
 
-				$('#info-label').html('<b>Label: </b>'+info.label);
-				$('#info-uuid').html('<b>UUID: </b>'+info.board_id);
-				$('#info-description').html('<b>Description: </b>'+info.description);
-				//$('#info-lr_version').html('<b>Lightning-rod version: </b>'+info.lr_version);
-				$('#info-lr_version').html('<b>Lightning-rod version: </b>'+label_lr);
+				if(info.status == "C")  conn_status = "Last connection: "
+				else if(info.status == "D")  conn_status = "Last disconnection: "
+
+				//Connectivities
+				var connectivities = ["ethernet", "mobile", "wifi"]
+				var conn_types = ["2", "3", "1"]
+				connectivity = response.message.connectivity
+				conn_1 = ""
+				conn_2 = ""
+				if(connectivity.length != 0){
+					metadata = JSON.parse(connectivity[0].metadata)
+					type = Object.keys(metadata)[0]
+					value = metadata[type]
+
+					for(i=0;i<conn_types.length;i++){
+						if(conn_types[i] == connectivity[0].conn_id){
+							conn_1 = "[ "+connectivities[i].ucfirst()+" ] "
+							//conn_2 = "-  "+type+": "+value
+
+							if(conn_types[i] == 3){
+								//Considering that for example the ICCID is an integer longer than the maximum number accepted by javascript
+								//it is necessary to encode it using base-64 (btoa to encode and atob to decode)
+								conn_2 = '<div style="text-align:left;">'+
+										'<div style="width: 75%; text-align:left; vertical-align: top; display: inline-block;">'+
+											'-  '+type+': '+value+
+										'</div>'+
+										'<div style="width: 20%; text-align:left; vertical-align: top; display: inline-block;">'+
+											'<input id="info-traffic-details" type="hidden" value="'+btoa(value.toString())+'"/>'+
+											'<input onclick="show_jasper(this)" type="button" value="Details"/>'+
+										'</div>'+
+									 '</div>'
+							}
+							else{
+								conn_2 = '-  '+type+": "+value
+							}
+							break
+						}
+					}
+					//$('#info-traffic').show();
+				}
+				else{
+					conn_1 = "N/A"
+					conn_2 = ""
+					//$('#info-traffic').hide();
+				}
 
 				$('#info_extras_json').text(JSON.stringify(info.extra, undefined, 4));
 
+
+				$('#info-detail_label').html('<h5><b>Details</b></h5>');
+				$('#info-label').html('<b>Label: </b>'+info.label);
+				$('#info-uuid').html('<b>ID: </b>'+info.board_id);
+				$('#info-description_label').html('<b>Description</b>');
+				$('#info-description').text(info.description);
+
+
+				$('#info-status_label').html('<h5><b>Status</b></h5>');
+				$('#info-lr_version').html('<b>Lightning-rod version: </b>'+label_lr);
+				$('#info-conn-time').html('<b>'+conn_status+'</b>'+info.conn_time);
+
+				$('#info-connectivity_label').html('<h5><b>Connectivity</b></h5>')
+				$('#info-connectivity').html(conn_1+'<br />'+conn_2)
+
+
+				$('#info-association_label').html('<h5><b>Association</b></h5>');
 				$('#info-user').html('<b>User: </b>'+info.user);
 				$('#info-project').html('<b>Project: </b>'+info.project);
+
+
+				$('#info-device_label').html('<h5><b>Device Layout</b></h5>');
 				$('#info-model').html('<b>Model: </b>'+info.model);
 				$('#info-layout').html('<b>IoTronic Layout: </b>'+info.layout);
 				$('#info-manufacturer').html('<b>Manufacturer: </b>'+info.manufacturer);
 				$('#info-image').html('<b>Image: </b>'+info.image);
 
+
+				$('#info-coordinates_label').html('<h5><b>Geolocalization</b></h5>');
 				$('#info-lat').html('<b>Latitude: </b>'+info.coordinates.latitude);
 				$('#info-lon').html('<b>Longitude: </b>'+info.coordinates.longitude);
 				$('#info-alt').html('<b>Altitude: </b>'+info.coordinates.altitude);
-				$('#info-timestamp').html('<b>@ </b>'+info.coordinates.timestamp);
+				$('#info-timestamp').html('<b>Updated: </b>'+info.coordinates.timestamp);
 				boardinfo_map(info.status, info.coordinates.latitude, info.coordinates.longitude);
 
-				if(info.mobile == 1)		document.getElementById("info_mobile_enabled").checked = true;
-				if(info.net_enabled == 1)	document.getElementById("info_net_enabled").checked = true;
+				//if(info.mobile == 1)		document.getElementById("info_mobile_enabled").checked = true;
+				//if(info.net_enabled == 1)	document.getElementById("info_net_enabled").checked = true;
 				if(info.notify == 1)		document.getElementById("info_notify_enabled").checked = true;
 
-				document.getElementById("info_mobile_enabled").disabled = "disabled";
-				document.getElementById("info_net_enabled").disabled = "disabled";
+				//document.getElementById("info_mobile_enabled").disabled = "disabled";
+				//document.getElementById("info_net_enabled").disabled = "disabled";
 				document.getElementById("info_notify_enabled").disabled = "disabled";
 
 				/*
@@ -1430,7 +1606,6 @@ function populate_board_info(board_id){
 					}
 					else{
 						services = response.message.services.sort(SortByName);
-
 						$("#cloud_services_section").show();
 
 						$("#info_tableservices").find("thead").remove();
@@ -1577,14 +1752,237 @@ function populate_board_info(board_id){
 					$('#vnets_section').hide();
 					$('#info-networks').hide();
 				}
+
+				//CUSTOMIZED
+				//----------------------------------------------------------------------------------------------------------
+				//Sensors
+				if(sensors_flag){
+
+					$('#sensors_status').prop("checked", false);
+
+					var array_promise = [];
+					array_promise.push(new Promise(function(resolve){
+						//get_board_sensors(board_id, resolve)
+						get_board_sensors(board_id, info.model, resolve)
+					}));
+
+					Promise.all(array_promise).then(function(results){
+						//console.log(results[0]);
+						response.message.sensors = results[0].payload
+						//console.log(response.message.sensors)
+
+						//Get the last table type (if DataTable or not) and clean the table with the correct methodology
+						var check_datatable = $.fn.dataTable.isDataTable("#info_tablesensors");
+						if(check_datatable == true)
+							$('#info_tablesensors').DataTable().destroy();
+						else
+							$('#info_tablesensors').html("");
+						
+						if(response.message.sensors == undefined || response.message.sensors.length == 0 || response.message.sensors == "NO WIOTP"){
+							$("#sensors_switch_section").hide();
+							$('#info_tablesensors').html('<tr><td style="text-align:center">No sensors</td></tr>');
+						}
+						else{
+							$('#sensors_device').html('<b>Device: </b>'+results[0].deviceId);
+							$('#sensors_model').html('<b>Model: </b>'+results[0].typeId);
+							$('#sensors_timestamp').html('<b>Timestamp: </b>'+results[0].timestamp);
+
+							sensors = response.message.sensors.sort(SortBySensPos);
+
+
+							//Verify WARNINGS (threshold for sensors and sensors' oldest data)
+							//**************************************************************************
+							project_name = get_project_name_by_uuid(getCookie("selected_prj"));
+							mins_to_remove = wiotp_endpoints[project_name].expire_data
+
+							//mins_to_remove = 27862945
+
+							var check_date = new Date()
+							offset = check_date.getTimezoneOffset()
+
+							check_date.setMinutes(check_date.getMinutes()+offset)
+							check_date.setMinutes(check_date.getMinutes()-Number(mins_to_remove))
+							threshold_time = convert_date(check_date)
+							//console.log(threshold_time)
+
+							ordered_last = response.message.sensors.sort(SortByOldest)[0].last.split(".",1)[0];
+							//console.log(ordered_last)
+
+							valid = compare_dates(threshold_time, ordered_last)
+							//console.log(valid)
+							//console.log(results[0])
+
+
+							content = ""
+							if(results[0].warning_threshold || !valid)
+								content += '<span style="display:block; text-align:center"><b>WARNING</b></span>'
+							if(results[0].warning_threshold)
+								content += "&nbsp;- Failed sensors overcome the threshold limit: <b>"+results[0].failed+" / "+results[0].all+"</b> failed!<br />"
+							if(!valid)
+								content += "&nbsp;- Oldest data received at <b>"+ordered_last+"</b>"
+
+							$('#sensors_validity').html('<p class="custom_p" style="margin-bottom: 0px">'+content+'</p>');
+							//**************************************************************************
+
+
+							$("#sensors_section").show();
+							$("#sensors_switch_section").show();
+						
+							$("#info_tablesensors").find("thead").remove();
+							$("#info_tablesensors").find("tbody").remove();
+						
+							create_table_from_json("info_tablesensors", sensors, null);
+						}
+					});
+
+
+					//REMOVE once correct data are retrieved
+					/*
+					response.message.sensors = device_sensors;
+					//response.message.sensors = [
+					//	{"id": "4", "name": "name4", "status": "failed"},
+					//	{"id": "1", "name": "name1", "status": "active"},
+					//	{"id": "2", "name": "name2", "status": "active"},
+					//	{"id": "3", "name": "name3", "status": "failed"},
+					//];
+
+					//response.message.sensors = [];
+
+
+					//Get the last table type (if DataTable or not) and clean the table with the correct methodology
+					var check_datatable = $.fn.dataTable.isDataTable("#info_tablesensors");
+					if(check_datatable == true)
+						$('#info_tablesensors').DataTable().destroy();
+					else
+						$('#info_tablesensors').html("");
+
+
+					if(response.message.sensors.length == 0){
+						$('#info_tablesensors').html('<tr><td style="text-align:center">No sensors</td></tr>');
+					}
+					else{
+						sensors = response.message.sensors.sort(SortByName);
+
+						$("#sensors_section").show();
+
+						$("#info_tablesensors").find("thead").remove();
+						$("#info_tablesensors").find("tbody").remove();
+
+						create_table_from_json("info_tablesensors", sensors, null);
+					}
+					*/
+				}
+				else{
+					$('#sensors_section').hide();
+					$('#info-sensors').hide();
+				}
+				//----------------------------------------------------------------------------------------------------------
 			},
 			error: function(response){
+console.log("ERROR");
 				verify_token_expired(response.responseJSON.message, response.responseJSON.result);
 				//alert('ERROR: '+JSON.stringify(response));
 			}
 		});
 	//}
 }
+
+//CUSTOMIZED
+//----------------------------------------------------------------------------------------------------------
+//OLD STATIC VERSION
+/*
+var device_sensors = [
+	{"id": "4", "name": "name4", "status": "failed"},
+	{"id": "1", "name": "name1", "status": "active"},
+	{"id": "5", "name": "name5", "status": "degradated"},
+	{"id": "2", "name": "name2", "status": "active"},
+	{"id": "3", "name": "name3", "status": "failed"},
+];
+*/
+
+$('#sensors_status').on('change',
+	function(){
+		//OLD STATIC VERSION
+		/*
+		var id = this.getAttribute("id");
+		updated_sensors = device_sensors;
+
+		if ($('#'+id).is(':checked')){
+			updated_sensors = filter_by_status(device_sensors, "failed");
+			console.log("Failed sensors");
+		}
+		else{
+			console.log("ALL sensors");
+		}
+		update_sensors_table("info_tablesensors", updated_sensors);
+		*/
+
+		//NEW WIOTP VERSION
+		var id = this.getAttribute("id");
+		uuid = $("#info-uuid").text().replace('ID: ', '')
+		model = $("#sensors_model").text().replace('Model: ', '')
+
+		var array_promise = [];
+		array_promise.push(new Promise(function(resolve){
+			//get_board_sensors(uuid, resolve)
+			get_board_sensors(uuid, model, resolve)
+		}));
+
+		Promise.all(array_promise).then(function(results){
+			device_sensors = results[0].payload
+
+			if ($('#'+id).is(':checked')){
+				updated_sensors = filter_by_status(device_sensors, "NOK");
+				console.log("Failed sensors");
+			}
+			else{
+				updated_sensors = device_sensors
+				console.log("ALL sensors");
+			}
+			update_sensors_table("info_tablesensors", updated_sensors);
+		});
+	}
+);
+
+
+function filter_by_status(vector, status){
+	var filtered = [];
+
+	for(i=0; i<vector.length; i++){
+		if(vector[i].status == status)
+			filtered.push(vector[i]);
+	}
+	return filtered;
+}
+
+
+function update_sensors_table(table_id, sensors){
+
+	//Get the last table type (if DataTable or not) and clean the table with the correct methodology
+	var check_datatable = $.fn.dataTable.isDataTable("#"+table_id);
+	if(check_datatable == true)
+		$('#'+table_id).DataTable().destroy();
+	else
+		$('#'+table_id).html("");
+
+
+	if(sensors.length == 0){
+		$('#'+table_id).html('<tr><td style="text-align:center">No sensors</td></tr>');
+	}
+	else{
+		sensors = sensors.sort(SortByName);
+
+		$("#sensors_section").show();
+
+		$('#'+table_id).find("thead").remove();
+		$('#'+table_id).find("tbody").remove();
+
+		create_table_from_json(table_id, sensors, null);
+	}
+
+}
+//----------------------------------------------------------------------------------------------------------
+
 
 
 $('[data-reveal-id="modal-update-pkg-board"]').on('click',
@@ -1956,5 +2354,3 @@ $('.lr_change').click(function(){
 		}
 	}
 });
-
-

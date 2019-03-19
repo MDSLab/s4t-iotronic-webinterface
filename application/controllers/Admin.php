@@ -63,6 +63,45 @@ class Admin extends CI_Controller {
 	}
 
 
+	public function mobile_status(){
+		$iccid = $_POST['iccid'];
+
+		$mobile_api = json_decode($GLOBALS['mobile_api']);
+
+		$user = $mobile_api->user;
+		$api_key = $mobile_api->api_key;
+		$url1 = $mobile_api->url.$iccid;
+		$url2 = $mobile_api->url.$iccid."/ctdUsages";
+
+		$url3 = $mobile_api->url.$iccid."/sessionInfo";
+
+		$array_out = array();
+
+		// create curl resource
+		$ch = curl_init();
+
+		//curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		curl_setopt($ch, CURLOPT_USERPWD, $user.':'.$api_key);
+
+
+		curl_setopt($ch, CURLOPT_URL, $url1);
+		array_push($array_out, curl_exec($ch));
+
+		curl_setopt($ch, CURLOPT_URL, $url2);
+		array_push($array_out, curl_exec($ch));
+
+
+		curl_setopt($ch, CURLOPT_URL, $url3);
+		array_push($array_out, curl_exec($ch));
+
+		curl_close($ch);
+
+		$this->output->set_output(json_encode($array_out));
+	}
+
+
 	//NOTE: global variables in php (defined in our config file) can be retrieved like this
 	//$host = $GLOBALS["api_address"];
 }

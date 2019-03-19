@@ -1,15 +1,15 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+
 //Iotronic Endpoints
 $default_api_address = '<IP_OR_HOSTNAME>:<PORT>';
 $default_iotronic_address = '<IP_OR_HOSTNAME>';
 $default_wstun_address = '<IP_OR_HOSTNAME>';
 
-//OpenstreetMap Endpoint
-//$config['map_url'] = 'http://{s}.tile.osm.org/';
-$config['map_url'] = 'https://{s}.tile.openstreetmap.org/';
 
+//OpenstreetMap Endpoint
+$config['map_url'] = 'https://{s}.tile.openstreetmap.org/';
 
 $api_address = !empty(getenv('API_PUB_IP')) ? getenv('API_PUB_IP') : $default_api_address;
 $iotronic_address = !empty(getenv('IOTRONIC_PUB_IP')) ? getenv('IOTRONIC_PUB_IP') : $default_iotronic_address;
@@ -35,6 +35,9 @@ $config['s4t_iotronic_folder'] = '/var/lib/iotronic/';
 //Security method (basic, certificate, password)
 $config['security'] = 'password'; 
 
+//Mobile status
+$GLOBALS['mobile_api'] = str_replace("'",'"', getenv('MOBILE_API'));
+
 
 //Commands management
 //-------------------------------------------------------------------------
@@ -45,13 +48,17 @@ $config['load_gpio_management'] = TRUE;
 $config['load_driver_management'] = TRUE;
 $config['load_vfs_management'] = TRUE;
 
+$config['load_sensor_management'] = TRUE; //CUSTOMIZED
+
 $config['load_commands'] = (
-			$config['load_cloud_services_management'] or
-			$config['load_plugin_management'] or
-			$config['load_network_management'] or
-			$config['load_gpio_management'] or
-			$config['load_driver_management'] or
-			$config['load_vfs_management']
+			$config['load_cloud_services_management']
+			or $config['load_plugin_management']
+			or $config['load_network_management']
+			or $config['load_gpio_management']
+			or $config['load_driver_management']
+			or $config['load_vfs_management']
+
+                        or $config['load_sensor_management'] //CUSTOMIZED
 );
 //-------------------------------------------------------------------------
 
@@ -63,16 +70,26 @@ $endpoint['mongo'] = FALSE;
 $config['endpoints'] = $endpoint;
 
 
+//WIOTP_ENDPOINTS
+$GLOBALS['wiotp_endpoints'] = str_replace("'",'"', getenv('WIOTP_ENDPOINTS'));
+//$GLOBALS['wiotp_endpoints'] = getenv('WIOTP_ENDPOINTS');
+
+
 //EXTRAS
 //-------------------------------------------------------------------------
 $config['polling_delay'] = 2000;
 $config['selectbox_size'] = 9;
 $config['show_string_or_json_lists'] = TRUE;
 
-$config['dash_version'] = '2.3.0-2';
-$config['iotronic_version'] = '2.3.0-1';
-$config['lr_version'] = '2.3.0-1';
+
+$config['versions'] = str_replace("'",'"', getenv('IOTRONIC_VERSIONS'));
+
+/*
+$config['dash_version'] = '2.3.4';
+$config['iotronic_version'] = '2.3.4';
+$config['lr_version'] = '2.3.3';
 $config['wstun_version'] = '1.0.7-1';
+*/
 //-------------------------------------------------------------------------
 
 

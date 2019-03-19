@@ -16,6 +16,15 @@ limitations under the License.
 
 <div id="loading_bar"></div>
 
+<?
+	$versions = json_decode($this -> config -> item('versions'));
+	$dash_version = $versions -> dash_version;
+	$iotronic_version = $versions -> iotronic_version;
+	$lr_version = $versions -> lr_version;
+	$wstun_version = $versions -> wstun_version;
+	
+?>
+
 
 <div id="modal-show-info" class="reveal-modal small" data-reveal>
 	<section>
@@ -39,32 +48,36 @@ limitations under the License.
 				</tr>
 				<tr>
 					<td>Dashboard</td>
-					<td><?= $this -> config -> item('dash_version')?></td>
+					<!--<td><?= $this -> config -> item('dash_version')?></td>-->
+					<td><?= $dash_version ?></td>
 				</tr>
 				<tr>
 					<td>Iotronic</td>
-					<td><?= $this -> config -> item('iotronic_version')?></td>
+					<!--<td><?= $this -> config -> item('iotronic_version')?></td>-->
+					<td><?= $iotronic_version ?></td>
 				</tr>
 				<tr>
 					<td>Lighting-rod</td>
-					<td><?= $this -> config -> item('lr_version')?></td>
+					<!--<td><?= $this -> config -> item('lr_version')?></td>-->
+					<td><?= $lr_version ?></td>
 				</tr>
 				<tr>
 					<td>WSTUN</td>
-					<td><?= $this -> config -> item('wstun_version')?></td>
+					<!--<td><?= $this -> config -> item('wstun_version')?></td>-->
+					<td><?= $wstun_version ?></td>
 				</tr>
 			</tbody>
 		</table>
 		<h3 style="text-align: center">Credits</h3>
 		<div style="vertical-align:middle; text-align:center">
-			<img src="<?= $this -> config -> site_url() ?>assets/images/smartme.png" width="7%" height="7%">SmartMe.IO S.r.l.
+			<img src="<?= $this -> config -> site_url() ?>assets/images/smartmeio.png" width="7%" height="7%">SmartMe.IO s.r.l. & <img src="<?= $this -> config -> site_url() .'uploads/mdslab.png'  ?>" alt="MDSLab Logo" height="40" width="80" />
 		</div><br />
-		<img src="<?= $this -> config -> site_url() ?>assets/images/foundation_svgs/fi-marker.svg" width="5%" height="5%">Dip. di Ingegneria, C/da di Dio 1, S.Agata - 98166 Messina, Italy<br />
-		<img src="<?= $this -> config -> site_url() ?>assets/images/foundation_svgs/fi-telephone.svg" width="5%" height="5%">(+39) 090-397-7337<br />
+		<img src="<?= $this -> config -> site_url() ?>assets/images/foundation_svgs/fi-marker.svg" width="5%" height="5%">Engineering Dep., C/da di Dio 1, S.Agata - 98166 Messina, Italy<br /><br />
+		<img src="<?= $this -> config -> site_url() ?>assets/images/foundation_svgs/fi-telephone.svg" width="5%" height="5%">(+39) 090-676-3644<br /><br />
 		<img src="<?= $this -> config -> site_url() ?>assets/images/foundation_svgs/fi-mail.svg" width="5%" height="5%">info@smartme.io<br />
 		<br />
 		<div style="vertical-align:middle; text-align:center">
-			Copyright © 2018
+			Copyright © 2019
 		</div>
 	</section>
 </div>
@@ -148,10 +161,6 @@ limitations under the License.
 		<aside class="right-off-canvas-menu">
 			<ul class="off-canvas-list">
 				<li><label>Support</label></li>
-				<? if ($this -> config -> item('ckan')): ?>
-					<li><a target="_blank" href="http://smartme-data.unime.it/">SmartME CKAN</a></li>
-				<? endif ?>
-
 				<li><a target="_blank" href="http://stack4things.unime.it/">Stack4Things</a></li>
 				<li><a target="_blank" href="<?= $this -> config -> item('swagger_url')?>">API</a></li>
 				<li><a data-reveal-id="modal-show-info">Info & Credits</a></li>

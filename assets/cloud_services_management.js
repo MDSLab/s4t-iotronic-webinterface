@@ -186,6 +186,7 @@ $('#register_service').click(function(){
 	document.getElementById("service_register-output").innerHTML ='';
 
 	if(service_name == ""){ alert("Insert Service Name!"); document.getElementById('loading_bar').style.visibility='hidden';}
+	else if(service_name.indexOf(" ") != -1){ alert("Insert service name without spaces!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(port !== port){ alert("Specify a Port number different from zero(s)"); 	document.getElementById('loading_bar').style.visibility='hidden'; }
 	else if(protocol == "--") { alert("Select protocol!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else{
@@ -233,6 +234,7 @@ $('#update_service').click(function(){
 
 	if(old_service_name == "--" || old_service_name == undefined){ alert("Select a service"); document.getElementById('loading_bar').style.visibility='hidden'; }
 	else if(service_name == ""){ alert("Insert Service Name!"); document.getElementById('loading_bar').style.visibility='hidden';}
+	else if(service_name.indexOf(" ") != -1){ alert("Insert service name without spaces!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else if(port == ""){ alert("Specify a Port number different from zero(s)"); document.getElementById('loading_bar').style.visibility='hidden';	}
 	else if(protocol == "--") { alert("Select protocol!"); document.getElementById('loading_bar').style.visibility='hidden';}
 	else{
@@ -674,6 +676,8 @@ function update_services(select_id){
 			response.list = response.message.sort(SortByName);
 
 			for(var i=0; i<response.list.length; i++){
+				//In the case we want to allow names with spaces we need to encodeURIComponent it
+				//var json = {"service_name": encodeURIComponent(response.message[i].name), "port": response.message[i].port, "protocol": response.message[i].protocol};
 				var json = {"service_name": response.message[i].name, "port": response.message[i].port, "protocol": response.message[i].protocol};
 				var stringified = JSON.stringify(json);
 				$('#'+select_id).append('<option title="'+response.list[i].name+'" data-value='+stringified+'>'+response.list[i].name+' ['+response.list[i].protocol+': '+response.list[i].port+']'+'</option>');
