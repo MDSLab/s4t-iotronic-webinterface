@@ -1,7 +1,7 @@
 # Automatic installation and configuration
 Clone this repo (or download the zip and extract it) inside the /var/www/html folder.
 
-Before launching the script for [Debian](scripts/install_dash_Debian.sh) set the ```flag_ssl``` variable in order to have SSL enabled or not.
+Before launching the script for [Debian](https://github.com/MDSLab/s4t-iotronic-webinterface/blob/master/scripts/install_dash_Debian.sh) set the ```flag_ssl``` variable in order to have SSL enabled or not.
 
 # Manual installation and configuration
 As written in the automatic installation it is necessary to clone this repo (or download the zip and extract it) inside the /var/www/html folder.

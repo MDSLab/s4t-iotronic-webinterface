@@ -93,7 +93,7 @@ else
 
 	echo -e "\nIotronic is not installed..."
 	cd /var/www/html
-	git clone --depth=1 https://git.smartme.io/consulting/sacertis/iotronic-dashboard.git ./iotronic
+	git clone --depth=1 https://github.com/MDSLab/s4t-iotronic-webinterface.git ./iotronic
 	service apache2 restart
 fi
 # ----------------------------------------------------------------------------------
