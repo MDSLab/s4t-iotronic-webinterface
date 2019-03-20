@@ -16,6 +16,7 @@ apt-get install php7.3 php7.3-common php7.3-cli php7.3-curl php7.3-json php7.3-o
 a2enmod rewrite && a2enmod headers
 echo -e '<Directory "/var/www/html">\nAllowOverride All\n</Directory>' >> /etc/apache2/sites-enabled/000-default.conf
 sed -i "s/short_open_tag = Off/short_open_tag = On/g" /etc/php/7.3/apache2/php.ini
+echo -e '. /etc/environment' >> /etc/apache2/envvars
 service apache2 restart
 ```
 ## Final checks
