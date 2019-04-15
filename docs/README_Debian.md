@@ -15,6 +15,18 @@ apt-get -qq -y install apache2 git unzip
 apt-get install php7.3 php7.3-common php7.3-cli php7.3-curl php7.3-json php7.3-opcache php7.3-readline libapache2-mod-php7.3
 ```
 ## Configuration
+Add the following lines (obviously customized for your infrastructure):
+```
+NODE_TLS_REJECT_UNAUTHORIZED='0'
+API_PUB_IP='<IP_OR_FQDN>'
+IOTRONIC_PUB_IP='<IP_OR_FQDN>'
+WSTUN_IP='<IP_OR_FQDN>'
+export MOBILE_API="{}"
+export WIOTP_ENDPOINTS="{}"
+export IOTRONIC_VERSIONS="{'iotronic_version':'<VERSION>', 'dash_version':'<DASH_VERSION>', 'lr_version':'<LR_VERSION>', 'wstun_version':'<WSTUN_VERSION>'}"
+
+```
+and then complete these last configuration steps:
 ```
 a2enmod rewrite && a2enmod headers
 echo -e '<Directory "/var/www/html">\nAllowOverride All\n</Directory>' >> /etc/apache2/sites-enabled/000-default.conf
@@ -52,6 +64,6 @@ Header always set Strict-Transport-Security "max-age=31536000; includeSubdomains
 ```
 
 # Final steps (both automatic and manual procedures)
-Copy the ```.htaccess``` which contains the rewrite rules and the images linked inside the code
+Copy the ```.htaccess``` which contains the rewrite rules and the images linked inside the code.
 In both automatic and manual installation you need to modify the parameters in brackets inside the following file ```application/config/config.php``` and then display the WebPage on this URL: ```http://<SERVER_IP>/<FOLDER_NAME>/Login```
 If you come across forbidden access errors launch ```chmod 755 -R <folder>``` command on templates and uploads folders.
