@@ -379,6 +379,9 @@ $('[id="update_boardlist"]').on('change',
 						var conn_types = ["2", "3", "1"]
 
 						$('#board_update_connectivity').empty();
+						$('#board_update_conn_metadata').attr('placeholder','MAC');
+						document.getElementById("board_update_conn_metadata").value = "";
+                                                
 						for(i=0;i<connectivities.length;i++)
 							$('#board_update_connectivity').append('<option title="'+connectivities[i]+'" value="'+conn_types[i]+'" data-unit="">'+connectivities[i].ucfirst()+'</option>');
 
@@ -1785,7 +1788,9 @@ function populate_board_info(board_id, flag){
 						else{
 							$('#sensors_device').html('<b>Device: </b>'+results[0].deviceId);
 							$('#sensors_model').html('<b>Model: </b>'+results[0].typeId);
+							$('#sensors_onboard').html('<b>Installed sensors: </b>'+results[0].all);
 							$('#sensors_timestamp').html('<b>Timestamp: </b>'+results[0].timestamp);
+                                                        
 
 							sensors = response.message.sensors.sort(SortBySensPos);
 

@@ -7,7 +7,6 @@ $default_api_address = '<IP_OR_HOSTNAME>:<PORT>';
 $default_iotronic_address = '<IP_OR_HOSTNAME>';
 $default_wstun_address = '<IP_OR_HOSTNAME>';
 
-
 //OpenstreetMap Endpoint
 $config['map_url'] = 'https://{s}.tile.openstreetmap.org/';
 
@@ -43,10 +42,10 @@ $GLOBALS['mobile_api'] = str_replace("'",'"', getenv('MOBILE_API'));
 //-------------------------------------------------------------------------
 $config['load_cloud_services_management'] = TRUE;
 $config['load_plugin_management'] = TRUE;
-$config['load_network_management'] = TRUE;
+$config['load_network_management'] = FALSE;
 $config['load_gpio_management'] = TRUE;
-$config['load_driver_management'] = TRUE;
-$config['load_vfs_management'] = TRUE;
+$config['load_driver_management'] = FALSE;
+$config['load_vfs_management'] = FALSE;
 
 $config['load_sensor_management'] = TRUE; //CUSTOMIZED
 
@@ -85,9 +84,9 @@ $config['show_string_or_json_lists'] = TRUE;
 $config['versions'] = str_replace("'",'"', getenv('IOTRONIC_VERSIONS'));
 
 /*
-$config['dash_version'] = '2.3.4';
-$config['iotronic_version'] = '2.3.4';
-$config['lr_version'] = '2.3.3';
+$config['dash_version'] = '2.3.0-2';
+$config['iotronic_version'] = '2.3.0-1';
+$config['lr_version'] = '2.3.0-1';
 $config['wstun_version'] = '1.0.7-1';
 */
 //-------------------------------------------------------------------------

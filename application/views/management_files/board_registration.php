@@ -233,6 +233,7 @@ limitations under the License.
 							<div id="sensors_metadata" style="text-align:left">
 								<div id="sensors_device"></div>
 								<div id="sensors_model"></div>
+								<div id="sensors_onboard"></div>
 								<div id="sensors_timestamp"></div>
 							</div>
 							<div style="width: 20%; margin-top: 5px; text-align:center; vertical-align: top; display: inline-block;">

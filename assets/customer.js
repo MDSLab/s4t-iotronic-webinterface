@@ -85,33 +85,37 @@ function verify_sensors_status(uuid, model, callback){
 				parsed = $.parseJSON(atob(response.payload))
 				sensor_data = parsed.d.r.sensor_data
 
-				for(i=0;i<sensor_data.length;i++){
-					if(sensor_data[i].status == "NOK")
-						failed += 1;
+				if(sensor_data != undefined){
+					for(i=0;i<sensor_data.length;i++){
+						if(sensor_data[i].status == "NOK")
+							failed += 1;
+					}
+
+					data = {"board_id": parsed.d.group, "failed": failed, "all": sensor_data.length};
+
+					if(failed >= response.threshold){
+					//if(failed >= 10000000){
+						data.status = "CHECKED"
+						//callback(parsed.d.group) //returns the board_id
+					}
+					else{
+						data.status = "NO ACTION"
+						//callback("NO ACTION")
+					}
+
+					//ordered_last = sensor_data.sort(SortByLast)[0].last.split(".",1)[0];
+					ordered_last = sensor_data.sort(SortByOldest)[0].last.split(".",1)[0];
+					//console.log(ordered_last)
+
+					//If the actual time (expressed in UTC) is greater than the last sample coming from sensors the board
+					//has to become yellow because data coming from sensors is too old [Case "false"]. Otherwise the data
+					//is correct and updated recently (inside the expire_data interval set) [Case "true"]
+					data.valid = compare_dates(threshold_time, ordered_last)
+					//console.log(data)
+					callback(data)
 				}
-
-				data = {"board_id": parsed.d.group, "failed": failed, "all": sensor_data.length};
-
-				if(failed >= response.threshold){
-				//if(failed >= 10000000){
-					data.status = "CHECKED"
-					//callback(parsed.d.group) //returns the board_id
-				}
-				else{
-					data.status = "NO ACTION"
-					//callback("NO ACTION")
-				}
-
-				//ordered_last = sensor_data.sort(SortByLast)[0].last.split(".",1)[0];
-				ordered_last = sensor_data.sort(SortByOldest)[0].last.split(".",1)[0];
-				//console.log(ordered_last)
-
-				//If the actual time (expressed in UTC) is greater than the last sample coming from sensors the board
-				//has to become yellow because data coming from sensors is too old [Case "false"]. Otherwise the data
-				//is correct and updated recently (inside the expire_data interval set) [Case "true"]
-				data.valid = compare_dates(threshold_time, ordered_last)
-				//console.log(data)
-				callback(data)
+				else
+					callback({"board_id": uuid, "failed": "Not available", "all": "Not available", "status": "NO ACTION", "valid": null})
 			}
 			else{
 				//callback({"board_id": uuid, "failed": "Not available", "all": "Not available", "status": "NO ACTION"})
