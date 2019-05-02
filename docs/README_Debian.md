@@ -50,7 +50,7 @@ service apache2 restart
 ## OPTIONAL (SSL for https connection)
 * ```a2enmod ssl && a2ensite default-ssl```
 * Modify ```SSLCertificateFile``` and ```SSLCertificateKeyFile``` in the following Apache conf file: ```/etc/apache2/sites-available/default-ssl.conf``` adding the corresponding paths
-```service apache2 restart```
+* ```service apache2 restart```
 * Verify if the module ```ssl_module (shared)``` is loaded.
 
 ## OPTIONAL (hardening improvements)

@@ -504,6 +504,8 @@ function refresh_lists(){
 	var project_id = getCookie("selected_prj");
 	//console.log(project_id);
 
+	$('#boardlist_status').empty();
+
 	//CUSTOMIZED....USELESS????
 	//test_wiotp();
 
@@ -533,7 +535,8 @@ function refresh_lists(){
 					disconnected.push(boards_list[i]);
 			}
 
-			$('#boardlist_status').empty();
+			//Moved outside the ajax call to avoid the duplicated visualization of boards
+			//$('#boardlist_status').empty();
 			
 			connected = connected.sort(SortByLabel);
 			disconnected = disconnected.sort(SortByLabel);
